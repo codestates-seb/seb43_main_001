@@ -1,8 +1,11 @@
 package main001.server.domain.usercomment.mapper;
 
+import main001.server.domain.user.entity.User;
 import main001.server.domain.usercomment.dto.UserCommentDto;
 import main001.server.domain.usercomment.entity.UserComment;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserCommentMapper {
 
     public UserComment postToEntity(UserCommentDto.Post postDto) {
@@ -51,9 +54,9 @@ public class UserCommentMapper {
                 userComment.getUserCommentId(),
                 userComment.getContent(),
                 userComment.getUser().getUserId(),
-                userComment.getUser().getUserName(),
+                userComment.getUser().getName(),
                 userComment.getWriter().getUserId(),
-                userComment.getWriter().getUserName(),
+                userComment.getWriter().getName(),
                 userComment.getCreatedTime(),
                 userComment.getModifiedTime()
         );

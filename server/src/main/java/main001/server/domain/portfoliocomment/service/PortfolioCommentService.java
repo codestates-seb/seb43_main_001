@@ -1,10 +1,14 @@
 package main001.server.domain.portfoliocomment.service;
 
 import lombok.RequiredArgsConstructor;
+import main001.server.domain.portfolio.entity.Portfolio;
+import main001.server.domain.portfolio.service.PortfolioService;
 import main001.server.domain.portfoliocomment.dto.PortfolioCommentDto;
 import main001.server.domain.portfoliocomment.entity.PortfolioComment;
 import main001.server.domain.portfoliocomment.mapper.PortfolioCommentMapper;
 import main001.server.domain.portfoliocomment.repository.PortfolioCommentRepository;
+import main001.server.domain.user.entity.User;
+import main001.server.domain.user.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -89,7 +93,7 @@ public class PortfolioCommentService {
 
     private PortfolioComment setUserAndPortfolio(PortfolioComment portfolioComment) {
         User user = userService.findUser(portfolioComment.getUser().getUserId());
-        Portfolio portfolio = portfolioService.findPortfolio(portfolioComment.getPortfolio().getPortfolioId());
+        Portfolio portfolio = portfolioService.findPortfolio(portfolioComment.getPortfolio().getId());
         portfolioComment.setUser(user);
         portfolioComment.setPortfolio(portfolio);
 

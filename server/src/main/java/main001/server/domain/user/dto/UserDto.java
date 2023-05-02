@@ -24,7 +24,7 @@ public class UserDto {
         @Email
         private String gitLink;
         private String blogLink;
-        private Skill skill;
+//        private Skill skill;
         private JobStatus jobStatus;
         private String about;
     }
@@ -39,7 +39,7 @@ public class UserDto {
         private String profileImg;
         private String gitLink;
         private String blogLink;
-        private Skill skill;
+//        private Skill skill;
         private UserStatus userStatus;
         private JobStatus jobStatus;
         private String about;
@@ -57,7 +57,7 @@ public class UserDto {
         private String profileImg;
         private String gitLink;
         private String blogLink;
-        private Skill skill;
+//        private Skill skill;
         private Grade grade;
         private UserStatus userStatus;
         private JobStatus jobStatus;

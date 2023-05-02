@@ -1,6 +1,8 @@
 package main001.server.domain.portfoliocomment.repository;
 
+import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfoliocomment.entity.PortfolioComment;
+import main001.server.domain.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

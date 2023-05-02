@@ -1,6 +1,8 @@
 package main001.server.domain.usercomment.service;
 
 import lombok.RequiredArgsConstructor;
+import main001.server.domain.user.entity.User;
+import main001.server.domain.user.service.UserService;
 import main001.server.domain.usercomment.dto.UserCommentDto;
 import main001.server.domain.usercomment.entity.UserComment;
 import main001.server.domain.usercomment.mapper.UserCommentMapper;
