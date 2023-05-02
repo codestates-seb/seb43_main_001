@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import main001.server.audit.BaseTimeEntity;
+import main001.server.domain.portfolio.entity.Portfolio;
+import main001.server.domain.user.entity.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -11,8 +13,8 @@ import javax.validation.constraints.NotBlank;
 @Entity
 @Table(name = "portfoliocomments",
         indexes ={
-        @Index(columnList = "user"),
-        @Index(columnList = "portfolio")
+        @Index(columnList = "userId"),
+        @Index(columnList = "portfolioId")
 })
 @Getter
 @Setter
@@ -32,6 +34,13 @@ public class PortfolioComment extends BaseTimeEntity {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "portfolioId")
     private Portfolio portfolio;
+
+    public void setPortfolio(Portfolio portfolio) {
+        this.portfolio = portfolio;
+        if(!this.getPortfolio().getAnswers().contains(this)) {
+            this.getPortfolio().getAnswers().add(this);
+        }
+    }
 }

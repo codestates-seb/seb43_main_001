@@ -1,4 +1,4 @@
-package main001.server.domain.user.pagenation;
+package main001.server.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

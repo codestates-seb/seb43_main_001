@@ -1,5 +1,6 @@
 package main001.server.domain.usercomment.repository;
 
+import main001.server.domain.user.entity.User;
 import main001.server.domain.usercomment.entity.UserComment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

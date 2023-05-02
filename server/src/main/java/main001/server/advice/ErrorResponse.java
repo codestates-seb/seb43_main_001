@@ -1,7 +1,7 @@
-package main001.server.domain.user.advice;
+package main001.server.advice;
 
 import lombok.Getter;
-import main001.server.domain.user.exception.ExceptionCode;
+import main001.server.exception.ExceptionCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 

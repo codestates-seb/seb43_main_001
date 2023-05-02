@@ -1,7 +1,7 @@
-package main001.server.domain.user.advice;
+package main001.server.advice;
 
 import lombok.extern.slf4j.Slf4j;
-import main001.server.domain.user.exception.BusinessLogicException;
+import main001.server.exception.BusinessLogicException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
