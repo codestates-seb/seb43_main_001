@@ -42,7 +42,7 @@ public class PortfolioCommentController {
         return portfolioCommentService.findPortfolioCommentsByUser(userId, page - 1, size);
     }
 
-    @GetMapping("portfolios/{portfolio_id}")
+    @GetMapping("/portfolios/{portfolio_id}")
     @ResponseStatus(HttpStatus.OK)
     public PortfolioCommentDto.ResponseList getUserCommentsByWriter(@PathVariable("portfolio_id") @Positive Long portfolioId,
                                                               @RequestParam @Positive int page, @RequestParam @Positive int size) {

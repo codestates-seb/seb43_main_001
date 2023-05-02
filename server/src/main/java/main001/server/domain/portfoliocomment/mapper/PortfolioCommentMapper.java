@@ -1,8 +1,12 @@
 package main001.server.domain.portfoliocomment.mapper;
 
+import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfoliocomment.dto.PortfolioCommentDto;
 import main001.server.domain.portfoliocomment.entity.PortfolioComment;
+import main001.server.domain.user.entity.User;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PortfolioCommentMapper {
 
     public PortfolioComment postToEntity(PortfolioCommentDto.Post postDto) {
@@ -18,7 +22,7 @@ public class PortfolioCommentMapper {
         portfolioComment.setUser(user);
 
         Portfolio portfolio = new Portfolio();
-        portfolio.setPortfolioId(postDto.getPortfolioId());
+        portfolio.setId(postDto.getPortfolioId());
         portfolioComment.setPortfolio(portfolio);
 
         return portfolioComment;
@@ -39,7 +43,7 @@ public class PortfolioCommentMapper {
         portfolioComment.setUser(user);
 
         Portfolio portfolio = new Portfolio();
-        portfolio.setPortfolioId(patchDto.getPortfolioId());
+        portfolio.setId(patchDto.getPortfolioId());
         portfolioComment.setPortfolio(portfolio);
 
         return portfolioComment;
@@ -51,9 +55,9 @@ public class PortfolioCommentMapper {
                 portfolioComment.getPortfolioCommentId(),
                 portfolioComment.getContent(),
                 portfolioComment.getUser().getUserId(),
-                portfolioComment.getUser().getUserName(),
-                portfolioComment.getPortfolio().getPortfolioId(),
-                portfolioComment.getPortfolio().getPortfolioTitle(),
+                portfolioComment.getUser().getName(),
+                portfolioComment.getPortfolio().getId(),
+                portfolioComment.getPortfolio().getTitle(),
                 portfolioComment.getCreatedTime(),
                 portfolioComment.getModifiedTime()
         );

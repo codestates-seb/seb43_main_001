@@ -2,8 +2,8 @@ package main001.server.domain.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import main001.server.domain.user.pagenation.MultiResponseDto;
-import main001.server.domain.user.pagenation.SingleResponseDto;
+import main001.server.response.MultiResponseDto;
+import main001.server.response.SingleResponseDto;
 import main001.server.domain.user.dto.UserDto;
 import main001.server.domain.user.entity.User;
 import main001.server.domain.user.mapper.UserMapper;

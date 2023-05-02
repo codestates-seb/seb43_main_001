@@ -1,4 +1,4 @@
-package main001.server.domain.user.exception;
+package main001.server.exception;
 
 import lombok.Getter;
 

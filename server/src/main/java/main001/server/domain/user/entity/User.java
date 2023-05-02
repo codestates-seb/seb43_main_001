@@ -3,9 +3,12 @@ package main001.server.domain.user.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import main001.server.domain.portfolio.entity.Portfolio;
+import main001.server.domain.portfoliocomment.entity.PortfolioComment;
 import main001.server.domain.user.enums.Grade;
 import main001.server.domain.user.enums.JobStatus;
 import main001.server.domain.user.enums.UserStatus;
+import main001.server.domain.usercomment.entity.UserComment;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -53,14 +56,17 @@ public class User {
     @Column(length = 500)
     private String about;
 
-    @OneToMany(mappedBy = "user")
-    private List<Skill> skills = new ArrayList<>();
+//    @OneToMany(mappedBy = "user")
+//    private List<Skill> skills = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<Portfolio> portfolios = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<UserComment> userComments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<PortfolioComment> portfolioComments = new ArrayList<>();
 
     public User(String email) {
         this.email = email;
