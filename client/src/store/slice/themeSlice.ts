@@ -1,6 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
 import { THEME } from '../../constants/index';
-
+import { createSlice } from '@reduxjs/toolkit';
 type Theme = {
   theme: string;
 };
@@ -11,7 +10,6 @@ const themeSlice = createSlice({
   initialState,
   reducers: {
     changeTheme(state) {
-      console.log(state.theme);
       state.theme === THEME.light ? (state.theme = THEME.dark) : (state.theme = THEME.light);
     },
   },
