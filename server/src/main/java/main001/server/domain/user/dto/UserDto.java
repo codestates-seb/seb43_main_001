@@ -7,6 +7,7 @@ import main001.server.domain.user.enums.UserStatus;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 public class UserDto {
 
@@ -21,7 +22,6 @@ public class UserDto {
         @NotBlank(message = "이름을 입력해주세요.")
         private String name;
         private String profileImg;
-        @Email
         private String gitLink;
         private String blogLink;
 //        private Skill skill;
@@ -62,5 +62,7 @@ public class UserDto {
         private UserStatus userStatus;
         private JobStatus jobStatus;
         private String about;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
     }
 }

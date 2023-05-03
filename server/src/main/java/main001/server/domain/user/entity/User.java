@@ -3,6 +3,7 @@ package main001.server.domain.user.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import main001.server.audit.BaseTimeEntity;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfoliocomment.entity.PortfolioComment;
 import main001.server.domain.user.enums.Grade;
@@ -19,7 +20,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Table(name = "users")
-public class User {
+public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,10 +34,10 @@ public class User {
     @Column
     private String profileImg;
 
-    @Column(length = 20, unique = true)
+    @Column(length = 50, unique = true)
     private String gitLink;
 
-    @Column(length = 20, unique = true)
+    @Column(length = 60)
     private String blogLink;
 
     @Enumerated(value = EnumType.STRING)
@@ -68,7 +69,14 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<PortfolioComment> portfolioComments = new ArrayList<>();
 
-    public User(String email) {
+    public User(Long userId, String email, String name, String profileImg, String gitLink, String blogLink, JobStatus jobStatus, String about) {
+        this.userId = userId;
         this.email = email;
+        this.name = name;
+        this.profileImg = profileImg;
+        this.gitLink = gitLink;
+        this.blogLink = blogLink;
+        this.jobStatus = jobStatus;
+        this.about = about;
     }
 }

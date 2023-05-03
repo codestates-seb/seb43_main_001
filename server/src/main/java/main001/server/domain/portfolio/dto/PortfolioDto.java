@@ -1,12 +1,16 @@
 package main001.server.domain.portfolio.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class PortfolioDto {
     @Getter
+    @AllArgsConstructor
     public static class Post{
         @NotBlank(message = "제목을 입력해주세요.")
         private String title;
@@ -14,14 +18,15 @@ public class PortfolioDto {
         private String gitLink;
 
         private String distributionLink;
-        @NotBlank(message = "설명을 작성해주세요.")
+        @NotBlank(message = "소개글을 작성해주세요.")
         private String description;
 
-        @NotBlank(message = "본문을 작성해주세요.")
+        @NotBlank(message = "설명을 작성해주세요.")
         private String content;
     }
 
     @Getter
+    @AllArgsConstructor
     public static class Patch {
         private Long id;
 
@@ -32,11 +37,11 @@ public class PortfolioDto {
 
         private String distributionLink;
 
-        @NotBlank(message = "설명을 작성해주세요.")
+        @NotBlank(message = "소개글을 작성해주세요.")
         private String description;
 
 
-        @NotBlank(message = "본문을 작성해주세요.")
+        @NotBlank(message = "설명을 작성해주세요.")
         private String content;
 
         public void setId(long id) {
@@ -47,6 +52,7 @@ public class PortfolioDto {
     }
     @Getter
     @Setter
+    @AllArgsConstructor
     public static class Response {
         private Long id;
         private String title;
@@ -55,5 +61,9 @@ public class PortfolioDto {
         private String description;
         private String content;
         private int views;
+
+        private LocalDate createdAt;
+
+        private LocalDateTime updatedAt;
     }
 }

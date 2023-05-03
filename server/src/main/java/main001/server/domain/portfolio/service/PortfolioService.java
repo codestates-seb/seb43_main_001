@@ -48,7 +48,7 @@ public class PortfolioService {
     }
 
     public Page<Portfolio> findPortfolios(int page, int size) {
-        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by("portfolioId").descending()));
+        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by("id").descending()));
     }
 
     public List<Portfolio> findPortfolios() {

@@ -1,0 +1,46 @@
+= Main Project Server - User
+:sectnums:
+:toc: left
+:toclevels: 4
+:toc-title: Table of Contents
+:source-highlighter: prettify
+
+main001
+
+v1.0.0, 2023.05.03
+
+== UserController
+=== 회원 등록
+.curl-request
+include::{snippets}/post-user/curl-request.adoc[]
+
+.http-request
+include::{snippets}/post-user/http-request.adoc[]
+
+.request-fields
+include::{snippets}/post-user/request-fields.adoc[]
+
+.http-response
+include::{snippets}/post-user/http-response.adoc[]
+
+.response-headers
+include::{snippets}/post-user/response-headers.adoc[]
+
+=== 회원 정보 수정
+.curl-request
+include::{snippets}/patch-user/curl-request.adoc[]
+
+.http-request
+include::{snippets}/patch-user/http-request.adoc[]
+
+.path-parameters
+include::{snippets}/patch-user/path-parameters.adoc[]
+
+.request-fields
+include::{snippets}/patch-user/request-fields.adoc[]
+
+.http-response
+include::{snippets}/patch-user/http-response.adoc[]
+
+.response-fields
+include::{snippets}/patch-user/response-fields.adoc[]
