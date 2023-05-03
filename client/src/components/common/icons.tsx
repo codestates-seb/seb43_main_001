@@ -28,3 +28,9 @@ export function NewFollow() {
 export function Search() {
   return <img src={process.env.PUBLIC_URL + '/assets/icon/search.svg'} />;
 }
+export function Sun() {
+  return <img src={process.env.PUBLIC_URL + '/assets/icon/sun.svg'} />;
+}
+export function Moon() {
+  return <img src={process.env.PUBLIC_URL + '/assets/icon/moon.svg'} />;
+}

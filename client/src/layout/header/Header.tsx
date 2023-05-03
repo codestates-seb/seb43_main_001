@@ -4,9 +4,14 @@ import * as S from './Header.style';
 // react component
 import Toggle from './Toggle';
 import { YellowBtn } from '../../components/common/button.style';
+import Hamburger from './Hamburger';
+import NavLink from './NavLink';
 
 // custom hooks
 import { useRouter } from '../../hooks/useRouter';
+
+// react hooks
+import { useState } from 'react';
 
 function Header() {
   const { routeTo } = useRouter();
@@ -18,12 +23,20 @@ function Header() {
   const handleLoginClick = () => {
     routeTo('/Login');
   };
+
+  const [openNav, setOpenNav] = useState<boolean>(true);
+
   return (
     <S.Header>
       <S.Logo onClick={handleLogoClick}>Logo</S.Logo>
+      {openNav && <NavLink />}
       <S.ButtonContainer>
         <Toggle />
-        <YellowBtn onClick={handleLoginClick}>Login</YellowBtn>
+        <YellowBtn onClick={handleLoginClick} className='header-login'>
+          Login
+        </YellowBtn>
+        <S.SignUp className='header-signup'>회원가입</S.SignUp>
+        <Hamburger openNav={openNav} setOpenNav={setOpenNav} />
       </S.ButtonContainer>
     </S.Header>
   );
