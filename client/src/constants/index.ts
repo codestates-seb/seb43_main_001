@@ -8,8 +8,9 @@ export const MAX_SIZE = {
 };
 
 export const COLOR = {
-  mainColor: '#DCF247',
-  subFontColor: '#C4C4C4',
+  mainColor: '#DCF247', // yellow
+  subFontColor: '#C4C4C4', // deep grey
+  divider: '#F3F3F3', // light grey
 };
 export const THEME = {
   dark: 'dark',

@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const StyledToggle = styled.div`
   display: inline-block;
+  margin-right: 1.5rem;
   position: relative;
   width: 60px;
   height: 34px;

@@ -1,27 +1,32 @@
-import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHook';
-import { changeTheme } from '../../store/slice/themeSlice';
+// style-component
+import * as S from './Header.style';
+
+// react component
+import Toggle from './Toggle';
+import { YellowBtn } from '../../components/common/button.style';
+
+// custom hooks
+import { useRouter } from '../../hooks/useRouter';
 
 function Header() {
-  const currentTheme = useAppSelector((state) => state.theme);
-  console.log(currentTheme);
-  const dispatch = useAppDispatch();
-  const themeHandler = () => {
-    dispatch(changeTheme());
+  const { routeTo } = useRouter();
+
+  const handleLogoClick = () => {
+    routeTo('/');
+  };
+
+  const handleLoginClick = () => {
+    routeTo('/Login');
   };
   return (
-    <Head>
-      <button onClick={themeHandler}>{currentTheme}</button>
-    </Head>
+    <S.Header>
+      <S.Logo onClick={handleLogoClick}>Logo</S.Logo>
+      <S.ButtonContainer>
+        <Toggle />
+        <YellowBtn onClick={handleLoginClick}>Login</YellowBtn>
+      </S.ButtonContainer>
+    </S.Header>
   );
 }
-
-const Head = styled.section`
-  width: 100%;
-  height: 30px;
-  border: 1px solid black;
-  /* position: fixed ;
-  top: 0; */
-`;
 
 export default Header;
