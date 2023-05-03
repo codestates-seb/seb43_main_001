@@ -23,6 +23,7 @@ time, mark, audio, video {
 	box-sizing: border-box;
 	font: inherit;
 	vertical-align: baseline;
+	text-decoration:none;
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 
@@ -53,6 +54,9 @@ table {
 }
 button,input,textarea{
 	font-family: 'Noto Sans KR', sans-serif;
+}
+button{ 
+	cursor: pointer;
 }
 `;
 
