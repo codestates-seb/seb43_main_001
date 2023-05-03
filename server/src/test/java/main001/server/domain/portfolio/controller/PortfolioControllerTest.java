@@ -23,6 +23,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import javax.sound.sampled.Port;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -61,7 +63,7 @@ class PortfolioControllerTest {
         String content = gson.toJson(postDto);
 
         PortfolioDto.Response responseDto = new PortfolioDto.Response(1L, "title", "https://github.com/codestates-seb/seb43_main_001.git",
-                "http://localhost:8080", "description", "content", 1);
+                "http://localhost:8080", "description", "content", 1, LocalDate.now(), LocalDateTime.now());
 
         given(mapper.portfolioPostDtoToPortfolio(Mockito.any(PortfolioDto.Post.class)))
                 .willReturn(new Portfolio());
@@ -111,7 +113,7 @@ class PortfolioControllerTest {
         String content = gson.toJson(patchDto);
 
         PortfolioDto.Response responseDto = new PortfolioDto.Response(1L, "title", "https://github.com/codestates-seb/seb43_main_001.git",
-                "http://localhost:8080", "description", "content", 1);
+                "http://localhost:8080", "description", "content", 1, LocalDate.now(), LocalDateTime.now());
 
         given(mapper.portfolioPatchDtoToPortfolio(Mockito.any(PortfolioDto.Patch.class)))
                 .willReturn(new Portfolio());
@@ -159,8 +161,9 @@ class PortfolioControllerTest {
                                         fieldWithPath("data.distributionLink").type(JsonFieldType.STRING).description("배포 링크").optional(),
                                         fieldWithPath("data.description").type(JsonFieldType.STRING).description("프로젝트 소개글"),
                                         fieldWithPath("data.content").type(JsonFieldType.STRING).description("프로젝트 설명"),
-                                        fieldWithPath("data.views").type(JsonFieldType.NUMBER).description("조회수")
-
+                                        fieldWithPath("data.views").type(JsonFieldType.NUMBER).description("조회수"),
+                                        fieldWithPath("data.createdTime").type(JsonFieldType.STRING).description("생성 시간"),
+                                        fieldWithPath("data.modifiedTime").type(JsonFieldType.STRING).description("수정 시간")
                                 )
                         )
                 ));
@@ -172,7 +175,7 @@ class PortfolioControllerTest {
         //given
         long portfolioId = 1L;
         PortfolioDto.Response responseDto = new PortfolioDto.Response(1L, "title", "https://github.com/codestates-seb/seb43_main_001.git",
-                "http://localhost:8080", "description", "content", 1);
+                "http://localhost:8080", "description", "content", 1, LocalDate.now(), LocalDateTime.now());
 
         given(portfolioService.findPortfolio(Mockito.anyLong()))
                 .willReturn(new Portfolio());
@@ -201,8 +204,9 @@ class PortfolioControllerTest {
                                     fieldWithPath("data.distributionLink").type(JsonFieldType.STRING).description("배포 링크").optional(),
                                     fieldWithPath("data.description").type(JsonFieldType.STRING).description("프로젝트 소개글"),
                                     fieldWithPath("data.content").type(JsonFieldType.STRING).description("프로젝트 설명"),
-                                    fieldWithPath("data.views").type(JsonFieldType.NUMBER).description("조회수")
-
+                                    fieldWithPath("data.views").type(JsonFieldType.NUMBER).description("조회수"),
+                                    fieldWithPath("data.createdTime").type(JsonFieldType.STRING).description("생성 시간"),
+                                    fieldWithPath("data.modifiedTime").type(JsonFieldType.STRING).description("수정 시간")
                             )
                     )
                 ));
@@ -222,9 +226,9 @@ class PortfolioControllerTest {
         given(mapper.portfolioToPortfolioResponseDtos(Mockito.anyList()))
                 .willReturn(List.of(
                         new PortfolioDto.Response(1L, "title1", "https://github.com/codestates-seb/seb43_main_001.git",
-                        "http://localhost:8080", "description", "content", 1),
+                        "http://localhost:8080", "description", "content", 1, LocalDate.now(), LocalDateTime.now()),
                         new PortfolioDto.Response(2L, "title2", "https://github.com/codestates-seb/seb43_main_001.git",
-                                "http://localhost:8080", "description", "content", 1)
+                                "http://localhost:8080", "description", "content", 1, LocalDate.now(), LocalDateTime.now())
                         )
                 );
 
@@ -253,6 +257,8 @@ class PortfolioControllerTest {
                                         fieldWithPath("data[].description").type(JsonFieldType.STRING).description("프로젝트 소개글"),
                                         fieldWithPath("data[].content").type(JsonFieldType.STRING).description("프로젝트 설명"),
                                         fieldWithPath("data[].views").type(JsonFieldType.NUMBER).description("조회수"),
+                                        fieldWithPath("data[].createdTime").type(JsonFieldType.STRING).description("생성 시간"),
+                                        fieldWithPath("data[].modifiedTime").type(JsonFieldType.STRING).description("수정 시간"),
 
                                         fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
                                         fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("페이지 번호"),
