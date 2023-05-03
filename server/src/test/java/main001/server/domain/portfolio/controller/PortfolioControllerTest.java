@@ -5,6 +5,7 @@ import main001.server.domain.portfolio.dto.PortfolioDto;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.mapper.PortfolioMapper;
 import main001.server.domain.portfolio.service.PortfolioService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.internal.matchers.StartsWith;
@@ -216,7 +217,7 @@ class PortfolioControllerTest {
     void getPortfolios() throws Exception {
         //given
         int page = 1;
-        int size = 2;
+        int size = 3;
 
         List<Portfolio> portfolios = List.of(new Portfolio(), new Portfolio());
 
@@ -228,6 +229,8 @@ class PortfolioControllerTest {
                         new PortfolioDto.Response(1L, "title1", "https://github.com/codestates-seb/seb43_main_001.git",
                         "http://localhost:8080", "description", "content", 1, LocalDate.now(), LocalDateTime.now()),
                         new PortfolioDto.Response(2L, "title2", "https://github.com/codestates-seb/seb43_main_001.git",
+                                "http://localhost:8080", "description", "content", 1, LocalDate.now(), LocalDateTime.now()),
+                        new PortfolioDto.Response(3L, "title3", "https://github.com/codestates-seb/seb43_main_001.git",
                                 "http://localhost:8080", "description", "content", 1, LocalDate.now(), LocalDateTime.now())
                         )
                 );
