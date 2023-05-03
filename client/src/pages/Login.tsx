@@ -1,7 +1,8 @@
-import React from 'react'
+import React from 'react';
+import LoginContainer from '../components/Login/LoginContainer';
 
 function Login() {
-  return <div>Login</div>
+  return <LoginContainer />;
 }
 
-export default Login
+export default Login;
