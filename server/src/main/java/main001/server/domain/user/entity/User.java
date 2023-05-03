@@ -69,7 +69,14 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user")
     private List<PortfolioComment> portfolioComments = new ArrayList<>();
 
-    public User(String email) {
+    public User(Long userId, String email, String name, String profileImg, String gitLink, String blogLink, JobStatus jobStatus, String about) {
+        this.userId = userId;
         this.email = email;
+        this.name = name;
+        this.profileImg = profileImg;
+        this.gitLink = gitLink;
+        this.blogLink = blogLink;
+        this.jobStatus = jobStatus;
+        this.about = about;
     }
 }
