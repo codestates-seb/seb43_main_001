@@ -9,6 +9,8 @@ declare module 'styled-components' {
       fontColor: string;
       cardColor: string;
       inputColor: string;
+      toggleColor: string;
+      togglePosition: string;
     };
     breakpoints: {
       TABLETMIN: string;
@@ -24,6 +26,8 @@ export const lightTheme: DefaultTheme = {
     fontColor: '#000000',
     cardColor: '#ffffff',
     inputColor: '#ffffff',
+    toggleColor: '#ccc',
+    togglePosition: '30px',
   },
   breakpoints: {
     TABLETMIN: `screen and (min-width: ${SIZE.tablet})`,
@@ -38,6 +42,8 @@ export const darkTheme: DefaultTheme = {
     fontColor: '#ffffff',
     cardColor: '#303030',
     inputColor: '#303030',
+    toggleColor: '#303030',
+    togglePosition: '2px',
   },
   breakpoints: {
     TABLETMIN: `screen and (min-width: ${SIZE.tablet})`,
