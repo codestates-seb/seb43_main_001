@@ -6,6 +6,7 @@ import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.mapper.PortfolioMapper;
 import main001.server.domain.portfolio.service.PortfolioService;
 import main001.server.response.MultiResponseDto;
+import main001.server.response.SingleResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +54,7 @@ public class PortfolioController {
         patchDto.setId(portfolioId);
 
         Portfolio response = portfolioService.updatePortfolio(mapper.portfolioPatchDtoToPortfolio(patchDto));
-        return new ResponseEntity<>(mapper.portfolioToPortfolioResponseDto(response), HttpStatus.OK);
+        return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response)), HttpStatus.OK);
     }
 
     @GetMapping("/{portfolio-id}")
@@ -62,7 +63,7 @@ public class PortfolioController {
                                         HttpServletResponse response) {
         portfolioService.updateView(portfolioId, request, response);
         Portfolio portfolio = portfolioService.findPortfolio(portfolioId);
-        return new ResponseEntity<>(mapper.portfolioToPortfolioResponseDto(portfolio), HttpStatus.OK);
+        return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(portfolio)), HttpStatus.OK);
     }
 
     @GetMapping
