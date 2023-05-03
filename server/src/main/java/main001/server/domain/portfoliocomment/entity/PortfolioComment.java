@@ -37,6 +37,13 @@ public class PortfolioComment extends BaseTimeEntity {
     @JoinColumn(name = "portfolioId")
     private Portfolio portfolio;
 
+    public void setUser(User user) {
+        this.user = user;
+        if(!this.getUser().getPortfolioComments().contains(this)) {
+            this.getUser().getPortfolioComments().add(this);
+        }
+    }
+
     public void setPortfolio(Portfolio portfolio) {
         this.portfolio = portfolio;
         if(!this.getPortfolio().getAnswers().contains(this)) {

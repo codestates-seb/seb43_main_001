@@ -47,6 +47,7 @@ public class PortfolioCommentDto {
 
     }
 
+    @Getter
     @AllArgsConstructor
     public static class Response {
         private Long portfolioCommentId;
@@ -55,10 +56,11 @@ public class PortfolioCommentDto {
         private String userName;
         private Long portfolioId;
         private String portfolioTitle;
-        private LocalDateTime createdTime;
-        private LocalDateTime modifiedTime;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
     }
 
+    @Getter
     @AllArgsConstructor
     public static class ResponseList<T>{
         private T data;
