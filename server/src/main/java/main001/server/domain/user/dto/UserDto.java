@@ -7,6 +7,7 @@ import main001.server.domain.user.enums.UserStatus;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class UserDto {
@@ -62,6 +63,23 @@ public class UserDto {
         private UserStatus userStatus;
         private JobStatus jobStatus;
         private String about;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class UserPortfolioResponse {
+        private long id;
+        private String title;
+        private String gitLink;
+        private String distributionLink;
+        private String description;
+        private String content;
+        private int views;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
     }

@@ -1,6 +1,7 @@
 package main001.server.domain.user.controller;
 
 import com.google.gson.Gson;
+import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.user.dto.UserDto;
 import main001.server.domain.user.entity.User;
 import main001.server.domain.user.mapper.UserMapper;
@@ -227,6 +228,73 @@ public class UserControllerRestDocsTest {
                                 fieldWithPath("data[].userStatus").type(JsonFieldType.STRING).description("회원상태 : USER_ACTIVE(활동중), USER_SLEEP(휴면 상태), USER_QUIT(탈퇴 상태)"),
                                 fieldWithPath("data[].jobStatus").type(JsonFieldType.STRING).description("구직현황 :  JOB_SEEKING(구직중), ON_THE_JOB(재직중), STUDENT(학생)"),
                                 fieldWithPath("data[].about").type(JsonFieldType.STRING).description("자기소개"),
+                                fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("생성된 시간"),
+                                fieldWithPath("data[].updatedAt").type(JsonFieldType.STRING).description("수정된 시간"),
+                                fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
+                                fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("해당 페이지"),
+                                fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("페이지당 컨텐츠 수"),
+                                fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER).description("전체 컨텐츠 수"),
+                                fieldWithPath("pageInfo.totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수")
+                        ))
+                ))
+                .andReturn();
+    }
+
+    @Test
+    @DisplayName("회원 포트폴리오 조회")
+    public void getUserPortfoliosTest() throws Exception {
+        // given
+        String page = "1";
+        String size = "10";
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.add("page", page);
+        queryParams.add("size", size);
+
+        Long userId = 1L;
+        User user = new User(1L, "test1@gmail.com","사용자1","","https://github.com/test1","https://blog.com/test1", JOB_SEEKING,"자기소개");
+        Portfolio portfolio1 = new Portfolio(1L, "제목", "https://github.com/test1", "https://distribution.com/test1", "소개글", "내용", 0, user);
+        Portfolio portfolio2 = new Portfolio(1L, "제목", "https://github.com/test1", "https://distribution.com/test1", "소개글", "내용", 0, user);
+        Portfolio portfolio3 = new Portfolio(1L, "제목", "https://github.com/test1", "https://distribution.com/test1", "소개글", "내용", 0, user);
+
+        Page<Portfolio> portfolioPage =
+                new PageImpl<>(List.of(portfolio1, portfolio2, portfolio3),
+                        PageRequest.of(0, 15,
+                                Sort.by("createdAt").descending()), 3);
+        List<UserDto.UserPortfolioResponse> userPortfolioResponses = List.of(
+                new UserDto.UserPortfolioResponse(1L, "제목", "https://github.com/test1", "https://distribution.com/test1", "소개글", "내용", 0, LocalDateTime.now(), LocalDateTime.now()),
+                new UserDto.UserPortfolioResponse(2L, "제목", "https://github.com/test1", "https://distribution.com/test1", "소개글", "내용", 0, LocalDateTime.now(), LocalDateTime.now()),
+                new UserDto.UserPortfolioResponse(3L, "제목", "https://github.com/test1", "https://distribution.com/test1", "소개글", "내용", 0, LocalDateTime.now(), LocalDateTime.now()));
+        given(userService.findPortfolioByUser(Mockito.anyLong(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(), Mockito.anyString())).willReturn(portfolioPage);
+        given(mapper.userPortfolioToUserResponses(Mockito.anyList())).willReturn(userPortfolioResponses);
+        // when
+        ResultActions actions = mockMvc.perform(RestDocumentationRequestBuilders.get("/users/{user-id}/portfolio", userId)
+                .params(queryParams)
+                .accept(MediaType.APPLICATION_JSON));
+
+        // then
+        MvcResult result = actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.pageInfo.totalElements").value(3))
+                .andDo(document("get-userPortfolios",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestParameters(List.of(
+                                        parameterWithName("page").description("조회할 페이지"),
+                                        parameterWithName("size").description("페이지당 컨텐츠 수"),
+                                        parameterWithName("direction").description("정렬순서 : 오름차순(ascending), 내림차순(descending)"),
+                                        parameterWithName("sort").description("정렬기준 : 제목(title), 생성(createdAt), 수정(updatedAt), 조회(views)")
+                                )
+                        ),
+                        responseFields(List.of(
+                                fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터"),
+                                fieldWithPath("data[].id").type(JsonFieldType.NUMBER).description("포트폴리오 식별자"),
+                                fieldWithPath("data[].title").type(JsonFieldType.STRING).description("제목"),
+                                fieldWithPath("data[].gitLink").type(JsonFieldType.STRING).description("깃 링크"),
+                                fieldWithPath("data[].distributionLink").type(JsonFieldType.STRING).description("배포 링크"),
+                                fieldWithPath("data[].description").type(JsonFieldType.STRING).description("프로젝트 소개글"),
+                                fieldWithPath("data[].content").type(JsonFieldType.STRING).description("프로젝트 설명(본문)"),
+                                fieldWithPath("data[].views").type(JsonFieldType.NUMBER).description("조회수"),
                                 fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("생성된 시간"),
                                 fieldWithPath("data[].updatedAt").type(JsonFieldType.STRING).description("수정된 시간"),
                                 fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),

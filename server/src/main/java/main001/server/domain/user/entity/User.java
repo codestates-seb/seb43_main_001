@@ -60,7 +60,7 @@ public class User extends BaseTimeEntity {
 //    @OneToMany(mappedBy = "user")
 //    private List<Skill> skills = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Portfolio> portfolios = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
