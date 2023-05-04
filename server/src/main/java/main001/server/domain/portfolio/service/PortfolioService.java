@@ -47,12 +47,16 @@ public class PortfolioService {
         return findVerifiedPortfolio(portfolioId);
     }
 
-    public Page<Portfolio> findPortfolios(int page, int size) {
-        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by("id").descending()));
-    }
-
     public List<Portfolio> findPortfolios() {
         return (List<Portfolio>) portfolioRepository.findAll();
+    }
+
+    public Page<Portfolio> findAllOrderByViewsDesc(int page, int size, Sort.Direction direction) {
+        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by("views").descending()));
+    }
+
+    public Page<Portfolio> findAllOrderByCreatedAtDesc(int page, int size, Sort.Direction direction) {
+        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by("createdTime").descending()));
     }
 
     public void deletePortfolio(long portfolioId) {
