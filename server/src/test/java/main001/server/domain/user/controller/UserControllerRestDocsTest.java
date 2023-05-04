@@ -160,8 +160,8 @@ public class UserControllerRestDocsTest {
                                 fieldWithPath("data.userStatus").type(JsonFieldType.STRING).description("회원상태 : USER_ACTIVE(활동중), USER_SLEEP(휴면 상태), USER_QUIT(탈퇴 상태)"),
                                 fieldWithPath("data.jobStatus").type(JsonFieldType.STRING).description("구직현황 :  JOB_SEEKING(구직중), ON_THE_JOB(재직중), STUDENT(학생)"),
                                 fieldWithPath("data.about").type(JsonFieldType.STRING).description("자기소개"),
-                                fieldWithPath("data.createdTime").type(JsonFieldType.STRING).description("생성된 시간"),
-                                fieldWithPath("data.modifiedTime").type(JsonFieldType.STRING).description("수정된 시간")
+                                fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("생성된 시간"),
+                                fieldWithPath("data.updatedAt").type(JsonFieldType.STRING).description("수정된 시간")
                         ))
                 ));
 
@@ -227,8 +227,8 @@ public class UserControllerRestDocsTest {
                                 fieldWithPath("data[].userStatus").type(JsonFieldType.STRING).description("회원상태 : USER_ACTIVE(활동중), USER_SLEEP(휴면 상태), USER_QUIT(탈퇴 상태)"),
                                 fieldWithPath("data[].jobStatus").type(JsonFieldType.STRING).description("구직현황 :  JOB_SEEKING(구직중), ON_THE_JOB(재직중), STUDENT(학생)"),
                                 fieldWithPath("data[].about").type(JsonFieldType.STRING).description("자기소개"),
-                                fieldWithPath("data[].createdTime").type(JsonFieldType.STRING).description("생성된 시간"),
-                                fieldWithPath("data[].modifiedTime").type(JsonFieldType.STRING).description("수정된 시간"),
+                                fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("생성된 시간"),
+                                fieldWithPath("data[].updatedAt").type(JsonFieldType.STRING).description("수정된 시간"),
                                 fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
                                 fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("해당 페이지"),
                                 fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("페이지당 컨텐츠 수"),
@@ -305,8 +305,8 @@ public class UserControllerRestDocsTest {
                                 fieldWithPath("data.userStatus").type(JsonFieldType.STRING).description("회원상태 : USER_ACTIVE(활동중), USER_SLEEP(휴면 상태), USER_QUIT(탈퇴 상태)"),
                                 fieldWithPath("data.jobStatus").type(JsonFieldType.STRING).description("구직현황 :  JOB_SEEKING(구직중), ON_THE_JOB(재직중), STUDENT(학생)"),
                                 fieldWithPath("data.about").type(JsonFieldType.STRING).description("자기소개"),
-                                fieldWithPath("data.createdTime").type(JsonFieldType.STRING).description("생성된 시간"),
-                                fieldWithPath("data.modifiedTime").type(JsonFieldType.STRING).description("수정된 시간")
+                                fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("생성된 시간"),
+                                fieldWithPath("data.updatedAt").type(JsonFieldType.STRING).description("수정된 시간")
                         ))
                 ));
     }

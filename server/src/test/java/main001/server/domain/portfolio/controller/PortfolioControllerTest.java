@@ -163,8 +163,8 @@ class PortfolioControllerTest {
                                         fieldWithPath("data.description").type(JsonFieldType.STRING).description("프로젝트 소개글"),
                                         fieldWithPath("data.content").type(JsonFieldType.STRING).description("프로젝트 설명"),
                                         fieldWithPath("data.views").type(JsonFieldType.NUMBER).description("조회수"),
-                                        fieldWithPath("data.createdTime").type(JsonFieldType.STRING).description("생성 시간"),
-                                        fieldWithPath("data.modifiedTime").type(JsonFieldType.STRING).description("수정 시간")
+                                        fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("생성 시간"),
+                                        fieldWithPath("data.updatedAt").type(JsonFieldType.STRING).description("수정 시간")
                                 )
                         )
                 ));
@@ -206,8 +206,8 @@ class PortfolioControllerTest {
                                     fieldWithPath("data.description").type(JsonFieldType.STRING).description("프로젝트 소개글"),
                                     fieldWithPath("data.content").type(JsonFieldType.STRING).description("프로젝트 설명"),
                                     fieldWithPath("data.views").type(JsonFieldType.NUMBER).description("조회수"),
-                                    fieldWithPath("data.createdTime").type(JsonFieldType.STRING).description("생성 시간"),
-                                    fieldWithPath("data.modifiedTime").type(JsonFieldType.STRING).description("수정 시간")
+                                    fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("생성 시간"),
+                                    fieldWithPath("data.updatedAt").type(JsonFieldType.STRING).description("수정 시간")
                             )
                     )
                 ));
@@ -260,8 +260,8 @@ class PortfolioControllerTest {
                                         fieldWithPath("data[].description").type(JsonFieldType.STRING).description("프로젝트 소개글"),
                                         fieldWithPath("data[].content").type(JsonFieldType.STRING).description("프로젝트 설명"),
                                         fieldWithPath("data[].views").type(JsonFieldType.NUMBER).description("조회수"),
-                                        fieldWithPath("data[].createdTime").type(JsonFieldType.STRING).description("생성 시간"),
-                                        fieldWithPath("data[].modifiedTime").type(JsonFieldType.STRING).description("수정 시간"),
+                                        fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("생성 시간"),
+                                        fieldWithPath("data[].updatedAt").type(JsonFieldType.STRING).description("수정 시간"),
 
                                         fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
                                         fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("페이지 번호"),
