@@ -9,6 +9,15 @@ export const StyledToggle = styled.div`
   border-radius: 34px;
   cursor: pointer;
   background-color: ${(props) => props.theme.themeStyle.toggleColor};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  img {
+    width: 1.5rem;
+    height: 1.5rem;
+    position: absolute;
+    left: ${(props) => props.theme.themeStyle.toggleIconPosition};
+  }
 `;
 
 export const ToggleSwitch = styled.div`

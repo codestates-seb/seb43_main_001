@@ -11,6 +11,7 @@ declare module 'styled-components' {
       inputColor: string;
       toggleColor: string;
       togglePosition: string;
+      toggleIconPosition: string;
     };
     breakpoints: {
       TABLETMIN: string;
@@ -28,6 +29,7 @@ export const lightTheme: DefaultTheme = {
     inputColor: '#ffffff',
     toggleColor: '#ccc',
     togglePosition: '30px',
+    toggleIconPosition: '5px',
   },
   breakpoints: {
     TABLETMIN: `screen and (min-width: ${SIZE.tablet})`,
@@ -44,6 +46,7 @@ export const darkTheme: DefaultTheme = {
     inputColor: '#303030',
     toggleColor: '#303030',
     togglePosition: '2px',
+    toggleIconPosition: '32px',
   },
   breakpoints: {
     TABLETMIN: `screen and (min-width: ${SIZE.tablet})`,
