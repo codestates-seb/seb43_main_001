@@ -122,3 +122,14 @@ import { * as S } from './style'
 // Good
 type PersonProps = { ... }
 ```
+- if문의 경우 중괄호를 무조건 붙여야 한다
+
+```tsx
+// BAD
+if(value) return null;
+
+// GOOD
+if(value) {
+    return null;
+}
+```
