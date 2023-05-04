@@ -1,7 +1,12 @@
-import React from 'react';
+import * as S from './Detail.style';
+import DetailTitle from '../components/Detail/DetailTitle';
 
 function Detail() {
-  return <div>Detail</div>;
+  return (
+    <S.Container>
+      <DetailTitle />
+    </S.Container>
+  );
 }
 
 export default Detail;
