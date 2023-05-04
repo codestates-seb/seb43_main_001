@@ -1,5 +1,6 @@
 package main001.server.domain.user.mapper;
 
+import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.user.dto.UserDto;
 import main001.server.domain.user.entity.User;
 import org.mapstruct.Mapper;
@@ -14,4 +15,5 @@ public interface UserMapper {
     User userPatchToUser(UserDto.Patch requestBody);
     UserDto.Response userToUserResponse(User user);
     List<UserDto.Response> usersToUserResponses(List<User> users);
+    List<UserDto.UserPortfolioResponse> userPortfolioToUserResponses(List<Portfolio> userPortfolios);
 }
