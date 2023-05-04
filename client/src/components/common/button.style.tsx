@@ -12,5 +12,4 @@ export const YellowBtn = styled.button`
   font-size: 1.2rem;
   font-weight: 800;
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 `;

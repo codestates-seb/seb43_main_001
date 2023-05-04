@@ -57,6 +57,8 @@ button,input,textarea{
 }
 button{ 
 	cursor: pointer;
+	background-color:transparent;
+	border:0;
 }
 `;
 
