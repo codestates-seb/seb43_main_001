@@ -10,6 +10,7 @@ export const NavDropDonwMenu = styled.nav`
   top: 100%;
   left: 0;
   z-index: 1;
+  background-color: ${(props) => props.theme.themeStyle.backgroundColor};
   @media ${(props) => props.theme.breakpoints.TABLETMIN} {
     display: none;
   }
