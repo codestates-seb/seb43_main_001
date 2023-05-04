@@ -61,9 +61,7 @@ public class PortfolioDto {
         private String description;
         private String content;
         private int views;
-
-        private LocalDate createdTime;
-
-        private LocalDateTime modifiedTime;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
     }
 }

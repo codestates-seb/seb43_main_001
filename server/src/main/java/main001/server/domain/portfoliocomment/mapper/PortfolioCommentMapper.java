@@ -58,8 +58,8 @@ public class PortfolioCommentMapper {
                 portfolioComment.getUser().getName(),
                 portfolioComment.getPortfolio().getId(),
                 portfolioComment.getPortfolio().getTitle(),
-                portfolioComment.getCreatedTime(),
-                portfolioComment.getModifiedTime()
+                portfolioComment.getCreatedAt(),
+                portfolioComment.getUpdatedAt()
         );
         return response;
     }

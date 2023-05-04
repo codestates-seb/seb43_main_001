@@ -62,5 +62,7 @@ public class UserDto {
         private UserStatus userStatus;
         private JobStatus jobStatus;
         private String about;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
     }
 }

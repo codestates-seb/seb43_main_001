@@ -43,6 +43,7 @@ public class UserCommentDto {
         private Long writerId;
     }
 
+    @Getter
     @AllArgsConstructor
     public static class Response {
         private Long userCommentId;
@@ -51,9 +52,10 @@ public class UserCommentDto {
         private String userName;
         private Long writerId;
         private String writerName;
-        private LocalDateTime createdTime;
-        private LocalDateTime modifiedTime;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
     }
+    @Getter
     @AllArgsConstructor
     public static class ResponseList<T>{
         private T data;

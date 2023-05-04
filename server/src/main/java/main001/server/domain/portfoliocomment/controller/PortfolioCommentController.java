@@ -38,14 +38,16 @@ public class PortfolioCommentController {
     @GetMapping("/users/{user_id}")
     @ResponseStatus(HttpStatus.OK)
     public PortfolioCommentDto.ResponseList getUserCommentsByUser(@PathVariable("user_id") @Positive Long userId,
-                                                            @RequestParam int page, @RequestParam int size) {
+                                                                  @RequestParam(defaultValue = "1") @Positive int page,
+                                                                  @RequestParam(defaultValue = "15") @Positive int size) {
         return portfolioCommentService.findPortfolioCommentsByUser(userId, page - 1, size);
     }
 
     @GetMapping("/portfolios/{portfolio_id}")
     @ResponseStatus(HttpStatus.OK)
     public PortfolioCommentDto.ResponseList getUserCommentsByWriter(@PathVariable("portfolio_id") @Positive Long portfolioId,
-                                                              @RequestParam @Positive int page, @RequestParam @Positive int size) {
+                                                                    @RequestParam(defaultValue = "1") @Positive int page,
+                                                                    @RequestParam(defaultValue = "15") @Positive int size) {
         return portfolioCommentService.findPortfolioCommentsByPortfolio(portfolioId, page-1, size);
     }
 

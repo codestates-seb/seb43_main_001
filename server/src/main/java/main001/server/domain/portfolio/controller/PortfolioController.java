@@ -59,7 +59,7 @@ public class PortfolioController {
     }
 
     @GetMapping("/{portfolio-id}")
-    public ResponseEntity getPortfolio(@PathVariable("portfolio-id") long portfolioId,
+    public ResponseEntity getPortfolio(@PathVariable("portfolio-id") Long portfolioId,
                                         HttpServletRequest request,
                                         HttpServletResponse response) {
         portfolioService.updateView(portfolioId, request, response);
@@ -70,7 +70,7 @@ public class PortfolioController {
     @GetMapping
     public ResponseEntity getPortfolios(@Positive @RequestParam int page,
                                         @Positive @RequestParam int size,
-                                        @RequestParam(value = "sort", defaultValue = "createdTime") String sort,
+                                        @RequestParam(value = "sort", defaultValue = "createdAt") String sort,
                                         @RequestParam(value = "order", defaultValue = "desc") String order) {
         Sort.Direction direction = order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Page<Portfolio> pagePortfolios;

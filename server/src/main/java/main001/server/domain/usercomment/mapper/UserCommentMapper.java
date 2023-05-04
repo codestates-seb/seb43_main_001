@@ -57,8 +57,8 @@ public class UserCommentMapper {
                 userComment.getUser().getName(),
                 userComment.getWriter().getUserId(),
                 userComment.getWriter().getName(),
-                userComment.getCreatedTime(),
-                userComment.getModifiedTime()
+                userComment.getCreatedAt(),
+                userComment.getUpdatedAt()
         );
         return response;
     }
