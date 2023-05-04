@@ -1,5 +1,6 @@
 import { THEME } from '../../constants/index';
 import { createSlice } from '@reduxjs/toolkit';
+
 type Theme = {
   theme: string;
 };
