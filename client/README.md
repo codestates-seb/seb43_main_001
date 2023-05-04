@@ -115,3 +115,10 @@ import { * as S } from './style'
 #### typescript
 
 - JSX 컴포넌트를 리턴하는 경우 파일 확장자는 .tsx 그 외에는 다 ts
+
+- interface를 사용하지 않습니다(type annotation)
+
+```tsx
+// Good
+type PersonProps = { ... }
+```
