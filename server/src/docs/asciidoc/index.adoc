@@ -1,4 +1,4 @@
-= Main Project Server - User
+= Main Project Server - User, Portfolio
 :sectnums:
 :toc: left
 :toclevels: 4
@@ -7,7 +7,7 @@
 
 main001
 
-v1.0.0, 2023.05.03
+v1.0.0, 2023.05.04
 
 == UserController
 === 회원 등록
@@ -44,3 +44,85 @@ include::{snippets}/patch-user/http-response.adoc[]
 
 .response-fields
 include::{snippets}/patch-user/response-fields.adoc[]
+
+
+== PortfolioController
+=== 포트폴리오 등록
+.curl-request
+include::{snippets}/post-portfolio/http-request.adoc[]
+
+.request-fields
+include::{snippets}/post-portfolio/request-fields.adoc[]
+
+.http-response
+include::{snippets}/post-portfolio/http-response.adoc[]
+
+.response-headers
+include::{snippets}/post-portfolio/response-headers.adoc[]
+
+
+=== 포트폴리오 수정
+.curl-request
+include::{snippets}/patch-portfolio/curl-request.adoc[]
+
+.http-request
+include::{snippets}/patch-portfolio/http-request.adoc[]
+
+.request-fields
+include::{snippets}/patch-portfolio/request-fields.adoc[]
+
+.path-parameters
+include::{snippets}/patch-portfolio/path-parameters.adoc[]
+
+.http-response
+include::{snippets}/patch-portfolio/http-response.adoc[]
+
+.response-fields
+include::{snippets}/patch-portfolio/response-fields.adoc[]
+
+=== 특정 포트폴리오 조회
+.curl-request
+include::{snippets}/get-portfolio/curl-request.adoc[]
+
+.http-request
+include::{snippets}/get-portfolio/http-request.adoc[]
+
+.path-parameters
+include::{snippets}/get-portfolio/path-parameters.adoc[]
+
+.http-response
+include::{snippets}/get-portfolio/http-response.adoc[]
+
+.response-fields
+include::{snippets}/get-portfolio/response-fields.adoc[]
+
+=== 전체 포트폴리오 조회
+.curl-request
+include::{snippets}/get-portfolios/curl-request.adoc[]
+
+.http-request
+include::{snippets}/get-portfolios/http-request.adoc[]
+
+.request-parameters
+include::{snippets}/get-portfolios/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/get-portfolios/http-response.adoc[]
+
+.response-fields
+include::{snippets}/get-portfolios/response-fields.adoc[]
+
+
+=== 포트폴리오 삭제
+.curl-request
+include::{snippets}/delete-portfolio/curl-request.adoc[]
+
+.http-request
+include::{snippets}/delete-portfolio/http-request.adoc[]
+
+.path-parameters
+include::{snippets}/delete-portfolio/path-parameters.adoc[]
+
+.http-response
+include::{snippets}/delete-portfolio/http-response.adoc[]
+

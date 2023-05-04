@@ -8,6 +8,7 @@ import main001.server.domain.portfolio.service.PortfolioService;
 import main001.server.response.MultiResponseDto;
 import main001.server.response.SingleResponseDto;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -58,7 +59,7 @@ public class PortfolioController {
     }
 
     @GetMapping("/{portfolio-id}")
-    public ResponseEntity getPortfolio(@PathVariable("portfolio-id") long portfolioId,
+    public ResponseEntity getPortfolio(@PathVariable("portfolio-id") Long portfolioId,
                                         HttpServletRequest request,
                                         HttpServletResponse response) {
         portfolioService.updateView(portfolioId, request, response);
@@ -68,8 +69,18 @@ public class PortfolioController {
 
     @GetMapping
     public ResponseEntity getPortfolios(@Positive @RequestParam int page,
-                                        @Positive @RequestParam int size) {
-        Page<Portfolio> pagePortfolios = portfolioService.findPortfolios(page - 1, size);
+                                        @Positive @RequestParam int size,
+                                        @RequestParam(value = "sort", defaultValue = "createdAt") String sort,
+                                        @RequestParam(value = "order", defaultValue = "desc") String order) {
+        Sort.Direction direction = order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Page<Portfolio> pagePortfolios;
+
+        if (sort.equals("views")) {
+            pagePortfolios = portfolioService.findAllOrderByViewsDesc(page - 1, size, direction);
+        } else {
+            pagePortfolios = portfolioService.findAllOrderByCreatedAtDesc(page - 1, size, direction);
+        }
+
         List<Portfolio> portfolios = pagePortfolios.getContent();
         return new ResponseEntity<>(new MultiResponseDto<>(mapper.portfolioToPortfolioResponseDtos(portfolios), pagePortfolios), HttpStatus.OK);
     }

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -64,7 +65,7 @@ class PortfolioControllerTest {
         String content = gson.toJson(postDto);
 
         PortfolioDto.Response responseDto = new PortfolioDto.Response(1L, "title", "https://github.com/codestates-seb/seb43_main_001.git",
-                "http://localhost:8080", "description", "content", 1, LocalDate.now(), LocalDateTime.now());
+                "http://localhost:8080", "description", "content", 1, LocalDateTime.now(), LocalDateTime.now());
 
         given(mapper.portfolioPostDtoToPortfolio(Mockito.any(PortfolioDto.Post.class)))
                 .willReturn(new Portfolio());
@@ -114,7 +115,7 @@ class PortfolioControllerTest {
         String content = gson.toJson(patchDto);
 
         PortfolioDto.Response responseDto = new PortfolioDto.Response(1L, "title", "https://github.com/codestates-seb/seb43_main_001.git",
-                "http://localhost:8080", "description", "content", 1, LocalDate.now(), LocalDateTime.now());
+                "http://localhost:8080", "description", "content", 1, LocalDateTime.now(), LocalDateTime.now());
 
         given(mapper.portfolioPatchDtoToPortfolio(Mockito.any(PortfolioDto.Patch.class)))
                 .willReturn(new Portfolio());
@@ -176,7 +177,7 @@ class PortfolioControllerTest {
         //given
         long portfolioId = 1L;
         PortfolioDto.Response responseDto = new PortfolioDto.Response(1L, "title", "https://github.com/codestates-seb/seb43_main_001.git",
-                "http://localhost:8080", "description", "content", 1, LocalDate.now(), LocalDateTime.now());
+                "http://localhost:8080", "description", "content", 1, LocalDateTime.now(), LocalDateTime.now());
 
         given(portfolioService.findPortfolio(Mockito.anyLong()))
                 .willReturn(new Portfolio());
@@ -218,61 +219,66 @@ class PortfolioControllerTest {
         //given
         int page = 1;
         int size = 3;
+        String sort = "views";
+        String order = "desc";
+        List<Portfolio> portfolios = List.of(new Portfolio(), new Portfolio(), new Portfolio());
+        Page<Portfolio> pagePortfolios = new PageImpl<>(portfolios, PageRequest.of(page, size), portfolios.size());
 
-        List<Portfolio> portfolios = List.of(new Portfolio(), new Portfolio());
-
-        given(portfolioService.findPortfolios(Mockito.anyInt(), Mockito.anyInt()))
-                .willReturn(new PageImpl<>(portfolios, PageRequest.of(page-1, size, Sort.by("portfolioId").descending()), portfolios.size()));
+        given(portfolioService.findAllOrderByViewsDesc(Mockito.anyInt(), Mockito.anyInt(), Mockito.any(Sort.Direction.class)))
+                .willReturn(pagePortfolios);
 
         given(mapper.portfolioToPortfolioResponseDtos(Mockito.anyList()))
                 .willReturn(List.of(
-                        new PortfolioDto.Response(1L, "title1", "https://github.com/codestates-seb/seb43_main_001.git",
-                        "http://localhost:8080", "description", "content", 1, LocalDate.now(), LocalDateTime.now()),
+                        new PortfolioDto.Response(3L, "title1", "https://github.com/codestates-seb/seb43_main_001.git",
+                                "http://localhost:8080", "description", "content", 3, LocalDateTime.now(), LocalDateTime.now()),
                         new PortfolioDto.Response(2L, "title2", "https://github.com/codestates-seb/seb43_main_001.git",
-                                "http://localhost:8080", "description", "content", 1, LocalDate.now(), LocalDateTime.now()),
-                        new PortfolioDto.Response(3L, "title3", "https://github.com/codestates-seb/seb43_main_001.git",
-                                "http://localhost:8080", "description", "content", 1, LocalDate.now(), LocalDateTime.now())
-                        )
-                );
+                                "http://localhost:8080", "description", "content", 2, LocalDateTime.now(), LocalDateTime.now()),
+                        new PortfolioDto.Response(1L, "title3", "https://github.com/codestates-seb/seb43_main_001.git",
+                                "http://localhost:8080", "description", "content", 1, LocalDateTime.now(), LocalDateTime.now())
+                ));
 
-        //when
-        ResultActions actions =
-                mockMvc.perform(
-                        get("/portfolios/?page={page}&size={size}", page, size)
-                                .accept(MediaType.APPLICATION_JSON)
-                );
+        // when
+        ResultActions actions = mockMvc.perform(get("/portfolios?page={page}&size={size}&sort={sort}&order={order}", page, size, sort, order)
+                .accept(MediaType.APPLICATION_JSON));
 
-        //then
-        actions
-                .andExpect(status().isOk())
+        // then
+        actions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").isArray())
+//                .andExpect(jsonPath("$.data.length()").value(portfolios.size()))
+//                .andExpect(jsonPath("$.pageInfo.page").value(page))
+//                .andExpect(jsonPath("$.pageInfo.size").value(size))
+//                .andExpect(jsonPath("$.pageInfo.totalElements").value(portfolios.size()))
+//                .andExpect(jsonPath("$.pageInfo.totalPages").value(1))
                 .andDo(document("get-portfolios",
                         preprocessResponse(prettyPrint()),
-                        requestParameters(List.of(parameterWithName("page").description("페이지 번호"),
-                                parameterWithName("size").description("페이지 크기"))),
+                        requestParameters(
+                                parameterWithName("page").description("검색할 페이지 번호"),
+                                parameterWithName("size").description("페이지 사이즈"),
+                                parameterWithName("sort").description("정렬:(default: createdTime)"),
+                                parameterWithName("order").description("순서:(asc or desc, default: desc)")
+                        ),
                         responseFields(
                                 List.of(
-                                        fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터"),
-                                        fieldWithPath("data[].id").type(JsonFieldType.NUMBER).description("포트폴리오 식별자").ignored(),
-                                        fieldWithPath("data[].title").type(JsonFieldType.STRING).description("포트폴리오 제목"),
-                                        fieldWithPath("data[].gitLink").type(JsonFieldType.STRING).description("깃 링크").optional(),
-                                        fieldWithPath("data[].distributionLink").type(JsonFieldType.STRING).description("배포 링크").optional(),
-                                        fieldWithPath("data[].description").type(JsonFieldType.STRING).description("프로젝트 소개글"),
-                                        fieldWithPath("data[].content").type(JsonFieldType.STRING).description("프로젝트 설명"),
-                                        fieldWithPath("data[].views").type(JsonFieldType.NUMBER).description("조회수"),
-                                        fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("생성 시간"),
-                                        fieldWithPath("data[].updatedAt").type(JsonFieldType.STRING).description("수정 시간"),
+                                    fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터"),
+                                    fieldWithPath("data[].id").type(JsonFieldType.NUMBER).description("포트폴리오 식별자"),
+                                    fieldWithPath("data[].title").type(JsonFieldType.STRING).description("포트폴리오 제목"),
+                                    fieldWithPath("data[].gitLink").type(JsonFieldType.STRING).description("깃 링크"),
+                                    fieldWithPath("data[].distributionLink").type(JsonFieldType.STRING).description("배포 링크"),
+                                    fieldWithPath("data[].description").type(JsonFieldType.STRING).description("The portfolio description"),
+                                    fieldWithPath("data[].content").type(JsonFieldType.STRING).description("프로젝트 설명"),
+                                    fieldWithPath("data[].views").type(JsonFieldType.NUMBER).description("조회수"),
+                                    fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("생성 시간"),
+                                    fieldWithPath("data[].updatedAt").type(JsonFieldType.STRING).description("수정 시간"),
 
-                                        fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
-                                        fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("페이지 번호"),
-                                        fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("페이지 크기"),
-                                        fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER).description("총 갯수"),
-                                        fieldWithPath("pageInfo.totalPages").type(JsonFieldType.NUMBER).description("총 페이지 수")
+                                    fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
+                                    fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("페이지 번호"),
+                                    fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("페이지 크기"),
+                                    fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER).description("총 갯수"),
+                                    fieldWithPath("pageInfo.totalPages").type(JsonFieldType.NUMBER).description("총 페이지 수")
                                 )
                         )
                 ));
     }
-
     @Test
     void deletePortfolio() throws Exception {
         //given
