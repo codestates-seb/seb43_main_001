@@ -16,7 +16,7 @@ import { THEME } from './constants/index';
 import { useAppSelector } from './hooks/reduxHook';
 
 function App() {
-  const themeMode = useAppSelector((state) => state.theme);
+  const themeMode = useAppSelector((state) => state.theme.theme);
   const theme = themeMode === THEME.light ? lightTheme : darkTheme;
 
   return (
