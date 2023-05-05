@@ -1,6 +1,7 @@
 import * as S from './DetailTitle.style';
 import YellowTag from '../common/YellowTag';
 
+// tuple로 type 지정하는 법 찾기
 type LinkName = string[];
 
 function DetailTitle() {

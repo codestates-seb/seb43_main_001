@@ -10,6 +10,7 @@ declare module 'styled-components' {
       cardColor: string;
       inputColor: string;
       toggleColor: string;
+      inputBorderColor: string;
       togglePosition: string;
       toggleIconPosition: string;
     };
@@ -28,6 +29,7 @@ export const lightTheme: DefaultTheme = {
     cardColor: '#ffffff',
     inputColor: '#ffffff',
     toggleColor: '#ccc',
+    inputBorderColor: '#000000',
     togglePosition: '30px',
     toggleIconPosition: '5px',
   },
@@ -45,6 +47,7 @@ export const darkTheme: DefaultTheme = {
     cardColor: '#303030',
     inputColor: '#303030',
     toggleColor: '#303030',
+    inputBorderColor: '#ffffff',
     togglePosition: '2px',
     toggleIconPosition: '32px',
   },

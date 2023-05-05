@@ -6,6 +6,7 @@ import { MAX_SIZE } from '../constants/index';
 const { content } = MAX_SIZE;
 
 export const Container = styled.main`
+  border: 1px solid black;
   width: 100%;
   padding: 0 15px;
   padding-top: 1rem;
@@ -13,6 +14,7 @@ export const Container = styled.main`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-bottom: 5rem;
   @media ${(props) => props.theme.breakpoints.TABLETMIN} {
     padding: 1rem 40px 0 40px;
   }

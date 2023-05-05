@@ -5,9 +5,9 @@ import { COLOR } from '../../constants';
 
 const { cardColor, subFontColor } = COLOR;
 
-// background-color: ${(props) => props.theme.themeStyle.toggleColor};
 export const DetailTitle = styled.section`
-  padding: 5px 1rem;
+  margin-top: 0.5rem;
+  padding: 10px 1rem;
   border-radius: 12px;
 `;
 
@@ -24,8 +24,8 @@ export const TitleUpper = styled.div`
   padding:1rem 1.5rem;
 `;
 
-export const ProjectTitle = styled.div`
-  font-size: 1.5rem;
+export const ProjectTitle = styled.h1`
+  font-size: 1.8rem;
   font-weight: 800;
 `;
 
