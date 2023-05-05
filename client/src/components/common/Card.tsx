@@ -1,4 +1,8 @@
 import * as S from './Card.style';
+import YellowTag from './YellowTag';
+
+// 임시 데이터
+const tagList = ['React', 'TypeScript', 'Redux'];
 
 function Card() {
   return (
@@ -27,8 +31,14 @@ function Card() {
             </S.UserImage>
             <S.UserName>사용자 이름</S.UserName>
           </S.UserProfile>
-          <S.TagWrapper>태그</S.TagWrapper>
+          <S.TagWrapper>
+            {/* TODO: index는 id로 수정 */}
+            {tagList.map((tag, index) => (
+              <YellowTag key={index}>{tag}</YellowTag>
+            ))}
+          </S.TagWrapper>
           <S.PostInfo>
+            {/* TODO: 조회수, 추천수 숫자로 교체하기 */}
             <div>
               <S.ViewIcon />
               <span>조회수</span>

@@ -100,6 +100,7 @@ export const UserName = styled.strong`
 
 export const TagWrapper = styled.div`
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
 `;
