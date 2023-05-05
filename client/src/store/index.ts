@@ -3,7 +3,7 @@ import themeReducer from '../store/slice/themeSlice';
 import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-//reducer를 여기에 추가하시면 됩니다
+// reducer를 여기에 추가하시면 됩니다
 const rootReducer = combineReducers({
   theme: themeReducer,
 });
