@@ -14,7 +14,6 @@ export const CommentShow = styled.div`
 `;
 
 export const CommentForm = styled.form`
-  /* Add your CSS styling here */
   width: 100%;
   margin-top: 1rem;
   display: flex;
@@ -23,7 +22,6 @@ export const CommentForm = styled.form`
 `;
 
 export const CommentInput = styled.input`
-  /* Add your CSS styling here */
   flex: 0 1 25rem;
   height: 1.5rem;
   border-radius: 5px;

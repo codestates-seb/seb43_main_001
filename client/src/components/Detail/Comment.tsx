@@ -3,7 +3,7 @@ import * as S from './Comment.style';
 // react hooks
 import { useState } from 'react';
 
-//common button
+// common button
 import { YellowBtn } from '../common/button.style';
 
 function Comment() {
