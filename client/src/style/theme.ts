@@ -8,6 +8,8 @@ declare module 'styled-components' {
       backgroundColor: string;
       fontColor: string;
       cardColor: string;
+      cardFontColor: string;
+      cardBorderColor: string;
       inputColor: string;
       toggleColor: string;
       togglePosition: string;
@@ -25,6 +27,8 @@ export const lightTheme: DefaultTheme = {
     backgroundColor: '#ffffff',
     fontColor: '#000000',
     cardColor: '#ffffff',
+    cardFontColor: '#303030',
+    cardBorderColor: 'rgba(243, 243, 243, 0.8)',
     inputColor: '#ffffff',
     toggleColor: '#ccc',
     togglePosition: '30px',
@@ -41,6 +45,8 @@ export const darkTheme: DefaultTheme = {
     backgroundColor: '#000000',
     fontColor: '#ffffff',
     cardColor: '#303030',
+    cardFontColor: '#C4C4C4',
+    cardBorderColor: '#303030',
     inputColor: '#303030',
     toggleColor: '#303030',
     togglePosition: '2px',
