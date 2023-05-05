@@ -24,7 +24,7 @@ function Header() {
     routeTo('/Login');
   };
 
-  const [openNav, setOpenNav] = useState<boolean>(true);
+  const [openNav, setOpenNav] = useState<boolean>(false);
 
   return (
     <S.Header>
