@@ -1,13 +1,25 @@
+import React from 'react';
 import { YellowBtn } from '../common/button.style';
-import { user } from './data';
-import * as S from './User.style';
+import { user } from './mock';
+import * as S from './UserBasicInfo.style';
 
-function BasicInfo() {
+interface UserBasicInfoProps {
+  onEdit: boolean;
+  photo: string;
+}
+const UserBasicInfo: React.FC<UserBasicInfoProps> = ({ onEdit, photo }) => {
   return (
     <S.BasicInfo>
-      <S.UserImg>
-        <img src={user.img} />
-      </S.UserImg>
+      {onEdit ? (
+        <S.EditImg>
+          <img src={photo} />
+          <input id='attach-file' type='file' accept='image/*' />
+        </S.EditImg>
+      ) : (
+        <S.UserImg>
+          <img src={user.img} />
+        </S.UserImg>
+      )}
       <div>
         <S.UserName>{user.name}</S.UserName>
         <button>
@@ -28,6 +40,6 @@ function BasicInfo() {
       </S.Buttons>
     </S.BasicInfo>
   );
-}
+};
 
-export default BasicInfo;
+export default UserBasicInfo;
