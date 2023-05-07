@@ -1,7 +1,9 @@
 import styled from 'styled-components';
+import { COLOR } from '../../constants';
+
+const { subFontColor } = COLOR;
 
 export const Container = styled.section`
-  border: 1px solid black;
   margin-top: 2rem;
   display: flex;
   flex-direction: column;
@@ -10,7 +12,14 @@ export const Container = styled.section`
 `;
 
 export const CommentShow = styled.div`
-  border: 1px solid red;
+  flex: 0 1 350px;
+  width: 65%;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0px 2px 2px ${subFontColor};
+  overflow: auto;
 `;
 
 export const CommentForm = styled.form`
