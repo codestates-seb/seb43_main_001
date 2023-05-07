@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import Detail from './pages/Detail';
 import Login from './pages/Login';
 import User from './pages/User';
+import NotFound from './pages/NotFound';
 
 // layout
 import GeneralLayout from './layout/GeneraLayout';
@@ -47,6 +48,13 @@ const routerData: RouterElement[] = [
     path: '/User',
     label: 'User',
     element: <User />,
+    withAuth: false,
+  },
+  {
+    id: 4,
+    path: '/*',
+    label: '404',
+    element: <NotFound />,
     withAuth: false,
   },
 ];
