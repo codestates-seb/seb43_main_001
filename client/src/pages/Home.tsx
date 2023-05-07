@@ -1,9 +1,9 @@
 import { useRouter } from '../hooks/useRouter';
+import Banner from '../components/Home/Banner';
 import Sort from '../components/Home/Sort';
 import Search from '../components/Home/Search';
-import ArrowUp from '../components/Home/ArrowUp';
 import Card from '../components/common/Card';
-import { YellowBtn } from '../components/common/button';
+import ArrowUp from '../components/Home/ArrowUp';
 import * as S from './Home.style';
 
 // 임시 데이터
@@ -18,11 +18,7 @@ function Home() {
 
   return (
     <S.Container>
-      <S.Banner>
-        <h1>이름</h1>
-        <p>설명입니다설명입니다설명입니다설명입니다</p>
-        <YellowBtn>공유하기</YellowBtn>
-      </S.Banner>
+      <Banner />
       <Sort />
       <S.ContentWrapper>
         <Search />
