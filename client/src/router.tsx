@@ -9,6 +9,7 @@ import Detail from './pages/Detail';
 import Login from './pages/Login';
 import User from './pages/User';
 import NotFound from './pages/NotFound';
+import Portfolio from './pages/Portfolio';
 
 // layout
 import GeneralLayout from './layout/GeneraLayout';
@@ -56,6 +57,13 @@ const routerData: RouterElement[] = [
     label: '404',
     element: <NotFound />,
     withAuth: false,
+  },
+  {
+    id: 5,
+    path: '/Portfolio',
+    label: 'Portfolio',
+    element: <Portfolio />,
+    withAuth: true,
   },
 ];
 
