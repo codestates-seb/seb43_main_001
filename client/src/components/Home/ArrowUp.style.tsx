@@ -8,13 +8,23 @@ export const ArrowUpWrapper = styled.div`
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  background-color: ${({ theme }) => theme.themeStyle.cardColor};
+  background-color: ${({ theme }) => theme.themeStyle.backgroundColor};
   box-shadow: 0px 8px 15px -4px rgba(0, 0, 0, 0.25);
   cursor: pointer;
+
+  position: fixed;
+  bottom: 60px;
+  right: 20px;
 
   @media ${({ theme }) => theme.breakpoints.TABLETMIN} {
     width: 50px;
     height: 50px;
+    right: 45px;
+  }
+
+  @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
+    border: 1px solid
+      ${({ theme }) => (theme.value === 'dark' ? 'rgba(243, 243, 243, 0.4)' : 'none')};
   }
 `;
 

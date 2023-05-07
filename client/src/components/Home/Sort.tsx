@@ -2,7 +2,7 @@ import { useState } from 'react';
 import * as S from './Sort.style';
 
 function Sort() {
-  const [selectedButton, setSelectedButton] = useState('');
+  const [selectedButton, setSelectedButton] = useState('최신순');
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const buttonName = e.currentTarget.innerText;

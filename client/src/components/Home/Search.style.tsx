@@ -10,6 +10,14 @@ export const SearchWrapper = styled.div`
   width: 100%;
   height: 60px;
   background-color: ${({ theme }) => theme.themeStyle.backgroundColor};
+
+  @media ${({ theme }) => theme.breakpoints.TABLETMIN} {
+    height: 75px;
+  }
+
+  @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
+    height: 90px;
+  }
 `;
 
 export const InputWrapper = styled.div`
@@ -45,6 +53,7 @@ export const InputWrapper = styled.div`
     flex-grow: 1;
     padding: 3px;
     border-left: none;
+    color: ${({ theme }) => theme.themeStyle.fontColor};
 
     ::placeholder {
       color: ${COLOR.subFontColor};
@@ -89,8 +98,7 @@ export const NavList = styled.ul`
 `;
 
 export const Select = styled.select`
-  flex-shrink: 0;
-  width: 75px;
+  width: 85px;
   height: 34px;
   padding-left: 12px;
   border: 1px solid ${COLOR.subFontColor};
@@ -110,10 +118,6 @@ export const Select = styled.select`
 
   :focus {
     outline: none;
-  }
-
-  @media ${({ theme }) => theme.breakpoints.TABLETMIN} {
-    width: 85px;
   }
 
   @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
