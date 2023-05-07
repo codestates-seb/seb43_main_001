@@ -7,14 +7,21 @@ export const ArrowUpWrapper = styled.div`
   align-items: center;
   width: 45px;
   height: 45px;
-  border-radius: 50%;
-  background-color: ${({ theme }) => theme.themeStyle.backgroundColor};
-  box-shadow: 0px 8px 15px -4px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
-
   position: fixed;
   bottom: 60px;
   right: 20px;
+  border-radius: 50%;
+  background-color: ${({ theme }) => theme.themeStyle.backgroundColor};
+  box-shadow: 0px 8px 15px -4px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  cursor: pointer;
+  transition: opacity 300ms;
+
+  &.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
 
   @media ${({ theme }) => theme.breakpoints.TABLETMIN} {
     width: 50px;
