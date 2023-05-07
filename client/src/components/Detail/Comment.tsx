@@ -6,6 +6,12 @@ import { useState } from 'react';
 // common button
 import { YellowBtn } from '../common/button.style';
 
+// react component
+import CommentItem from './CommentItem';
+
+// dummyData
+import { dummyData } from './mock';
+
 function Comment() {
   const [comment, setComment] = useState('');
 
@@ -19,7 +25,12 @@ function Comment() {
   };
   return (
     <S.Container>
-      <S.CommentShow></S.CommentShow>
+      <S.CommentShow>
+        {dummyData.map((comment) => {
+          const { id, content, createAt, userName } = comment;
+          return <CommentItem key={id} content={content} createAt={createAt} userName={userName} />;
+        })}
+      </S.CommentShow>
       <S.CommentForm onSubmit={handleSubmit}>
         <S.CommentInput type='text' value={comment} onChange={handleCommentChange} />
         <YellowBtn>COMMENT</YellowBtn>

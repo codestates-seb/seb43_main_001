@@ -10,6 +10,7 @@ export const Header = styled.nav`
   align-items: center;
   position: fixed;
   top: 0;
+  z-index: 1;
   background-color: ${(props) => props.theme.themeStyle.backgroundColor};
 `;
 
