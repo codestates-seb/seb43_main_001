@@ -5,7 +5,7 @@ import { MAX_SIZE } from '../constants/index';
 
 const { content } = MAX_SIZE;
 const { subFontColor } = COLOR;
-export const PortfolioContainer = styled.div`
+export const NewPortfolioContainer = styled.div`
   /* border: 1px solid black; */
   width: 100%;
   padding: 0 15px;

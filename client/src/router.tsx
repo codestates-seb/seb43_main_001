@@ -9,7 +9,8 @@ import Detail from './pages/Detail';
 import Login from './pages/Login';
 import User from './pages/User';
 import NotFound from './pages/NotFound';
-import Portfolio from './pages/Portfolio';
+import NewPortfolio from './pages/NewPortfolio';
+import EditPortfolio from './pages/EditPortfolio';
 
 // layout
 import GeneralLayout from './layout/GeneraLayout';
@@ -60,9 +61,16 @@ const routerData: RouterElement[] = [
   },
   {
     id: 5,
-    path: '/Portfolio',
-    label: 'Portfolio',
-    element: <Portfolio />,
+    path: '/NewPortfolio',
+    label: 'NewPortfolio',
+    element: <NewPortfolio />,
+    withAuth: true,
+  },
+  {
+    id: 6,
+    path: '/EditPortfolio',
+    label: 'EditPortfolio',
+    element: <EditPortfolio />,
     withAuth: true,
   },
 ];
