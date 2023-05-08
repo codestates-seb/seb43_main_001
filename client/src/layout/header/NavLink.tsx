@@ -3,10 +3,15 @@ import * as S from './NavLink.style';
 // custom hook
 import { useRouter } from '../../hooks/useRouter';
 
-const NavLink = () => {
+type NavLinkProps = {
+  setOpenNav: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const NavLink = ({ setOpenNav }: NavLinkProps) => {
   const { routeTo } = useRouter();
 
   const handleLinkClick = () => {
+    setOpenNav((pre) => !pre);
     routeTo('/Login');
   };
 

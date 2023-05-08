@@ -17,17 +17,19 @@ export const DetailTitle = styled.section`
 // upper downer common style
 const CommonStlye = css`
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
   padding: 10px 0.5rem;
   @media ${(props) => props.theme.breakpoints.TABLETMIN} {
     padding: 10px 1rem;
+    flex-direction: row;
   }
 `;
 
 // upper section
 export const TitleUpper = styled.div`
   ${CommonStlye}
+  align-items:center;
 `;
 
 export const ProjectTitle = styled.h1`
