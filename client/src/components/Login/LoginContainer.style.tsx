@@ -35,8 +35,9 @@ export const ProjectName = styled.span`
 export const Title = styled.span`
   text-align: center;
   color: ${mainColor};
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   margin-bottom: 10px;
+  font-weight: 700;
   @media ${TABLETMIN} {
     font-size: 1.9rem;
     margin-bottom: 100px;
