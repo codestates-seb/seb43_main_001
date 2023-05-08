@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { COLOR } from '../../constants';
 
+import * as S from '../common/Button.style';
 const { subFontColor } = COLOR;
 
 export const Container = styled.section`
@@ -8,18 +9,31 @@ export const Container = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem;
+`;
+
+export const CommentWrapper = styled.div`
+  max-width: 800px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 export const CommentShow = styled.div`
   flex: 0 1 350px;
-  width: 65%;
+  width: 100%;
   border: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 30px;
   box-shadow: 0px 2px 2px ${subFontColor};
-  overflow: auto;
+  overflow-y: auto;
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: ${(props) => props.theme.themeStyle.fontColor};
+  }
 `;
 
 export const CommentForm = styled.form`
@@ -30,13 +44,23 @@ export const CommentForm = styled.form`
   align-items: center;
 `;
 
-export const CommentInput = styled.input`
+export const CommentArea = styled.textarea`
   flex: 0 1 25rem;
-  height: 1.5rem;
-  border-radius: 5px;
+  height: 100px;
+  padding: 10px;
+  border-radius: 4px;
   background-color: transparent;
   border: 2px solid ${(props) => props.theme.themeStyle.inputBorderColor};
+  color: ${(props) => props.theme.themeStyle.fontColor};
+  resize: none;
   margin-right: 1rem;
-  padding: 5px;
-  font-weight: 800;
+`;
+
+export const YellowBtnCustom = styled(S.YellowBtn)`
+  font-size: 0.8rem;
+  height: 100px;
+
+  @media ${(props) => props.theme.breakpoints.TABLETMIN} {
+    font-size: 1rem;
+  }
 `;

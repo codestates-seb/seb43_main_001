@@ -1,5 +1,4 @@
 import * as S from './DetailTitle.style';
-import YellowTag from '../common/YellowTag';
 
 // tuple로 type 지정하는 법 찾기
 type LinkName = string[];
@@ -19,7 +18,7 @@ function DetailTitle() {
       <S.TitleDowner>
         <S.Tags>
           {dummy.map((tag, idx) => {
-            return <YellowTag key={idx}>{tag}</YellowTag>;
+            return <S.YellowTagCutsom key={idx}>{tag}</S.YellowTagCutsom>;
           })}
         </S.Tags>
         <S.Links>

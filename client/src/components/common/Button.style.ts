@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { COLOR } from '../../constants/index';
 
-const { mainColor, subFontColor } = COLOR;
+const { mainColor } = COLOR;
 
 export const YellowBtn = styled.button`
   width: 100px;
