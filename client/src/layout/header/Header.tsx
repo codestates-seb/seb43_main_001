@@ -3,7 +3,7 @@ import * as S from './Header.style';
 
 // react component
 import Toggle from './Toggle';
-import { YellowBtn } from '../../components/common/button.style';
+import { YellowBtn } from '../../components/common/Button.style';
 import Hamburger from './Hamburger';
 import NavLink from './NavLink';
 

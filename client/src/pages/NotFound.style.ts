@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { YellowBtn } from '../components/common/button.style';
+import { YellowBtn } from '../components/common/Button.style';
 
 export const Container = styled.div`
   display: flex;

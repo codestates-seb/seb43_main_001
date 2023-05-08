@@ -1,4 +1,4 @@
-import { YellowBtn } from '../common/button';
+import { YellowBtn } from '../common/Button';
 import * as S from './Banner.style';
 
 function Banner() {

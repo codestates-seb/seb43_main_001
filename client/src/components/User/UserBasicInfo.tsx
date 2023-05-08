@@ -1,5 +1,5 @@
 import React from 'react';
-import { YellowBtn } from '../common/button.style';
+import { YellowBtn } from '../common/Button.style';
 import { user } from './mock';
 import * as S from './UserBasicInfo.style';
 

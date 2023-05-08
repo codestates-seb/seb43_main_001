@@ -1,5 +1,5 @@
 import React from 'react';
-import * as S from './button.style';
+import * as S from './Button.style';
 
 type YellowBtnChildren = {
   children: string;

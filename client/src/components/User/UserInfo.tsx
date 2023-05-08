@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { YellowBtn } from '../common/button.style';
+import { YellowBtn } from '../common/Button.style';
 import { user } from './mock';
 import * as S from './UserInfo.style';
 import UserEditForm from './UserEditForm';

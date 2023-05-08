@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { COLOR, MAX_SIZE } from '../../constants';
-import { YellowBtn } from '../common/button.style';
+import { YellowBtn } from '../common/Button.style';
 const { mainColor, subFontColor } = COLOR;
 
 const { content } = MAX_SIZE;
