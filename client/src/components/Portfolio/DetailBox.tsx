@@ -34,7 +34,6 @@ const DetailBox: React.FC<DetailBoxProps> = ({ text }) => {
   return (
     <S.DetailContainer>
       <S.Title>{text}</S.Title>
-      <ReactQuill />
       <ReactQuill modules={modules} onChange={setContent} value={content} />
     </S.DetailContainer>
   );
