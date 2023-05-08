@@ -44,7 +44,7 @@ public class PortfolioController {
                 UriComponentsBuilder
                         .newInstance()
                         .path(PORTFOLIO_DEFAULT_URL + "/{portfolio-id}")
-                        .buildAndExpand(portfolio.getId())
+                        .buildAndExpand(portfolio.getPortfolioId())
                         .toUri();
         return ResponseEntity.created(location).build();
     }
@@ -52,7 +52,7 @@ public class PortfolioController {
     @PatchMapping("/{portfolio-id}")
     public ResponseEntity patchPortfolio(@PathVariable("portfolio-id") long portfolioId,
                                          @RequestBody PortfolioDto.Patch patchDto) {
-        patchDto.setId(portfolioId);
+        patchDto.setPortfolioId(portfolioId);
 
         Portfolio response = portfolioService.updatePortfolio(mapper.portfolioPatchDtoToPortfolio(patchDto));
         return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response)), HttpStatus.OK);

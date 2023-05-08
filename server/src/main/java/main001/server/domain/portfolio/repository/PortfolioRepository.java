@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
     @Modifying
-    @Query("update Portfolio p set p.views = p.views + 1 where p.id = :id")
+    @Query("update Portfolio p set p.views = p.views + 1 where p.portfolioId = :id")
     int updateView(Long id);
 
 

@@ -73,7 +73,7 @@ public class UserDto {
     @NoArgsConstructor
     @Builder
     public static class UserPortfolioResponse {
-        private long id;
+        private long portfolioId;
         private String title;
         private String gitLink;
         private String distributionLink;

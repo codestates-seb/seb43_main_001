@@ -3,6 +3,11 @@ package main001.server.domain.portfolio.service;
 import lombok.RequiredArgsConstructor;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.repository.PortfolioRepository;
+import main001.server.domain.user.entity.User;
+import main001.server.domain.user.repository.UserRepository;
+import main001.server.domain.user.service.UserService;
+import main001.server.exception.BusinessLogicException;
+import main001.server.exception.ExceptionCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -18,19 +23,40 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
-
+    private final UserRepository userRepository;
+    private final UserService userService;
     private final static String VIEWCOOKIENAME = "alreadyViewCookie";
     public Portfolio createPortfolio(Portfolio portfolio) {
+        User user = portfolio.getUser();
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
+
+        Long userId = user.getUserId();
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+        Optional<User> verifiedUser = userRepository.findById(user.getUserId());
+        if (!verifiedUser.isPresent()) {
+            throw new BusinessLogicException(ExceptionCode.NO_PERMISSION_CREATING_POST);
+        }
+        portfolio.setUser(verifiedUser.get());
         return portfolioRepository.save(portfolio);
     }
 
     public Portfolio updatePortfolio(Portfolio portfolio) {
-        Portfolio findPortfolio = findVerifiedPortfolio(portfolio.getId());
+        Portfolio findPortfolio = findVerifiedPortfolio(portfolio.getPortfolioId());
+        User user = portfolio.getUser();
+        Optional<User> verifiedUser = userRepository.findById(user.getUserId());
+        if (!verifiedUser.isPresent() || !findPortfolio.getUser().getUserId().equals(user.getUserId())) {
+            throw new BusinessLogicException(ExceptionCode.NO_PERMISSION_EDITING_POST);
+        }
         Optional.ofNullable(portfolio.getTitle())
                 .ifPresent(title -> findPortfolio.setTitle(title));
         Optional.ofNullable(portfolio.getDescription())
@@ -61,6 +87,11 @@ public class PortfolioService {
 
     public void deletePortfolio(long portfolioId) {
         Portfolio portfolio = findVerifiedPortfolio(portfolioId);
+        User user = portfolio.getUser();
+        Optional<User> verifiedUser = userRepository.findById(user.getUserId());
+        if (!verifiedUser.isPresent() || !portfolio.getUser().getUserId().equals(user.getUserId())) {
+            throw new BusinessLogicException(ExceptionCode.NO_PERMISSION_DELETING_POST);
+        }
         portfolioRepository.delete(portfolio);
     }
 

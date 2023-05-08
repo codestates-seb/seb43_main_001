@@ -93,7 +93,7 @@ public class PortfolioCommentService {
 
     private PortfolioComment setUserAndPortfolio(PortfolioComment portfolioComment) {
         User user = userService.findUser(portfolioComment.getUser().getUserId());
-        Portfolio portfolio = portfolioService.findPortfolio(portfolioComment.getPortfolio().getId());
+        Portfolio portfolio = portfolioService.findPortfolio(portfolioComment.getPortfolio().getPortfolioId());
         portfolioComment.setUser(user);
         portfolioComment.setPortfolio(portfolio);
 
