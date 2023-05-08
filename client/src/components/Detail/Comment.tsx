@@ -1,10 +1,6 @@
 import * as S from './Comment.style';
-
 // react hooks
-import { useState } from 'react';
-
-// common button
-import { YellowBtn } from '../common/Button.style';
+import React, { useState } from 'react';
 
 // react component
 import CommentItem from './CommentItem';
@@ -20,21 +16,29 @@ function Comment() {
     setComment('');
   };
 
-  const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCommentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComment(event.target.value);
   };
   return (
     <S.Container>
-      <S.CommentShow>
-        {dummyData.map((comment) => {
-          const { id, content, createAt, userName } = comment;
-          return <CommentItem key={id} content={content} createAt={createAt} userName={userName} />;
-        })}
-      </S.CommentShow>
-      <S.CommentForm onSubmit={handleSubmit}>
-        <S.CommentInput type='text' value={comment} onChange={handleCommentChange} />
-        <YellowBtn>COMMENT</YellowBtn>
-      </S.CommentForm>
+      <S.CommentWrapper>
+        <S.CommentShow>
+          {dummyData.map((comment) => {
+            const { id, content, createAt, userName } = comment;
+            return (
+              <CommentItem key={id} content={content} createAt={createAt} userName={userName} />
+            );
+          })}
+        </S.CommentShow>
+        <S.CommentForm onSubmit={handleSubmit}>
+          <S.CommentArea
+            placeholder='Enter your comment here'
+            value={comment}
+            onChange={handleCommentChange}
+          />
+          <S.YellowBtnCustom>COMMENT</S.YellowBtnCustom>
+        </S.CommentForm>
+      </S.CommentWrapper>
     </S.Container>
   );
 }

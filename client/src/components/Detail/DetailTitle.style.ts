@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-
+import * as S from '../common/YellowTag.style';
 // constants
 import { COLOR } from '../../constants';
 
@@ -7,8 +7,11 @@ const { cardColor, subFontColor } = COLOR;
 
 export const DetailTitle = styled.section`
   margin-top: 0.5rem;
-  padding: 10px 1rem;
+  padding: 10px 0;
   border-radius: 12px;
+  @media ${(props) => props.theme.breakpoints.TABLETMIN} {
+    padding: 10px 1rem;
+  }
 `;
 
 // upper downer common style
@@ -16,17 +19,23 @@ const CommonStlye = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 10px 0.5rem;
+  @media ${(props) => props.theme.breakpoints.TABLETMIN} {
+    padding: 10px 1rem;
+  }
 `;
 
 // upper section
 export const TitleUpper = styled.div`
   ${CommonStlye}
-  padding:1rem 1.5rem;
 `;
 
 export const ProjectTitle = styled.h1`
-  font-size: 1.8rem;
-  font-weight: 800;
+  font-size: 1.4rem;
+  font-weight: 700;
+  @media ${(props) => props.theme.breakpoints.TABLETMIN} {
+    font-size: 1.8rem;
+  }
 `;
 
 export const UserInfo = styled.div`
@@ -37,7 +46,9 @@ export const UserInfo = styled.div`
 
 export const userName = styled.div`
   font-size: 1rem;
-  font-weight: 600;
+  @media ${(props) => props.theme.breakpoints.TABLETMIN} {
+    font-size: 1.4rem;
+  }
 `;
 
 export const userImg = styled.div`
@@ -51,7 +62,6 @@ export const userImg = styled.div`
 // downer section
 export const TitleDowner = styled.div`
   ${CommonStlye}
-  padding: 1rem 1.5rem;
 `;
 
 export const Tags = styled.div`
@@ -71,9 +81,22 @@ export const Links = styled.div`
 `;
 
 export const Link = styled.a<{ darkGrey?: boolean }>`
+  font-size: 0.7rem;
   border-radius: 5px;
+  text-align: center;
   padding: 0.8rem;
   background-color: ${(props) => (props.darkGrey ? cardColor : subFontColor)};
   color: ${(props) => (props.darkGrey ? 'white' : 'black')};
   cursor: pointer;
+
+  @media ${(props) => props.theme.breakpoints.TABLETMIN} {
+    font-size: 1rem;
+  }
+`;
+
+export const YellowTagCutsom = styled(S.Tags)`
+  font-size: 0.7rem;
+  @media ${(props) => props.theme.breakpoints.TABLETMIN} {
+    font-size: 1rem;
+  }
 `;

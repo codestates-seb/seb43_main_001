@@ -11,4 +11,5 @@ export const Tags = styled.div`
   font-weight: 400;
   background-color: ${mainColor};
   color: black;
+  text-align: center;
 `;
