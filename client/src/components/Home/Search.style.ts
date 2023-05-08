@@ -82,6 +82,10 @@ export const Nav = styled.nav`
 export const NavList = styled.ul`
   display: none;
 
+  li {
+    cursor: pointer;
+  }
+
   @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
     display: flex;
     justify-content: center;

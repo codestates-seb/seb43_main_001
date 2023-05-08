@@ -2,8 +2,9 @@ import styled from 'styled-components';
 import { COLOR } from '../../constants';
 import { RxHeartFilled } from 'react-icons/rx';
 import { IoMdEye } from 'react-icons/io';
+import { Tags } from './YellowTag.style';
 
-export const Container = styled.div`
+export const Container = styled.article`
   width: 100%;
   height: 100%;
   border: 1px solid ${({ theme }) => theme.themeStyle.cardBorderColor};
@@ -102,7 +103,12 @@ export const TagWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
+`;
+
+export const Tag = styled(Tags)`
+  padding: 3px 7px;
+  font-size: 12px;
 `;
 
 export const PostInfo = styled.div`
