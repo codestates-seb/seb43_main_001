@@ -30,9 +30,6 @@ export const MoreInfo = styled.div`
     font-size: 0.8rem;
     display: block;
   }
-  svg {
-    font-size: 1.3rem;
-  }
   p {
     font-size: 1rem;
   }

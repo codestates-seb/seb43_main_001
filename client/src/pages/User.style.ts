@@ -6,8 +6,7 @@ export const User = styled.div`
   width: 100%;
   padding: 0 15px;
   display: flex;
-  /* 나중에 수정할 부분 */
-  margin-bottom: 50px;
+  overflow: hidden;
   button {
     padding: 0;
     font-size: 1rem;

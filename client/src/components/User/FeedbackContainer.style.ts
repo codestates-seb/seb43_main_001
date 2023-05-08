@@ -6,38 +6,13 @@ export const FeedbackContainer = styled.div`
   padding: 10px;
   border-top: 1px double black;
 `;
-export const Feedback = styled.div`
-  padding: 10px;
-  padding-bottom: 40px;
-  margin: 10px 0;
-  border-radius: 10px;
-  box-shadow: 0px 2px 2px ${subFontColor};
-  position: relative;
-  background-color: ${({ theme }) => theme.themeStyle.cardColor};
-`;
-export const ImgBox = styled.div`
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-right: 5px;
-  img {
-    width: 20px;
-    height: 20px;
-  }
-`;
-export const Feedbacks = styled.div`
+export const Feedbacks = styled.ul`
   height: 300px;
   overflow: scroll;
-`;
-export const FeedbackUser = styled.div`
-  display: flex;
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  height: 20px;
-  align-items: center;
-  font-size: 0.8rem;
+  -ms-overflow-style: none;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 export const FeedbackAdd = styled.form`
   width: 100%;
@@ -47,27 +22,54 @@ export const FeedbackAdd = styled.form`
   label {
     margin: 10px;
   }
-  input {
-    height: 50px;
+  textarea {
+    height: 80px;
     padding: 10px;
     border-radius: 10px;
     border: 0;
     box-shadow: 0px 2px 2px ${subFontColor};
     position: relative;
-    z-index: 50;
+    z-index: 5;
     outline: none;
     background-color: ${({ theme }) => theme.themeStyle.cardColor};
     color: ${(props) => props.theme.themeStyle.fontColor};
+    resize: none;
   }
   button {
     width: 100%;
     background-color: ${mainColor};
     border-radius: 0 0 10px 10px;
-    padding: 10px;
+    padding: 10px 20px;
     text-align: right;
     position: relative;
-    bottom: 20px;
+    bottom: 18px;
     z-index: 0;
     box-shadow: 0px 2px 2px ${subFontColor};
+  }
+`;
+export const Secret = styled.label`
+  position: absolute;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  bottom: 28px;
+  left: 10px;
+  z-index: 10;
+  color: black;
+  input[type='checkbox'] {
+    appearance: none;
+    cursor: pointer;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 5px;
+    margin-left: 5px;
+    border: 1px solid ${mainColor};
+    background-color: white;
+    transition: all 0.5s;
+  }
+  input:checked {
+    border: 2px solid white;
+    background-color: ${mainColor};
+    transition: all 0.3s;
   }
 `;

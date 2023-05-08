@@ -1,5 +1,8 @@
 import styled from 'styled-components';
 
+export const UserSort = styled.div`
+  width: 60%;
+`;
 export const PortfolioContainer = styled.div`
   height: 100vh;
   padding: 10px;
@@ -16,7 +19,7 @@ export const PortfolioContainer = styled.div`
 export const PortfolioBtns = styled.div`
   display: flex;
   button {
-    padding: 0 10px;
+    padding: 0px 10px;
     border-right: 1px solid black;
   }
   button:last-child {

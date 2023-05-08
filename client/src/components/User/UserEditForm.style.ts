@@ -19,10 +19,11 @@ export const EditForm = styled.form`
   textarea {
     width: 100%;
     height: 70px;
-    padding: 5px;
+    padding: 10px 5px;
     box-sizing: border-box;
     resize: none;
     border-radius: 10px;
+    border: 1px solid black;
   }
   input {
     width: 100%;
