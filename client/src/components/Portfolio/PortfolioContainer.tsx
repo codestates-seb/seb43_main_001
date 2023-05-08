@@ -1,6 +1,6 @@
 import React from 'react';
 
-import * as S from './NewPortfolioContainer.style';
+import * as S from './PortfolioContainer.style';
 import TextBox from './TextBox';
 import ImgBox from './ImgBox';
 import TagBox from './TagBox';
