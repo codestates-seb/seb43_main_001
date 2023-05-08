@@ -4,7 +4,7 @@ import * as S from './Comment.style';
 import { useState } from 'react';
 
 // common button
-import { YellowBtn } from '../common/button.style';
+import { YellowBtn } from '../common/Button.style';
 
 // react component
 import CommentItem from './CommentItem';

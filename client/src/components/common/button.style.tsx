@@ -1,15 +1,23 @@
 import styled from 'styled-components';
 import { COLOR } from '../../constants/index';
 
-const { mainColor } = COLOR;
+const { mainColor, subFontColor } = COLOR;
 
 export const YellowBtn = styled.button`
-  width: 122px;
+  width: 100px;
   height: 39px;
   background-color: ${mainColor};
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   font-size: 1.2rem;
-  font-weight: 800;
+  font-weight: 500;
   cursor: pointer;
+
+  &:hover {
+    //원하시는 분이 추가하는 걸로
+  }
+
+  @media ${(props) => props.theme.breakpoints.DESKTOPMIN} {
+    width: 122px;
+  }
 `;
