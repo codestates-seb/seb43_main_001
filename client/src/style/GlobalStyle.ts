@@ -48,6 +48,15 @@ button{
 	background-color:transparent;
 	border:0;
 }
+u {
+    text-decoration: underline;
+}
+strong {
+    font-weight: bold;
+}
+em {
+    font-style: italic;
+}
 `;
 
 export default GlobalStyle;
