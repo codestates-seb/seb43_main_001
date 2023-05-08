@@ -4,7 +4,7 @@ import { COLOR, MAX_SIZE } from '../../constants';
 const { mainColor, subFontColor } = COLOR;
 
 const { content } = MAX_SIZE;
-export const NewPortfolioLayout = styled.div`
+export const PortfolioLayout = styled.div`
   width: 100%;
   margin: 5rem 0;
 
