@@ -42,25 +42,26 @@ export const FeedbackAdd = styled.form`
     padding: 10px 20px;
     text-align: right;
     position: relative;
-    bottom: 18px;
+    bottom: 15px;
     z-index: 0;
+    font-size: 1rem;
     box-shadow: 0px 2px 2px ${subFontColor};
   }
 `;
 export const Secret = styled.label`
   position: absolute;
-  font-size: 0.8rem;
+  font-size: 1rem;
   display: flex;
   align-items: center;
-  bottom: 28px;
+  bottom: 23px;
   left: 10px;
   z-index: 10;
   color: black;
   input[type='checkbox'] {
     appearance: none;
     cursor: pointer;
-    width: 1rem;
-    height: 1rem;
+    width: 1.5rem;
+    height: 1.5rem;
     border-radius: 5px;
     margin-left: 5px;
     border: 1px solid ${mainColor};

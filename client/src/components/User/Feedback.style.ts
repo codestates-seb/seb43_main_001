@@ -12,7 +12,7 @@ export const Feedback = styled.li`
   position: relative;
   background-color: ${({ theme }) => theme.themeStyle.cardColor};
   svg {
-    font-size: 1rem;
+    font-size: 1.3rem;
     cursor: pointer;
   }
   textarea {
@@ -31,7 +31,7 @@ export const ImgBox = styled.div`
   height: 20px;
   border-radius: 50%;
   overflow: hidden;
-  margin-right: 5px;
+  margin: 0 5px;
   img {
     width: 20px;
     height: 20px;

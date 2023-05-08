@@ -24,6 +24,7 @@ export const EditForm = styled.form`
     resize: none;
     border-radius: 10px;
     border: 1px solid black;
+    font-size: 1rem;
   }
   input {
     width: 100%;
