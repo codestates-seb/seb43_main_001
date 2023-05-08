@@ -6,7 +6,7 @@ import { COLOR } from '../../constants/index';
 const { mainColor } = COLOR;
 
 export const BasicInfo = styled.div`
-  margin-top: 80px;
+  margin-top: 30px;
   padding: 0 3%;
   position: relative;
   display: flex;

@@ -3,7 +3,7 @@ import * as S from './UserDetailInfo.style';
 
 const UserDetailInfo = () => {
   return (
-    <div>
+    <S.DetailInfo>
       <label>
         Intro
         <p>{user.intro}</p>
@@ -23,10 +23,12 @@ const UserDetailInfo = () => {
       {user.blog && (
         <label>
           <S.BlogIcon />
-          <p>: {user.blog}</p>
+          <a href={user.blog} target='_blank' rel='noreferrer'>
+            : {user.blog}
+          </a>
         </label>
       )}
-    </div>
+    </S.DetailInfo>
   );
 };
 

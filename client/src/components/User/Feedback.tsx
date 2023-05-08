@@ -1,28 +1,31 @@
+import { useState } from 'react';
 import * as S from './Feedback.style';
-import { user } from './mock';
 
-const Feedback = () => {
+interface FeedbackProps {
+  data: {
+    text: string;
+    img: string;
+    name: string;
+  };
+}
+
+// TODO : 삭제 기능 구현
+const Feedback: React.FC<FeedbackProps> = ({ data }) => {
+  const [onEdit, setOnEdit] = useState<boolean>(false);
+
   return (
-    <S.FeedbackContainer>
-      <S.Feedbacks>
-        {user.feedback.map((ele) => (
-          <S.Feedback key={ele.id}>
-            <p>{ele.text}</p>
-            <S.FeedbackUser>
-              <S.ImgBox>
-                <img src={ele.img} />
-              </S.ImgBox>
-              <p>{ele.name}</p>
-            </S.FeedbackUser>
-          </S.Feedback>
-        ))}
-      </S.Feedbacks>
-      <S.FeedbackAdd>
-        <label htmlFor='feedback'></label>
-        <input id='feedback' />
-        <button>입력</button>
-      </S.FeedbackAdd>
-    </S.FeedbackContainer>
+    <S.Feedback>
+      <S.DelBtn />
+      {!onEdit && <S.EditBtn onClick={() => setOnEdit(true)} />}
+      {onEdit && <S.SubmitBtn onClick={() => setOnEdit(false)} />}
+      {onEdit ? <textarea /> : <p>{data.text}</p>}
+      <S.FeedbackUser>
+        <S.ImgBox>
+          <img src={data.img} />
+        </S.ImgBox>
+        <p>{data.name}</p>
+      </S.FeedbackUser>
+    </S.Feedback>
   );
 };
 

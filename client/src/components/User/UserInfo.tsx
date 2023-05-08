@@ -5,8 +5,8 @@ import * as S from './UserInfo.style';
 import UserEditForm from './UserEditForm';
 import UserBasicInfo from './UserBasicInfo';
 import UserDetailInfo from './UserDetailInfo';
-import Feedback from './Feedback';
 import Portfolio from './Portfolio';
+import FeedbackContainer from './FeedbackContainer';
 
 function UserInfo() {
   const [select, setSelect] = useState<boolean>(true);
@@ -33,7 +33,7 @@ function UserInfo() {
           ) : (
             <YellowBtn onClick={() => setOnEdit(true)}>정보 수정</YellowBtn>
           )}
-          <Feedback />
+          <FeedbackContainer />
         </S.MoreInfo>
       )}
       {!select && <Portfolio />}
