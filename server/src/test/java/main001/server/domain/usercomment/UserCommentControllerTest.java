@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import main001.server.domain.usercomment.controller.UserCommentController;
 import main001.server.domain.usercomment.dto.UserCommentDto;
 import main001.server.domain.usercomment.service.UserCommentService;
+import main001.server.response.PageInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -47,29 +48,23 @@ public class UserCommentControllerTest {
     UserCommentService userCommentService;
 
     UserCommentDto.Response response1 = new UserCommentDto.Response(1L,
-            "1번 댓글",
             1L,
-            "테스트회원1",
             3L,
-            "작성자1",
+            "1번 댓글",
             LocalDateTime.now(),
             LocalDateTime.now());
 
     UserCommentDto.Response response2 = new UserCommentDto.Response(2L,
-            "2번 댓글",
             2L,
-            "테스트회원2",
             3L,
-            "작성자1",
+            "2번 댓글",
             LocalDateTime.now(),
             LocalDateTime.now());
 
     UserCommentDto.Response response3 = new UserCommentDto.Response(3L,
-            "1번 댓글",
             1L,
-            "테스트회원1",
             4L,
-            "작성자2",
+            "1번 댓글",
             LocalDateTime.now(),
             LocalDateTime.now());
 
@@ -94,9 +89,7 @@ public class UserCommentControllerTest {
                 .andExpect(jsonPath("$.userCommentId").value(response1.getUserCommentId()))
                 .andExpect(jsonPath("$.content").value(response1.getContent()))
                 .andExpect(jsonPath("$.userId").value(response1.getUserId()))
-                .andExpect(jsonPath("$.userName").value(response1.getUserName()))
                 .andExpect(jsonPath("$.writerId").value(response1.getWriterId()))
-                .andExpect(jsonPath("$.writerName").value(response1.getWriterName()))
                 .andDo(document("UserCommentPostAPI",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -108,11 +101,9 @@ public class UserCommentControllerTest {
                         responseFields(
                                 List.of(
                                         fieldWithPath("userCommentId").type(JsonFieldType.NUMBER).description("댓글 식별자"),
-                                        fieldWithPath("content").type(JsonFieldType.STRING).description("댓글 식별자"),
                                         fieldWithPath("userId").type(JsonFieldType.NUMBER).description("댓글이 작성된 유저 식별자"),
-                                        fieldWithPath("userName").type(JsonFieldType.STRING).description("댓글이 작성된 유저 닉네임"),
                                         fieldWithPath("writerId").type(JsonFieldType.NUMBER).description("댓글 작성자 식별자"),
-                                        fieldWithPath("writerName").type(JsonFieldType.STRING).description("댓글 작성자 닉네임"),
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("댓글 식별자"),
                                         fieldWithPath("createdAt").type(JsonFieldType.STRING).description("댓글 생성 일시"),
                                         fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("댓글 수정 일시")
                                 )
@@ -137,11 +128,9 @@ public class UserCommentControllerTest {
         // then
         actions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.userCommentId").value(response1.getUserCommentId()))
-                .andExpect(jsonPath("$.content").value(response1.getContent()))
                 .andExpect(jsonPath("$.userId").value(response1.getUserId()))
-                .andExpect(jsonPath("$.userName").value(response1.getUserName()))
                 .andExpect(jsonPath("$.writerId").value(response1.getWriterId()))
-                .andExpect(jsonPath("$.writerName").value(response1.getWriterName()))
+                .andExpect(jsonPath("$.content").value(response1.getContent()))
                 .andDo(document("UserCommentPatchAPI",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -160,9 +149,7 @@ public class UserCommentControllerTest {
                                         fieldWithPath("userCommentId").type(JsonFieldType.NUMBER).description("댓글 식별자"),
                                         fieldWithPath("content").type(JsonFieldType.STRING).description("댓글 식별자"),
                                         fieldWithPath("userId").type(JsonFieldType.NUMBER).description("댓글이 작성된 유저 식별자"),
-                                        fieldWithPath("userName").type(JsonFieldType.STRING).description("댓글이 작성된 유저 닉네임"),
                                         fieldWithPath("writerId").type(JsonFieldType.NUMBER).description("댓글 작성자 식별자"),
-                                        fieldWithPath("writerName").type(JsonFieldType.STRING).description("댓글 작성자 닉네임"),
                                         fieldWithPath("createdAt").type(JsonFieldType.STRING).description("댓글 생성 일시"),
                                         fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("댓글 수정 일시")
                                 )
@@ -195,7 +182,8 @@ public class UserCommentControllerTest {
         list.add(response3);
 
         UserCommentDto.ResponseList<List<UserCommentDto.Response>> responseList
-                = new UserCommentDto.ResponseList<>(list,1,2,2,1);
+                = new UserCommentDto.ResponseList<>(list,
+                new PageInfo(2,1));
 
         //when
         when(userCommentService.findUserCommentsByUser(Mockito.anyLong(),Mockito.anyInt(),Mockito.anyInt()))
@@ -212,19 +200,11 @@ public class UserCommentControllerTest {
                 .andExpect(jsonPath("$.data.[0].userCommentId").value(responseList.getData().get(0).getUserCommentId()))
                 .andExpect(jsonPath("$.data.[0].content").value(responseList.getData().get(0).getContent()))
                 .andExpect(jsonPath("$.data.[0].userId").value(responseList.getData().get(0).getUserId()))
-                .andExpect(jsonPath("$.data.[0].userName").value(responseList.getData().get(0).getUserName()))
                 .andExpect(jsonPath("$.data.[0].writerId").value(responseList.getData().get(0).getWriterId()))
-                .andExpect(jsonPath("$.data.[0].writerName").value(responseList.getData().get(0).getWriterName()))
                 .andExpect(jsonPath("$.data.[1].userCommentId").value(responseList.getData().get(1).getUserCommentId()))
                 .andExpect(jsonPath("$.data.[1].content").value(responseList.getData().get(1).getContent()))
                 .andExpect(jsonPath("$.data.[1].userId").value(responseList.getData().get(1).getUserId()))
-                .andExpect(jsonPath("$.data.[1].userName").value(responseList.getData().get(1).getUserName()))
                 .andExpect(jsonPath("$.data.[1].writerId").value(responseList.getData().get(1).getWriterId()))
-                .andExpect(jsonPath("$.data.[1].writerName").value(responseList.getData().get(1).getWriterName()))
-                .andExpect(jsonPath("$.page").value(responseList.getPage()))
-                .andExpect(jsonPath("$.size").value(responseList.getSize()))
-                .andExpect(jsonPath("$.totalElements").value(responseList.getTotalElements()))
-                .andExpect(jsonPath("$.totalPages").value(responseList.getTotalPages()))
                 .andDo(document("UserCommentGetByUserAPI",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -241,17 +221,13 @@ public class UserCommentControllerTest {
                                 List.of(
                                         fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터"),
                                         fieldWithPath("data.[].userCommentId").type(JsonFieldType.NUMBER).description("댓글 식별자"),
-                                        fieldWithPath("data.[].content").type(JsonFieldType.STRING).description("댓글 내용"),
                                         fieldWithPath("data.[].userId").type(JsonFieldType.NUMBER).description("댓글이 작성된 유저 식별자"),
-                                        fieldWithPath("data.[].userName").type(JsonFieldType.STRING).description("댓글이 작성된 유저 닉네임"),
+                                        fieldWithPath("data.[].content").type(JsonFieldType.STRING).description("댓글 내용"),
                                         fieldWithPath("data.[].writerId").type(JsonFieldType.NUMBER).description("댓글 작성자 식별자"),
-                                        fieldWithPath("data.[].writerName").type(JsonFieldType.STRING).description("댓글 작성자 닉네임"),
                                         fieldWithPath("data.[].createdAt").type(JsonFieldType.STRING).description("댓글 생성 시각"),
                                         fieldWithPath("data.[].updatedAt").type(JsonFieldType.STRING).description("댓글 수정 시각"),
-                                        fieldWithPath("page").type(JsonFieldType.NUMBER).description("페이지"),
-                                        fieldWithPath("size").type(JsonFieldType.NUMBER).description("페이지 사이즈"),
-                                        fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("전체 댓글 갯수"),
-                                        fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 갯수")
+                                        fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER).description("전체 댓글 갯수"),
+                                        fieldWithPath("pageInfo.totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 갯수")
                                 )
                         )));
     }
@@ -265,7 +241,8 @@ public class UserCommentControllerTest {
         list.add(response2);
 
         UserCommentDto.ResponseList<List<UserCommentDto.Response>> responseList
-                = new UserCommentDto.ResponseList<>(list,1,3,2,1);
+                = new UserCommentDto.ResponseList<>(list,
+                new PageInfo(2,1));
 
         //when
         when(userCommentService.findUserCommentsByWriter(Mockito.anyLong(),Mockito.anyInt(),Mockito.anyInt()))
@@ -282,19 +259,11 @@ public class UserCommentControllerTest {
                 .andExpect(jsonPath("$.data.[0].userCommentId").value(responseList.getData().get(0).getUserCommentId()))
                 .andExpect(jsonPath("$.data.[0].content").value(responseList.getData().get(0).getContent()))
                 .andExpect(jsonPath("$.data.[0].userId").value(responseList.getData().get(0).getUserId()))
-                .andExpect(jsonPath("$.data.[0].userName").value(responseList.getData().get(0).getUserName()))
                 .andExpect(jsonPath("$.data.[0].writerId").value(responseList.getData().get(0).getWriterId()))
-                .andExpect(jsonPath("$.data.[0].writerName").value(responseList.getData().get(0).getWriterName()))
                 .andExpect(jsonPath("$.data.[1].userCommentId").value(responseList.getData().get(1).getUserCommentId()))
                 .andExpect(jsonPath("$.data.[1].content").value(responseList.getData().get(1).getContent()))
                 .andExpect(jsonPath("$.data.[1].userId").value(responseList.getData().get(1).getUserId()))
-                .andExpect(jsonPath("$.data.[1].userName").value(responseList.getData().get(1).getUserName()))
                 .andExpect(jsonPath("$.data.[1].writerId").value(responseList.getData().get(1).getWriterId()))
-                .andExpect(jsonPath("$.data.[1].writerName").value(responseList.getData().get(1).getWriterName()))
-                .andExpect(jsonPath("$.page").value(responseList.getPage()))
-                .andExpect(jsonPath("$.size").value(responseList.getSize()))
-                .andExpect(jsonPath("$.totalElements").value(responseList.getTotalElements()))
-                .andExpect(jsonPath("$.totalPages").value(responseList.getTotalPages()))
                 .andDo(document("UserCommentGetByWriterAPI",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -311,17 +280,13 @@ public class UserCommentControllerTest {
                                 List.of(
                                         fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터"),
                                         fieldWithPath("data.[].userCommentId").type(JsonFieldType.NUMBER).description("댓글 식별자"),
-                                        fieldWithPath("data.[].content").type(JsonFieldType.STRING).description("댓글 내용"),
                                         fieldWithPath("data.[].userId").type(JsonFieldType.NUMBER).description("댓글이 작성된 유저 식별자"),
-                                        fieldWithPath("data.[].userName").type(JsonFieldType.STRING).description("댓글이 작성된 유저 닉네임"),
                                         fieldWithPath("data.[].writerId").type(JsonFieldType.NUMBER).description("댓글 작성자 식별자"),
-                                        fieldWithPath("data.[].writerName").type(JsonFieldType.STRING).description("댓글 작성자 닉네임"),
+                                        fieldWithPath("data.[].content").type(JsonFieldType.STRING).description("댓글 내용"),
                                         fieldWithPath("data.[].createdAt").type(JsonFieldType.STRING).description("댓글 생성 시각"),
                                         fieldWithPath("data.[].updatedAt").type(JsonFieldType.STRING).description("댓글 수정 시각"),
-                                        fieldWithPath("page").type(JsonFieldType.NUMBER).description("페이지"),
-                                        fieldWithPath("size").type(JsonFieldType.NUMBER).description("페이지 사이즈"),
-                                        fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("전체 댓글 갯수"),
-                                        fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 갯수")
+                                        fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER).description("전체 댓글 갯수"),
+                                        fieldWithPath("pageInfo.totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 갯수")
                                 )
                         )));
     }}

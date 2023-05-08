@@ -52,11 +52,9 @@ public class UserCommentMapper {
     public UserCommentDto.Response entityToResponse(UserComment userComment) {
         UserCommentDto.Response response = new UserCommentDto.Response(
                 userComment.getUserCommentId(),
-                userComment.getContent(),
                 userComment.getUser().getUserId(),
-                userComment.getUser().getName(),
                 userComment.getWriter().getUserId(),
-                userComment.getWriter().getName(),
+                userComment.getContent(),
                 userComment.getCreatedAt(),
                 userComment.getUpdatedAt()
         );

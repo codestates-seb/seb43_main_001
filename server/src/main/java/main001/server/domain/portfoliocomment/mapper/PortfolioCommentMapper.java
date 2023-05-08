@@ -53,11 +53,9 @@ public class PortfolioCommentMapper {
     public PortfolioCommentDto.Response entityToResponse(PortfolioComment portfolioComment) {
         PortfolioCommentDto.Response response = new PortfolioCommentDto.Response(
                 portfolioComment.getPortfolioCommentId(),
-                portfolioComment.getContent(),
                 portfolioComment.getUser().getUserId(),
-                portfolioComment.getUser().getName(),
                 portfolioComment.getPortfolio().getId(),
-                portfolioComment.getPortfolio().getTitle(),
+                portfolioComment.getContent(),
                 portfolioComment.getCreatedAt(),
                 portfolioComment.getUpdatedAt()
         );

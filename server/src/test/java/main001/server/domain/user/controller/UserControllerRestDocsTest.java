@@ -229,9 +229,6 @@ public class UserControllerRestDocsTest {
                                 fieldWithPath("data[].about").type(JsonFieldType.STRING).description("자기소개"),
                                 fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("생성된 시간"),
                                 fieldWithPath("data[].updatedAt").type(JsonFieldType.STRING).description("수정된 시간"),
-                                fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
-                                fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("해당 페이지"),
-                                fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("페이지당 컨텐츠 수"),
                                 fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER).description("전체 컨텐츠 수"),
                                 fieldWithPath("pageInfo.totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수")
                         ))

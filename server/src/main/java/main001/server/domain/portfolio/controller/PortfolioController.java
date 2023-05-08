@@ -51,7 +51,6 @@ public class PortfolioController {
     @PatchMapping("/{portfolio-id}")
     public ResponseEntity patchPortfolio(@PathVariable("portfolio-id") long portfolioId,
                                          @RequestBody PortfolioDto.Patch patchDto) {
-        patchDto.setId(portfolioId);
 
         Portfolio response = portfolioService.updatePortfolio(mapper.portfolioPatchDtoToPortfolio(patchDto));
         return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response)), HttpStatus.OK);

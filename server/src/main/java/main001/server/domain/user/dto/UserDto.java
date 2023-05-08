@@ -7,6 +7,7 @@ import main001.server.domain.user.enums.UserStatus;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class UserDto {

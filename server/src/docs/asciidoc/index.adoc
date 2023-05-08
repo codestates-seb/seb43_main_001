@@ -9,7 +9,7 @@ main001
 
 v1.0.0, 2023.05.03
 
-== UserController
+== 유저 API
 === 회원 등록
 .curl-request
 include::{snippets}/post-user/curl-request.adoc[]
@@ -44,3 +44,107 @@ include::{snippets}/patch-user/http-response.adoc[]
 
 .response-fields
 include::{snippets}/patch-user/response-fields.adoc[]
+
+=== 회원 정보 조회
+.curl-request
+include::{snippets}/get-user/curl-request.adoc[]
+
+.path-parameters
+include::{snippets}/get-user/path-parameters.adoc[]
+
+.http-request
+include::{snippets}/get-user/http-request.adoc[]
+
+.http-response
+include::{snippets}/get-user/http-response.adoc[]
+
+.response-body
+include::{snippets}/get-user/response-body.adoc[]
+
+.response-fields
+include::{snippets}/get-user/response-fields.adoc[]
+
+=== 회원 정보 전체 조회
+.curl-request
+include::{snippets}/get-users/curl-request.adoc[]
+
+.http-request
+include::{snippets}/get-users/http-request.adoc[]
+
+.http-response
+include::{snippets}/get-users/http-response.adoc[]
+
+.response-body
+include::{snippets}/get-users/response-body.adoc[]
+
+.response-fields
+include::{snippets}/get-users/response-fields.adoc[]
+
+
+== 포트폴리오 API
+=== 포트폴리오 등록
+.curl-request
+include::{snippets}/post-portfolio/curl-request.adoc[]
+
+.http-request
+include::{snippets}/post-portfolio/http-request.adoc[]
+
+.http-response
+include::{snippets}/post-portfolio/http-response.adoc[]
+
+.response-body
+include::{snippets}/post-portfolio/response-body.adoc[]
+
+=== 포트폴리오 수정
+.curl-request
+include::{snippets}/patch-portfolio/curl-request.adoc[]
+
+.path-parameters
+include::{snippets}/patch-portfolio/path-parameters.adoc[]
+
+.http-request
+include::{snippets}/patch-portfolio/http-request.adoc[]
+
+.http-response
+include::{snippets}/patch-portfolio/http-response.adoc[]
+
+.response-body
+include::{snippets}/patch-portfolio/response-body.adoc[]
+
+.response-fields
+include::{snippets}/patch-portfolio/response-fields.adoc[]
+
+=== 포트폴리오 조회
+.curl-request
+include::{snippets}/get-portfolio/curl-request.adoc[]
+
+.path-parameters
+include::{snippets}/get-portfolio/path-parameters.adoc[]
+
+.http-request
+include::{snippets}/get-portfolio/http-request.adoc[]
+
+.http-response
+include::{snippets}/get-portfolio/http-response.adoc[]
+
+.response-body
+include::{snippets}/get-portfolio/response-body.adoc[]
+
+.response-fields
+include::{snippets}/get-portfolio/response-fields.adoc[]
+
+=== 포트폴리오 리스트 조회
+.curl-request
+include::{snippets}/get-portfolios/curl-request.adoc[]
+
+.http-request
+include::{snippets}/get-portfolios/http-request.adoc[]
+
+.http-response
+include::{snippets}/get-portfolios/http-response.adoc[]
+
+.response-body
+include::{snippets}/get-portfolio/response-body.adoc[]
+
+.response-fields
+include::{snippets}/get-portfolio/response-fields.adoc[]

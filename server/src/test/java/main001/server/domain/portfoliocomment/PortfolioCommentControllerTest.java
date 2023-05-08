@@ -9,6 +9,7 @@ import main001.server.domain.portfoliocomment.entity.PortfolioComment;
 import main001.server.domain.portfoliocomment.service.PortfolioCommentService;
 import main001.server.domain.user.entity.User;
 import main001.server.domain.user.service.UserService;
+import main001.server.response.PageInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -80,29 +81,23 @@ public class PortfolioCommentControllerTest {
     }
 
     PortfolioCommentDto.Response response = new PortfolioCommentDto.Response(1L,
+            1L,
+            1L,
             "1번 댓글",
-            1L,
-            "테스트회원1",
-            1L,
-            "제목1",
             LocalDateTime.now(),
             LocalDateTime.now());
 
     PortfolioCommentDto.Response response2 = new PortfolioCommentDto.Response(2L,
-            "2번 댓글",
             2L,
-            "테스트회원2",
             1L,
-            "제목1",
+            "테스트회원2",
             LocalDateTime.now(),
             LocalDateTime.now());
 
     PortfolioCommentDto.Response response3 = new PortfolioCommentDto.Response(3L,
-            "1번 댓글",
             1L,
-            "테스트회원1",
             2L,
-            "제목2",
+            "1번 댓글",
             LocalDateTime.now(),
             LocalDateTime.now());
 
@@ -127,9 +122,7 @@ public class PortfolioCommentControllerTest {
                 .andExpect(jsonPath("$.portfolioCommentId").value(response.getPortfolioCommentId()))
                 .andExpect(jsonPath("$.content").value(response.getContent()))
                 .andExpect(jsonPath("$.userId").value(response.getUserId()))
-                .andExpect(jsonPath("$.userName").value(response.getUserName()))
                 .andExpect(jsonPath("$.portfolioId").value(response.getPortfolioId()))
-                .andExpect(jsonPath("$.portfolioTitle").value(response.getPortfolioTitle()))
                 .andDo(document("PortfolioCommentPostAPI",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -141,11 +134,9 @@ public class PortfolioCommentControllerTest {
                         responseFields(
                                 List.of(
                                         fieldWithPath("portfolioCommentId").type(JsonFieldType.NUMBER).description("댓글 식별자"),
-                                        fieldWithPath("content").type(JsonFieldType.STRING).description("댓글 식별자"),
                                         fieldWithPath("userId").type(JsonFieldType.NUMBER).description("회원 식별자"),
-                                        fieldWithPath("userName").type(JsonFieldType.STRING).description("회원 닉네임"),
                                         fieldWithPath("portfolioId").type(JsonFieldType.NUMBER).description("포트폴리오 식별자"),
-                                        fieldWithPath("portfolioTitle").type(JsonFieldType.STRING).description("포트폴리오 제목"),
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("댓글 식별자"),
                                         fieldWithPath("createdAt").type(JsonFieldType.STRING).description("댓글 생성 일시"),
                                         fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("댓글 수정 일시")
                                 )
@@ -172,9 +163,7 @@ public class PortfolioCommentControllerTest {
                 .andExpect(jsonPath("$.portfolioCommentId").value(response.getPortfolioCommentId()))
                 .andExpect(jsonPath("$.content").value(response.getContent()))
                 .andExpect(jsonPath("$.userId").value(response.getUserId()))
-                .andExpect(jsonPath("$.userName").value(response.getUserName()))
                 .andExpect(jsonPath("$.portfolioId").value(response.getPortfolioId()))
-                .andExpect(jsonPath("$.portfolioTitle").value(response.getPortfolioTitle()))
                 .andDo(document("PortfolioCommentPatchAPI",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -191,11 +180,9 @@ public class PortfolioCommentControllerTest {
                         responseFields(
                                 List.of(
                                         fieldWithPath("portfolioCommentId").type(JsonFieldType.NUMBER).description("댓글 식별자"),
-                                        fieldWithPath("content").type(JsonFieldType.STRING).description("댓글 식별자"),
                                         fieldWithPath("userId").type(JsonFieldType.NUMBER).description("회원 식별자"),
-                                        fieldWithPath("userName").type(JsonFieldType.STRING).description("회원 닉네임"),
                                         fieldWithPath("portfolioId").type(JsonFieldType.NUMBER).description("포트폴리오 식별자"),
-                                        fieldWithPath("portfolioTitle").type(JsonFieldType.STRING).description("포트폴리오 제목"),
+                                        fieldWithPath("content").type(JsonFieldType.STRING).description("댓글 식별자"),
                                         fieldWithPath("createdAt").type(JsonFieldType.STRING).description("댓글 생성 일시"),
                                         fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("댓글 수정 일시")
                                 )
@@ -228,7 +215,10 @@ public class PortfolioCommentControllerTest {
         list.add(response2);
 
         PortfolioCommentDto.ResponseList<List<PortfolioCommentDto.Response>> responseList
-                = new PortfolioCommentDto.ResponseList<>(list,1,2,2,1);
+                = new PortfolioCommentDto.ResponseList<>(
+                        list,
+                new PageInfo(2,1)
+        );
 
         //when
         when(portfolioCommentService.findPortfolioCommentsByPortfolio(Mockito.anyLong(),Mockito.anyInt(),Mockito.anyInt()))
@@ -243,21 +233,13 @@ public class PortfolioCommentControllerTest {
         // then
         actions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.[0].portfolioCommentId").value(responseList.getData().get(0).getPortfolioCommentId()))
-                .andExpect(jsonPath("$.data.[0].content").value(responseList.getData().get(0).getContent()))
                 .andExpect(jsonPath("$.data.[0].userId").value(responseList.getData().get(0).getUserId()))
-                .andExpect(jsonPath("$.data.[0].userName").value(responseList.getData().get(0).getUserName()))
                 .andExpect(jsonPath("$.data.[0].portfolioId").value(responseList.getData().get(0).getPortfolioId()))
-                .andExpect(jsonPath("$.data.[0].portfolioTitle").value(responseList.getData().get(0).getPortfolioTitle()))
+                .andExpect(jsonPath("$.data.[0].content").value(responseList.getData().get(0).getContent()))
                 .andExpect(jsonPath("$.data.[1].portfolioCommentId").value(responseList.getData().get(1).getPortfolioCommentId()))
-                .andExpect(jsonPath("$.data.[1].content").value(responseList.getData().get(1).getContent()))
                 .andExpect(jsonPath("$.data.[1].userId").value(responseList.getData().get(1).getUserId()))
-                .andExpect(jsonPath("$.data.[1].userName").value(responseList.getData().get(1).getUserName()))
                 .andExpect(jsonPath("$.data.[1].portfolioId").value(responseList.getData().get(1).getPortfolioId()))
-                .andExpect(jsonPath("$.data.[1].portfolioTitle").value(responseList.getData().get(1).getPortfolioTitle()))
-                .andExpect(jsonPath("$.page").value(responseList.getPage()))
-                .andExpect(jsonPath("$.size").value(responseList.getSize()))
-                .andExpect(jsonPath("$.totalElements").value(responseList.getTotalElements()))
-                .andExpect(jsonPath("$.totalPages").value(responseList.getTotalPages()))
+                .andExpect(jsonPath("$.data.[1].content").value(responseList.getData().get(1).getContent()))
                 .andDo(document("PortfolioCommentGetByPortfolioAPI",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -274,17 +256,13 @@ public class PortfolioCommentControllerTest {
                                 List.of(
                                         fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터"),
                                         fieldWithPath("data.[].portfolioCommentId").type(JsonFieldType.NUMBER).description("댓글 식별자"),
-                                        fieldWithPath("data.[].content").type(JsonFieldType.STRING).description("댓글 내용"),
                                         fieldWithPath("data.[].userId").type(JsonFieldType.NUMBER).description("회원 식별자"),
-                                        fieldWithPath("data.[].userName").type(JsonFieldType.STRING).description("회원 닉네임"),
                                         fieldWithPath("data.[].portfolioId").type(JsonFieldType.NUMBER).description("포트폴리오 식별자"),
-                                        fieldWithPath("data.[].portfolioTitle").type(JsonFieldType.STRING).description("포트폴리오 제목"),
+                                        fieldWithPath("data.[].content").type(JsonFieldType.STRING).description("댓글 내용"),
                                         fieldWithPath("data.[].createdAt").type(JsonFieldType.STRING).description("댓글 생성 시각"),
                                         fieldWithPath("data.[].updatedAt").type(JsonFieldType.STRING).description("댓글 수정 시각"),
-                                        fieldWithPath("page").type(JsonFieldType.NUMBER).description("페이지"),
-                                        fieldWithPath("size").type(JsonFieldType.NUMBER).description("페이지 사이즈"),
-                                        fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("전체 댓글 갯수"),
-                                        fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 갯수")
+                                        fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER).description("전체 댓글 갯수"),
+                                        fieldWithPath("pageInfo.totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 갯수")
                                 )
                         )));
     }
@@ -298,7 +276,9 @@ public class PortfolioCommentControllerTest {
         list.add(response3);
 
         PortfolioCommentDto.ResponseList<List<PortfolioCommentDto.Response>> responseList
-                = new PortfolioCommentDto.ResponseList<>(list,1,3,2,1);
+                = new PortfolioCommentDto.ResponseList<>(
+                        list,
+                new PageInfo(2,1));
 
         //when
         when(portfolioCommentService.findPortfolioCommentsByUser(Mockito.anyLong(),Mockito.anyInt(),Mockito.anyInt()))
@@ -313,21 +293,13 @@ public class PortfolioCommentControllerTest {
         // then
         actions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.[0].portfolioCommentId").value(responseList.getData().get(0).getPortfolioCommentId()))
-                .andExpect(jsonPath("$.data.[0].content").value(responseList.getData().get(0).getContent()))
                 .andExpect(jsonPath("$.data.[0].userId").value(responseList.getData().get(0).getUserId()))
-                .andExpect(jsonPath("$.data.[0].userName").value(responseList.getData().get(0).getUserName()))
                 .andExpect(jsonPath("$.data.[0].portfolioId").value(responseList.getData().get(0).getPortfolioId()))
-                .andExpect(jsonPath("$.data.[0].portfolioTitle").value(responseList.getData().get(0).getPortfolioTitle()))
+                .andExpect(jsonPath("$.data.[0].content").value(responseList.getData().get(0).getContent()))
                 .andExpect(jsonPath("$.data.[1].portfolioCommentId").value(responseList.getData().get(1).getPortfolioCommentId()))
-                .andExpect(jsonPath("$.data.[1].content").value(responseList.getData().get(1).getContent()))
                 .andExpect(jsonPath("$.data.[1].userId").value(responseList.getData().get(1).getUserId()))
-                .andExpect(jsonPath("$.data.[1].userName").value(responseList.getData().get(1).getUserName()))
                 .andExpect(jsonPath("$.data.[1].portfolioId").value(responseList.getData().get(1).getPortfolioId()))
-                .andExpect(jsonPath("$.data.[1].portfolioTitle").value(responseList.getData().get(1).getPortfolioTitle()))
-                .andExpect(jsonPath("$.page").value(responseList.getPage()))
-                .andExpect(jsonPath("$.size").value(responseList.getSize()))
-                .andExpect(jsonPath("$.totalElements").value(responseList.getTotalElements()))
-                .andExpect(jsonPath("$.totalPages").value(responseList.getTotalPages()))
+                .andExpect(jsonPath("$.data.[1].content").value(responseList.getData().get(1).getContent()))
                 .andDo(document("PortfolioCommentGetByUserAPI",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -346,15 +318,11 @@ public class PortfolioCommentControllerTest {
                                         fieldWithPath("data.[].portfolioCommentId").type(JsonFieldType.NUMBER).description("댓글 식별자"),
                                         fieldWithPath("data.[].content").type(JsonFieldType.STRING).description("댓글 내용"),
                                         fieldWithPath("data.[].userId").type(JsonFieldType.NUMBER).description("회원 식별자"),
-                                        fieldWithPath("data.[].userName").type(JsonFieldType.STRING).description("회원 닉네임"),
                                         fieldWithPath("data.[].portfolioId").type(JsonFieldType.NUMBER).description("포트폴리오 식별자"),
-                                        fieldWithPath("data.[].portfolioTitle").type(JsonFieldType.STRING).description("포트폴리오 제목"),
                                         fieldWithPath("data.[].createdAt").type(JsonFieldType.STRING).description("댓글 생성 시각"),
                                         fieldWithPath("data.[].updatedAt").type(JsonFieldType.STRING).description("댓글 수정 시각"),
-                                        fieldWithPath("page").type(JsonFieldType.NUMBER).description("페이지"),
-                                        fieldWithPath("size").type(JsonFieldType.NUMBER).description("페이지 사이즈"),
-                                        fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("전체 댓글 갯수"),
-                                        fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 갯수")
+                                        fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER).description("전체 댓글 갯수"),
+                                        fieldWithPath("pageInfo.totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 갯수")
                                 )
                         )));
     }
