@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 import { COLOR, MAX_SIZE } from '../../constants';
-import { YellowBtn } from '../common/Button.style';
+
 const { mainColor, subFontColor } = COLOR;
 
 const { content } = MAX_SIZE;
 export const NewPortfolioLayout = styled.div`
+  width: 100%;
   margin: 5rem 0;
 
   @media ${(props) => props.theme.breakpoints.TABLETMIN} {
@@ -32,7 +33,7 @@ export const SubmitBtn = styled.button`
   background-color: ${mainColor};
   border-radius: 10px;
   font-weight: bold;
-
+  padding: 0.5rem;
   height: 30px;
 
   @media ${(props) => props.theme.breakpoints.TABLETMIN} {

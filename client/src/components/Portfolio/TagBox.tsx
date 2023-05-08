@@ -8,20 +8,18 @@ type TagBoxProps = {
 };
 
 const TagBox: React.FC<TagBoxProps> = ({ text }) => {
-  const initialTags = ['React'];
-
-  const [tags, setTags] = useState(initialTags);
+  const [tags, setTags] = useState([] as any);
   const removeTags = (indexToRemove: number) => {
-    setTags(tags.filter((it, index) => index !== indexToRemove));
+    setTags(tags.filter((it: string, index: number) => index !== indexToRemove));
   };
 
-  const addTags = (event: any) => {
-    const tag = event.target.value;
+  const addTags = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const tag = event.currentTarget.value;
     if (tags.includes(tag) || tag.length === 0) {
       console.log('Fail!');
       return;
     }
-    event.target.value = '';
+    event.currentTarget.value = '';
     setTags([...tags, tag]);
   };
 
@@ -30,7 +28,7 @@ const TagBox: React.FC<TagBoxProps> = ({ text }) => {
       <S.Title>{text}</S.Title>
       <S.TagEditor>
         <ul id='tags'>
-          {tags.map((tag, index) => (
+          {tags.map((tag: string, index: number) => (
             <li key={index} className='tag'>
               <span className='tag-title'>{tag}</span>
               <TiDeleteOutline className='tag-close-icon' onClick={() => removeTags(index)} />
