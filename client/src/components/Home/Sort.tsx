@@ -11,13 +11,25 @@ function Sort() {
 
   return (
     <S.SortWrapper>
-      <S.SortButton className={selectedButton === '최신순' ? 'select' : ''} onClick={handleClick}>
+      <S.SortButton
+        type='button'
+        className={selectedButton === '최신순' ? 'select' : ''}
+        onClick={handleClick}
+      >
         최신순
       </S.SortButton>
-      <S.SortButton className={selectedButton === '추천순' ? 'select' : ''} onClick={handleClick}>
+      <S.SortButton
+        type='button'
+        className={selectedButton === '추천순' ? 'select' : ''}
+        onClick={handleClick}
+      >
         추천순
       </S.SortButton>
-      <S.SortButton className={selectedButton === '조회순' ? 'select' : ''} onClick={handleClick}>
+      <S.SortButton
+        type='button'
+        className={selectedButton === '조회순' ? 'select' : ''}
+        onClick={handleClick}
+      >
         조회순
       </S.SortButton>
     </S.SortWrapper>

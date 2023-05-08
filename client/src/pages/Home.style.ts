@@ -5,16 +5,16 @@ export const Container = styled.div`
   width: 100%;
 `;
 
-export const ContentWrapper = styled.div`
-  padding: 0 15px;
+export const ContentWrapper = styled.section`
+  padding: 0 15px 40px 15px;
   margin: 0 auto;
 
   @media ${({ theme }) => theme.breakpoints.TABLETMIN} {
-    padding: 0 40px;
+    padding: 0 40px 40px 40px;
   }
 
   @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
-    padding: 0 10px;
+    padding: 0 10px 40px 10px;
     width: ${MAX_SIZE.content};
   }
 `;

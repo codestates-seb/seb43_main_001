@@ -1,6 +1,7 @@
 import styled from 'styled-components';
+import { YellowBtn } from '../common/Button.style';
 
-export const Banner = styled.div`
+export const Banner = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -38,5 +39,15 @@ export const Banner = styled.div`
     h1 {
       font-size: 68px;
     }
+  }
+`;
+
+export const ShareButton = styled(YellowBtn)`
+  @media ${({ theme }) => theme.breakpoints.TABLETMIN} {
+    height: 45px;
+  }
+
+  @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
+    height: 50px;
   }
 `;

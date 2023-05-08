@@ -1,5 +1,5 @@
 import * as S from './Card.style';
-import YellowTag from './YellowTag';
+// import YellowTag from './YellowTag';
 
 // 임시 데이터
 const tagList = ['React', 'TypeScript', 'Redux'];
@@ -34,7 +34,7 @@ function Card() {
           <S.TagWrapper>
             {/* TODO: index는 id로 수정 */}
             {tagList.map((tag, index) => (
-              <YellowTag key={index}>{tag}</YellowTag>
+              <S.Tag key={index}>{tag}</S.Tag>
             ))}
           </S.TagWrapper>
           <S.PostInfo>

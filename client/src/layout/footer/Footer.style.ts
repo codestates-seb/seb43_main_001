@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { COLOR } from '../../constants/index';
 import { RxGithubLogo } from 'react-icons/rx';
 
-export const FooterWrapper = styled.div`
+export const FooterWrapper = styled.footer`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -15,6 +15,7 @@ export const FooterWrapper = styled.div`
   right: 0;
   color: ${(props) => props.theme.themeStyle.fontColor};
   background-color: ${(props) => props.theme.themeStyle.backgroundColor};
+  z-index: 100;
 `;
 
 export const Logo = styled.strong`
@@ -28,10 +29,13 @@ export const Info = styled.div`
 
   span {
     font-size: 13px;
+    cursor: pointer;
   }
 
   a {
     position: relative;
+    width: 20px;
+    height: 20px;
   }
 
   a::before {
@@ -57,6 +61,6 @@ export const Info = styled.div`
 `;
 
 export const GithubLogo = styled(RxGithubLogo)`
-  font-size: 18px;
+  font-size: 20px;
   color: ${(props) => props.theme.themeStyle.fontColor};
 `;
