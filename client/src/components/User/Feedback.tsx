@@ -6,6 +6,7 @@ interface FeedbackProps {
     text: string;
     img: string;
     name: string;
+    createdAt: string;
   };
 }
 
@@ -20,6 +21,7 @@ const Feedback: React.FC<FeedbackProps> = ({ data }) => {
       {onEdit && <S.SubmitBtn onClick={() => setOnEdit(false)} />}
       {onEdit ? <textarea /> : <p>{data.text}</p>}
       <S.FeedbackUser>
+        <span>{new Date(data.createdAt).toLocaleDateString()}</span>
         <S.ImgBox>
           <img src={data.img} />
         </S.ImgBox>

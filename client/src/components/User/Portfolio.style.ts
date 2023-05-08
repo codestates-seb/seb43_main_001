@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const UserSort = styled.div`
-  width: 60%;
+  /* width: 60%; */
 `;
 export const PortfolioContainer = styled.div`
   height: 100vh;

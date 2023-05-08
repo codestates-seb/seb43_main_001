@@ -11,7 +11,9 @@ export const SelectBtn = styled.div`
   margin: 20px auto;
   display: flex;
   justify-content: space-between;
-  color: ${(props) => props.theme.themeStyle.fontColor};
+  button {
+    color: ${(props) => props.theme.themeStyle.fontColor};
+  }
   @media ${(props) => props.theme.breakpoints.DESKTOPMIN} {
     display: none;
   }
@@ -42,4 +44,7 @@ export const DetailBtns = styled.div`
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
+  button:last-child {
+    color: ${(props) => props.theme.themeStyle.fontColor};
+  }
 `;

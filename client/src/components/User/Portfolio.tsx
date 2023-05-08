@@ -11,9 +11,9 @@ const Portfolio = () => {
         <button>추천순</button>
         <button>조회순</button>
       </S.PortfolioBtns> */}
-      <S.UserSort>
-        <Sort />
-      </S.UserSort>
+      {/* <S.UserSort> */}
+      <Sort />
+      {/* </S.UserSort> */}
       <S.PortfolioContainer>
         {data.map((ele) => (
           <Card key={ele} />

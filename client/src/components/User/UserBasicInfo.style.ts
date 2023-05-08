@@ -7,7 +7,6 @@ const { mainColor } = COLOR;
 
 export const BasicInfo = styled.div`
   margin-top: 30px;
-  padding: 0 3%;
   position: relative;
   display: flex;
   align-items: flex-end;
@@ -23,11 +22,22 @@ export const EditImg = styled.label`
   overflow: hidden;
   border: 3px solid ${mainColor};
   cursor: pointer;
+  position: relative;
+  div {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    text-align: center;
+    color: white;
+    background-color: #00000080;
+  }
   img {
     width: 100%;
     height: auto;
   }
-  margin-right: 10px;
+  margin-right: 15px;
   input {
     display: none;
   }
@@ -41,11 +51,15 @@ export const UserImg = styled.div`
     width: 100%;
     height: auto;
   }
-  margin-right: 10px;
+  margin-right: 15px;
 `;
 export const UserName = styled.p`
   font-weight: bold;
   font-size: 1.5rem;
+  margin-bottom: 3px;
+`;
+export const GitBtn = styled.button`
+  margin-bottom: 3px;
 `;
 export const Buttons = styled.div`
   display: flex;
@@ -56,6 +70,7 @@ export const Buttons = styled.div`
 `;
 export const GithubIcon = styled(RxGithubLogo)``;
 export const ViewIcon = styled(IoMdEye)`
-  margin: 0 5px;
+  /* margin: 0 10px; */
+  margin-left: 8px;
 `;
 export const FollowrIcon = styled(RxPerson)``;
