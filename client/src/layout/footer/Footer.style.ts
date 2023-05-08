@@ -29,6 +29,7 @@ export const Info = styled.div`
 
   span {
     font-size: 13px;
+    cursor: pointer;
   }
 
   a {
