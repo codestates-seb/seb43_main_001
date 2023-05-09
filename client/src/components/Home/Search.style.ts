@@ -21,57 +21,45 @@ export const SearchWrapper = styled.div`
 `;
 
 export const InputWrapper = styled.div`
-  display: flex;
-  flex-grow: 1;
-
-  div,
-  input {
-    height: 34px;
-    border: 1px solid ${COLOR.subFontColor};
-    background-color: ${({ theme }) => theme.themeStyle.searchBarColor};
-
-    @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
-      height: 45px;
-    }
-  }
-
-  div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 34px;
-    border-right: 0;
-    border-radius: 8px 0 0 8px;
-
-    @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
-      width: 40px;
-    }
-  }
-
-  input {
-    box-sizing: border-box;
-    flex-grow: 1;
-    padding: 3px;
-    border-left: none;
-    color: ${({ theme }) => theme.themeStyle.fontColor};
-
-    ::placeholder {
-      color: ${COLOR.subFontColor};
-      font-size: 15px;
-    }
-
-    :focus {
-      outline: none;
-    }
-  }
+  width: 100%;
+  position: relative;
 `;
 
 export const SearchIcon = styled(IoIosSearch)`
   font-size: 20px;
   color: ${COLOR.subFontColor};
+  position: absolute;
+  top: calc((100% - 20px) / 2);
+  left: 7px;
 
   @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
+    top: calc((100% - 23px) / 2);
     font-size: 23px;
+  }
+`;
+
+export const Input = styled.input`
+  display: flex;
+  width: 100%;
+  height: 34px;
+  padding: 5px 5px 5px 30px;
+  border: 1px solid ${COLOR.subFontColor};
+  border-radius: 8px 0 0 8px;
+  color: ${({ theme }) => theme.themeStyle.fontColor};
+  background-color: ${({ theme }) => theme.themeStyle.searchBarColor};
+
+  ::placeholder {
+    font-size: 15px;
+    color: ${COLOR.subFontColor};
+  }
+
+  :focus {
+    outline: none;
+  }
+
+  @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
+    height: 45px;
+    padding-left: 33px;
   }
 `;
 
@@ -83,6 +71,7 @@ export const NavList = styled.ul`
   display: none;
 
   li {
+    word-break: keep-all;
     cursor: pointer;
   }
 
