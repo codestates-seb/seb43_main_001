@@ -18,7 +18,7 @@ import java.util.List;
 public class Portfolio extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long portfolioId;
 
     @Column(length = 500, nullable = false)
     private String title;
@@ -38,7 +38,25 @@ public class Portfolio extends BaseTimeEntity {
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
     private List<PortfolioComment> answers = new ArrayList<>();
+
+
+    public void setUser(User user) {
+        this.user = user;
+        if (!user.getPortfolios().contains(this)) {
+            user.getPortfolios().add(this);
+        }
+    }
+
+    public void setPortfolioComment(PortfolioComment portfolioComment) {
+        this.getAnswers().add(portfolioComment);
+        if (portfolioComment.getPortfolio() != this) {
+            portfolioComment.setPortfolio(this);
+        }
+    }
+
+
 
 }
