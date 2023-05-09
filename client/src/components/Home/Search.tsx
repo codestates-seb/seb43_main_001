@@ -4,10 +4,8 @@ function Search() {
   return (
     <S.SearchWrapper>
       <S.InputWrapper>
-        <div>
-          <S.SearchIcon />
-        </div>
-        <input type='text' placeholder='검색하기' />
+        <S.SearchIcon />
+        <S.Input type='text' placeholder='검색하기' />
       </S.InputWrapper>
       <S.Nav>
         <S.NavList>
