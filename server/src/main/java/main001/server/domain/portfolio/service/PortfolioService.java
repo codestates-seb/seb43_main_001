@@ -78,11 +78,11 @@ public class PortfolioService {
     }
 
     public Page<Portfolio> findAllOrderByViewsDesc(int page, int size, Sort.Direction direction) {
-        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by("views").descending()));
+        return portfolioRepository.findAll(PageRequest.of(page, size, direction, "views"));
     }
 
     public Page<Portfolio> findAllOrderByCreatedAtDesc(int page, int size, Sort.Direction direction) {
-        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by("createdAt").descending()));
+        return portfolioRepository.findAll(PageRequest.of(page, size, direction, "createdAt"));
     }
 
     public void deletePortfolio(long portfolioId) {

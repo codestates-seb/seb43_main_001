@@ -2,6 +2,7 @@ package main001.server.domain.portfolio.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
@@ -14,6 +15,7 @@ public class PortfolioDto {
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Post{
         private long userId;
         @NotBlank(message = "제목을 입력해주세요.")
@@ -31,6 +33,7 @@ public class PortfolioDto {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Patch {
         private long portfolioId;
 
@@ -59,6 +62,7 @@ public class PortfolioDto {
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Response {
         private long portfolioId;
         private long userId;
