@@ -1,6 +1,9 @@
 package main001.server.domain.portfolio.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import main001.server.amazon.s3.service.S3Service;
+import main001.server.domain.attachment.FileAttachment;
+import main001.server.domain.attachment.ImageAttachment;
 import main001.server.domain.portfolio.dto.PortfolioDto;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.mapper.PortfolioMapper;
@@ -13,12 +16,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
@@ -31,31 +36,78 @@ public class PortfolioController {
     private final PortfolioService portfolioService;
     private final PortfolioMapper mapper;
 
-    public PortfolioController(PortfolioService portfolioService, PortfolioMapper mapper) {
+    private final S3Service s3Service;
+
+    public PortfolioController(PortfolioService portfolioService, PortfolioMapper mapper, S3Service s3Service) {
         this.portfolioService = portfolioService;
         this.mapper = mapper;
+        this.s3Service = s3Service;
     }
 
     @PostMapping
-    public ResponseEntity postPortfolio(@Valid @RequestBody PortfolioDto.Post postDto) {
-        Portfolio portfolio = portfolioService.createPortfolio(mapper.portfolioPostDtoToPortfolio(postDto));
+    public ResponseEntity postPortfolio(@Valid @RequestPart PortfolioDto.Post postDto,
+                                        @RequestPart(value = "image", required = false) MultipartFile image,
+                                        @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+
+        Portfolio portfolio = mapper.portfolioPostDtoToPortfolio(postDto);
+        if (image != null && !image.isEmpty()) {
+            String url = s3Service.upload(image);
+            ImageAttachment imageAttachment = new ImageAttachment();
+            imageAttachment.setImageName(image.getOriginalFilename());
+            imageAttachment.setImageUrl(url);
+            imageAttachment.setPortfolio(portfolio);
+
+            portfolio.getImageAttachments().add(imageAttachment);
+        }
+        if (file != null && !file.isEmpty()) {
+            String url = s3Service.upload(file);
+            FileAttachment fileAttachment = new FileAttachment();
+            fileAttachment.setFileName(file.getOriginalFilename());
+            fileAttachment.setFileUrl(url);
+            fileAttachment.setPortfolio(portfolio);
+
+            portfolio.getFileAttachments().add(fileAttachment);
+        }
+
+        Portfolio response = portfolioService.createPortfolio(portfolio);
+
 
         URI location =
                 UriComponentsBuilder
                         .newInstance()
                         .path(PORTFOLIO_DEFAULT_URL + "/{portfolio-id}")
-                        .buildAndExpand(portfolio.getPortfolioId())
+                        .buildAndExpand(response.getPortfolioId())
                         .toUri();
         return ResponseEntity.created(location).build();
     }
 
     @PatchMapping("/{portfolio-id}")
     public ResponseEntity patchPortfolio(@PathVariable("portfolio-id") long portfolioId,
-                                         @RequestBody PortfolioDto.Patch patchDto) {
+                                         @RequestBody PortfolioDto.Patch patchDto,
+                                         @RequestParam("files") List<MultipartFile> files) throws IOException{
         patchDto.setPortfolioId(portfolioId);
 
-        Portfolio response = portfolioService.updatePortfolio(mapper.portfolioPatchDtoToPortfolio(patchDto));
-        return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response)), HttpStatus.OK);
+//        List<String> imageFileNames = new ArrayList<>();
+//        List<String> fileNames = new ArrayList<>();
+//
+//        for (MultipartFile file : files) {
+//            if (!file.isEmpty()) {
+//                String fileName = file.getOriginalFilename();
+//                if (file.getContentType().startsWith("image/")) {
+//                    imageFileNames.add(fileName);
+//                } else {
+//                    fileNames.add(fileName);
+//                }
+//                portfolioService.uploadFile(file, fileName);
+//            }
+//        }
+
+
+        Portfolio portfolio = portfolioService.updatePortfolio(mapper.portfolioPatchDtoToPortfolio(patchDto));
+//        portfolio.setImageFileNames(imageFileNames);
+//        portfolio.setFileNames(fileNames);
+
+        return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(portfolio)), HttpStatus.OK);
     }
 
     @GetMapping("/{portfolio-id}")
