@@ -29,7 +29,7 @@ function Header() {
   return (
     <S.Header>
       <S.Logo onClick={handleLogoClick}>Logo</S.Logo>
-      {openNav && <NavLink />}
+      {openNav && <NavLink setOpenNav={setOpenNav} />}
       <S.ButtonContainer>
         <Toggle />
         <YellowBtn onClick={handleLoginClick} className='header-login'>

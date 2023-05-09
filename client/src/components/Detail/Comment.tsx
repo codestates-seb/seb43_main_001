@@ -8,6 +8,7 @@ import CommentItem from './CommentItem';
 // dummyData
 import { dummyData } from './mock';
 
+// 상세 페이지 포트폴리오 댓글 컴포넌트
 function Comment() {
   const [comment, setComment] = useState('');
 

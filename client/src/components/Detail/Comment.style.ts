@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { COLOR } from '../../constants';
 
+// styled component
 import * as S from '../common/Button.style';
 const { subFontColor } = COLOR;
 
@@ -12,7 +13,6 @@ export const Container = styled.section`
 `;
 
 export const CommentWrapper = styled.div`
-  max-width: 800px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -25,7 +25,7 @@ export const CommentShow = styled.div`
   border: 0;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
   box-shadow: 0px 2px 2px ${subFontColor};
   overflow-y: auto;
   ::-webkit-scrollbar {
@@ -45,7 +45,7 @@ export const CommentForm = styled.form`
 `;
 
 export const CommentArea = styled.textarea`
-  flex: 0 1 25rem;
+  width: 100%;
   height: 100px;
   padding: 10px;
   border-radius: 4px;
@@ -53,13 +53,13 @@ export const CommentArea = styled.textarea`
   border: 2px solid ${(props) => props.theme.themeStyle.inputBorderColor};
   color: ${(props) => props.theme.themeStyle.fontColor};
   resize: none;
-  margin-right: 1rem;
+  margin-right: 0.5rem;
 `;
 
 export const YellowBtnCustom = styled(S.YellowBtn)`
   font-size: 0.8rem;
   height: 100px;
-
+  border: 1px solid ${subFontColor};
   @media ${(props) => props.theme.breakpoints.TABLETMIN} {
     font-size: 1rem;
   }

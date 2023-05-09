@@ -1,8 +1,8 @@
 import * as S from './DetailTitle.style';
 
-// tuple로 type 지정하는 법 찾기
-type LinkName = string[];
+type LinkName = readonly [string, string];
 
+// 상세 페이지 포트폴리오 제목 및 사용자 정보
 function DetailTitle() {
   const dummy = ['JAVA', 'Spring'];
   const linkName: LinkName = ['깃헙링크', '배포링크'];
@@ -16,11 +16,6 @@ function DetailTitle() {
         </S.UserInfo>
       </S.TitleUpper>
       <S.TitleDowner>
-        <S.Tags>
-          {dummy.map((tag, idx) => {
-            return <S.YellowTagCutsom key={idx}>{tag}</S.YellowTagCutsom>;
-          })}
-        </S.Tags>
         <S.Links>
           {linkName.map((name, idx) => {
             if (name === '깃헙링크') {
@@ -33,6 +28,11 @@ function DetailTitle() {
             return <S.Link key={idx}>{name}</S.Link>;
           })}
         </S.Links>
+        <S.Tags>
+          {dummy.map((tag, idx) => {
+            return <S.YellowTagCutsom key={idx}>{tag}</S.YellowTagCutsom>;
+          })}
+        </S.Tags>
       </S.TitleDowner>
     </S.DetailTitle>
   );
