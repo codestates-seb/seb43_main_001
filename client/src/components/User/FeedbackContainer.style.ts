@@ -74,3 +74,35 @@ export const Secret = styled.label`
     transition: all 0.3s;
   }
 `;
+export const SelectBtn = styled.div`
+  width: 300px;
+  margin: 20px auto;
+  display: flex;
+  justify-content: space-between;
+  button {
+    color: ${(props) => props.theme.themeStyle.fontColor};
+    padding-bottom: 5px;
+    box-shadow: 0;
+    transition: all 0.3s;
+    &.select {
+      box-shadow: 0 -1px 0.5px ${(props) => props.theme.themeStyle.fontColor} inset;
+      transition: all 0.3s;
+    }
+  }
+`;
+
+export const CategoryBtns = styled.div`
+  display: flex;
+  width: 150px;
+  background-color: ${({ theme }) => theme.themeStyle.backgroundColor};
+
+  button {
+    padding: 0;
+    color: ${subFontColor};
+    font-size: 1rem;
+    &.select {
+      color: ${({ theme }) => theme.themeStyle.fontColor};
+      font-weight: 700;
+    }
+  }
+`;
