@@ -18,7 +18,10 @@ function UserEditForm() {
       </label>
       <label>
         <S.EmailIcon />
-        <input placeholder='연락을 받을 수 있는 이메일을 적어주세요.' />
+        <S.EditSelect>
+          <option value='public'>공개</option>
+          <option value='private'>비공개</option>
+        </S.EditSelect>
       </label>
       <label>
         <S.BlogIcon />

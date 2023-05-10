@@ -42,6 +42,20 @@ export const EditImg = styled.label`
     display: none;
   }
 `;
+export const EditName = styled.label`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+  input {
+    padding: 0 5px;
+    box-sizing: border-box;
+    border: 1px solid;
+    font-size: 1rem;
+    border-radius: 5px;
+    margin-bottom: 3px;
+  }
+`;
 export const UserImg = styled.div`
   width: 100px;
   height: 100px;
