@@ -1,12 +1,11 @@
-import React from 'react';
 import { YellowBtn } from '../common/Button.style';
 import { user } from './mock';
 import * as S from './UserBasicInfo.style';
 
-interface UserBasicInfoProps {
+type UserBasicInfoProps = {
   onEdit: boolean;
   photo: string;
-}
+};
 const UserBasicInfo: React.FC<UserBasicInfoProps> = ({ onEdit, photo }) => {
   return (
     <S.BasicInfo>

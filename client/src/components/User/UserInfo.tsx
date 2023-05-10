@@ -17,8 +17,12 @@ function UserInfo() {
     <S.UserInfo>
       <UserBasicInfo onEdit={onEdit} photo={photo} />
       <S.SelectBtn>
-        <button onClick={() => setSelect(true)}>유저 정보</button>
-        <button onClick={() => setSelect(false)}>포트 폴리오</button>
+        <button onClick={() => setSelect(true)} className={select ? 'select' : ''}>
+          유저 정보
+        </button>
+        <button onClick={() => setSelect(false)} className={select ? '' : 'select'}>
+          포트 폴리오
+        </button>
       </S.SelectBtn>
       {select && (
         <S.MoreInfo>

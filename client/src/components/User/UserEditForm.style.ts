@@ -40,6 +40,17 @@ export const EditForm = styled.form`
     color: ${subFontColor};
   }
 `;
+export const EditSelect = styled.select`
+  width: 100%;
+  border: 1px solid black;
+  font-size: 0.9rem;
+  border-radius: 5px;
+  option {
+    color: red;
+    width: 100%;
+    background-color: white;
+  }
+`;
 export const EmailIcon = styled(RxEnvelopeClosed)``;
 export const BlogIcon = styled(RxFontBold)``;
 export const CompanyIcon = styled(RxIdCard)``;

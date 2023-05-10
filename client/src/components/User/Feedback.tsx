@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import * as S from './Feedback.style';
 
-interface FeedbackProps {
+type FeedbackProps = {
   data: {
-    text: string;
+    content: string;
     img: string;
     name: string;
     createdAt: string;
+    userId?: number;
+    portfolioId?: number;
   };
-}
+};
 
 // TODO : 삭제 기능 구현
 const Feedback: React.FC<FeedbackProps> = ({ data }) => {
@@ -19,7 +21,10 @@ const Feedback: React.FC<FeedbackProps> = ({ data }) => {
       <S.DelBtn />
       {!onEdit && <S.EditBtn onClick={() => setOnEdit(true)} />}
       {onEdit && <S.SubmitBtn onClick={() => setOnEdit(false)} />}
-      {onEdit ? <textarea /> : <p>{data.text}</p>}
+      {onEdit ? <textarea /> : <p>{data.content}</p>}
+      {/* 해당 유저/포트폴리오 페이지로 이동 */}
+      {data.userId && !data.portfolioId && <S.LinkIcon />}
+      {data.portfolioId && <S.LinkIcon />}
       <S.FeedbackUser>
         <span>{new Date(data.createdAt).toLocaleDateString()}</span>
         <S.ImgBox>

@@ -9,7 +9,12 @@ function UserEditForm() {
       </label>
       <label>
         <S.CompanyIcon />
-        <input placeholder='현재 소속된 곳 혹은 구직 여부를 적어주세요.' />
+        {/* <input placeholder='현재 소속된 곳 혹은 구직 여부를 적어주세요.' /> */}
+        <S.EditSelect>
+          <option value='JOB_SEEKING'>구직중</option>
+          <option value='ON_THE_JOB'>재직중</option>
+          <option value='STUDENT'>학생</option>
+        </S.EditSelect>
       </label>
       <label>
         <S.EmailIcon />

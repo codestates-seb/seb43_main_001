@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { RxCross2, RxPencil2, RxCheck } from 'react-icons/rx';
+import { RxCross2, RxPencil2, RxCheck, RxDoubleArrowRight } from 'react-icons/rx';
 import { COLOR } from '../../constants/index';
 const { subFontColor } = COLOR;
 
@@ -52,5 +52,10 @@ export const EditBtn = styled(RxPencil2)``;
 export const SubmitBtn = styled(RxCheck)`
   position: absolute;
   top: 10px;
+  right: 10px;
+`;
+export const LinkIcon = styled(RxDoubleArrowRight)`
+  position: absolute;
+  bottom: 30px;
   right: 10px;
 `;
