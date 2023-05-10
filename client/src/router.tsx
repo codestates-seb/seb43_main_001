@@ -14,6 +14,7 @@ import EditPortfolio from './pages/EditPortfolio';
 
 // layout
 import GeneralLayout from './layout/GeneraLayout';
+import AddEmail from './pages/AddEmail';
 
 interface RouterElement {
   id: number; // 페이지 아이디 (반복문용 고유값)
@@ -71,6 +72,13 @@ const routerData: RouterElement[] = [
     path: '/EditPortfolio',
     label: 'EditPortfolio',
     element: <EditPortfolio />,
+    withAuth: true,
+  },
+  {
+    id: 7,
+    path: '/AddEmail',
+    label: 'AddEmail',
+    element: <AddEmail />,
     withAuth: true,
   },
 ];
