@@ -5,12 +5,12 @@ import { useState } from 'react';
 
 type CommentItemProps = {
   content: string;
-  createAt: string;
+  createdAt: string;
   userName: string;
 };
 
 // 상세 페이지 포트폴리오 댓글 아이템 컴포넌트
-function CommentItem({ content, createAt, userName }: CommentItemProps) {
+function CommentItem({ content, createdAt, userName }: CommentItemProps) {
   const [onEdit, setOnEdit] = useState<boolean>(false);
 
   return (
@@ -26,7 +26,7 @@ function CommentItem({ content, createAt, userName }: CommentItemProps) {
         <S.Content>{content}</S.Content>
       )}
       <S.CreateAt>
-        {createAt} {userName}
+        {createdAt} {userName}
       </S.CreateAt>
     </S.Container>
   );

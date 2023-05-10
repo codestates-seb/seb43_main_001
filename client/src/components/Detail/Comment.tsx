@@ -4,37 +4,53 @@ import React, { useState } from 'react';
 
 // react component
 import CommentItem from './CommentItem';
+import Loading from '../common/Loading';
 
-// dummyData
-import { dummyData } from './mock';
+// custom hooks
+import { useDetailPageComment } from '../../hooks/useDetailPageComment';
+
+// types
+import { PortfolioCommentAPI } from '../../types/index';
 
 // 상세 페이지 포트폴리오 댓글 컴포넌트
 function Comment() {
-  const [comment, setComment] = useState('');
+  const [comments, setComments] = useState<string>('');
+
+  const { isLoading, isError, data, error } = useDetailPageComment('data');
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setComment('');
+    setComments('');
   };
 
   const handleCommentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setComment(event.target.value);
+    setComments(event.target.value);
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <S.Container>
       <S.CommentWrapper>
         <S.CommentShow>
-          {dummyData.map((comment) => {
-            const { id, content, createAt, userName } = comment;
+          {data?.map((comment: PortfolioCommentAPI) => {
+            const { userId, content, createdAt, userName } = comment;
             return (
-              <CommentItem key={id} content={content} createAt={createAt} userName={userName} />
+              <CommentItem
+                key={userId}
+                content={content}
+                createdAt={createdAt}
+                userName={userName}
+              />
             );
           })}
         </S.CommentShow>
         <S.CommentForm onSubmit={handleSubmit}>
           <S.CommentArea
             placeholder='Enter your comment here'
-            value={comment}
+            value={comments}
             onChange={handleCommentChange}
           />
           <S.YellowBtnCustom>COMMENT</S.YellowBtnCustom>
