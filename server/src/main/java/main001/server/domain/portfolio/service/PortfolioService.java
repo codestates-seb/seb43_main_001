@@ -9,10 +9,15 @@ import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.util.CollectionUtils;
 import com.amazonaws.util.IOUtils;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import main001.server.amazon.s3.service.S3Service;
+import main001.server.domain.attachment.image.dto.ImageDto;
+import main001.server.domain.attachment.image.entity.ImageAttachment;
+import main001.server.domain.attachment.image.repository.ImageAttachmentRepository;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.repository.PortfolioRepository;
 import main001.server.domain.user.entity.User;
@@ -33,12 +38,14 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.List;
 
 
 @Slf4j
@@ -46,24 +53,13 @@ import java.util.*;
 @Transactional
 @RequiredArgsConstructor
 public class PortfolioService {
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucketName;
-
-    @Value("${cloud.aws.credentials.access-key}")
-    private String accessKey;
-
-    @Value("${cloud.aws.credentials.secret-key}")
-    private String secretKey;
-
-    @Value("${cloud.aws.region.static}")
-    private String region;
-
     private final PortfolioRepository portfolioRepository;
     private final UserRepository userRepository;
+    private final S3Service s3Service;
 
-    private final AmazonS3Client amazonS3Client;
+    private final ImageAttachmentRepository imageAttachmentRepository;
     private final static String VIEWCOOKIENAME = "alreadyViewCookie";
-    public Portfolio createPortfolio(Portfolio portfolio) {
+    public Portfolio createPortfolio(Portfolio portfolio, List<MultipartFile> images) throws IOException{
         User user = portfolio.getUser();
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
@@ -78,6 +74,47 @@ public class PortfolioService {
             throw new BusinessLogicException(ExceptionCode.NO_PERMISSION_CREATING_POST);
         }
         portfolio.setUser(verifiedUser.get());
+
+//        if (!CollectionUtils.isNullOrEmpty(images)) {
+//            ImageDto.Post imageDto;
+//            ImageAttachment imageAttachment;
+//            for (MultipartFile file : images) {
+//
+//                String imgUrl = s3Service.uploadFile(file);
+//
+//                imageDto = ImageDto.Post.builder()
+//                        .imgUrl(imgUrl)
+//                        .portfolio(portfolio)
+//                        .build();
+//                imageAttachment = new ImageAttachment(imageDto.getImgUrl());
+//
+//                imageAttachment.setPortfolio(portfolio);
+//                portfolio.getImageAttachments().add(imageAttachment);
+//                imageRepository.save(imageAttachment);
+//
+//            }
+//        }
+        if (!CollectionUtils.isNullOrEmpty(images)) {
+            ImageDto.Post imageDto;
+            ImageAttachment imageAttachment;
+            for (MultipartFile image : images) {
+                String imgUrl = s3Service.uploadFile(image);
+
+                imageDto = ImageDto.Post
+                        .builder()
+                        .imgUrl(imgUrl)
+                        .portfolio(portfolio)
+                        .build();
+                imageAttachment = new ImageAttachment(imageDto.getImgUrl());
+                imageAttachment.setPortfolio(portfolio);
+
+                portfolio.getImageAttachments().add(imageAttachment);
+                imageAttachmentRepository.save(imageAttachment);
+
+            }
+        }
+
+
         return portfolioRepository.save(portfolio);
     }
 
@@ -96,6 +133,7 @@ public class PortfolioService {
                 .ifPresent(gitLink -> findPortfolio.setGitLink(gitLink));
         Optional.ofNullable(portfolio.getContent())
                 .ifPresent(content -> findPortfolio.setContent(content));
+
 
         return portfolioRepository.save(findPortfolio);
     }
@@ -177,4 +215,6 @@ public class PortfolioService {
         LocalDateTime tommorow = LocalDateTime.now().plusDays(1L).truncatedTo(ChronoUnit.DAYS);
         return (int) now.until(tommorow, ChronoUnit.SECONDS);
     }
+
+
 }

@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import main001.server.domain.attachment.FileAttachment;
-import main001.server.domain.attachment.ImageAttachment;
+import main001.server.domain.attachment.image.dto.ImageDto;
+
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -76,9 +76,7 @@ public class PortfolioDto {
         private String distributionLink;
         private String description;
         private String content;
-
-        private List<ImageAttachment> imageAttachments;
-        private List<FileAttachment> fileAttachments;
+        private ImageDto imageAttachment;
         private int views;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
