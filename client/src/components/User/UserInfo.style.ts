@@ -13,6 +13,13 @@ export const SelectBtn = styled.div`
   justify-content: space-between;
   button {
     color: ${(props) => props.theme.themeStyle.fontColor};
+    padding-bottom: 5px;
+    box-shadow: 0;
+    transition: all 0.3s;
+    &.select {
+      box-shadow: 0 -1px 0.5px ${(props) => props.theme.themeStyle.fontColor} inset;
+      transition: all 0.3s;
+    }
   }
   @media ${(props) => props.theme.breakpoints.DESKTOPMIN} {
     display: none;
