@@ -8,10 +8,10 @@ const UserDetailInfo = () => {
         Intro
         <p>{user.intro}</p>
       </label>
-      {user.company && (
+      {user.jobStatus && (
         <label>
           <S.CompanyIcon />
-          <p>: {user.company}</p>
+          <p>: {user.jobStatus}</p>
         </label>
       )}
       {user.email && (
