@@ -39,6 +39,9 @@ export const EditForm = styled.form`
     font-size: 0.8rem;
     color: ${subFontColor};
   }
+  svg {
+    font-size: 1.3rem;
+  }
 `;
 export const EditSelect = styled.select`
   width: 100%;

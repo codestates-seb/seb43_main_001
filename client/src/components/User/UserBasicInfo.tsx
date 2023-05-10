@@ -24,7 +24,14 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({ onEdit, photo }) => {
         </S.UserImg>
       )}
       <div>
-        <S.UserName>{user.name}</S.UserName>
+        {onEdit ? (
+          <S.EditName>
+            Name
+            <input />
+          </S.EditName>
+        ) : (
+          <S.UserName>{user.name}</S.UserName>
+        )}
         <S.GitBtn>
           <a href={user.github} target='_blank' rel='noreferrer'>
             <S.GithubIcon />
