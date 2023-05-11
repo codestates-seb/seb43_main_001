@@ -56,6 +56,8 @@ public class PortfolioDto {
         @NotBlank(message = "설명을 작성해주세요.")
         private String content;
 
+        List<String> delete;
+
 
         public void setPortfolioId(long portfolioId) {
             this.portfolioId = portfolioId;
@@ -76,7 +78,7 @@ public class PortfolioDto {
         private String distributionLink;
         private String description;
         private String content;
-        private ImageDto imageAttachment;
+        private String imgUrl;
         private int views;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;

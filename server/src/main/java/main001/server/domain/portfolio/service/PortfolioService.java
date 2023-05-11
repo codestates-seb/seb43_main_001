@@ -75,25 +75,6 @@ public class PortfolioService {
         }
         portfolio.setUser(verifiedUser.get());
 
-//        if (!CollectionUtils.isNullOrEmpty(images)) {
-//            ImageDto.Post imageDto;
-//            ImageAttachment imageAttachment;
-//            for (MultipartFile file : images) {
-//
-//                String imgUrl = s3Service.uploadFile(file);
-//
-//                imageDto = ImageDto.Post.builder()
-//                        .imgUrl(imgUrl)
-//                        .portfolio(portfolio)
-//                        .build();
-//                imageAttachment = new ImageAttachment(imageDto.getImgUrl());
-//
-//                imageAttachment.setPortfolio(portfolio);
-//                portfolio.getImageAttachments().add(imageAttachment);
-//                imageRepository.save(imageAttachment);
-//
-//            }
-//        }
         if (!CollectionUtils.isNullOrEmpty(images)) {
             ImageDto.Post imageDto;
             ImageAttachment imageAttachment;
@@ -113,6 +94,7 @@ public class PortfolioService {
 
             }
         }
+//        addImage(portfolio, images);
 
 
         return portfolioRepository.save(portfolio);
@@ -125,6 +107,8 @@ public class PortfolioService {
         if (!verifiedUser.isPresent() || !findPortfolio.getUser().getUserId().equals(user.getUserId())) {
             throw new BusinessLogicException(ExceptionCode.NO_PERMISSION_EDITING_POST);
         }
+        Optional.ofNullable(portfolio.getImageAttachments())
+                .ifPresent(images -> portfolio.setImageAttachments(images));
         Optional.ofNullable(portfolio.getTitle())
                 .ifPresent(title -> findPortfolio.setTitle(title));
         Optional.ofNullable(portfolio.getDescription())
@@ -133,6 +117,7 @@ public class PortfolioService {
                 .ifPresent(gitLink -> findPortfolio.setGitLink(gitLink));
         Optional.ofNullable(portfolio.getContent())
                 .ifPresent(content -> findPortfolio.setContent(content));
+
 
 
         return portfolioRepository.save(findPortfolio);
@@ -168,6 +153,37 @@ public class PortfolioService {
         Optional<Portfolio> optionalPortfolio = portfolioRepository.findById(portfolioId);
         Portfolio findPortfolio = optionalPortfolio.orElseThrow(EntityNotFoundException::new);
         return findPortfolio;
+    }
+
+    public void updateImage(Long portfolioId, List<MultipartFile> files) throws IOException{
+        Portfolio portfolio = findPortfolio(portfolioId);
+        if (!CollectionUtils.isNullOrEmpty(files)) {
+            ImageDto.Post imageDto;
+            ImageAttachment imageAttachment;
+            for (MultipartFile image : files) {
+                String imgUrl = s3Service.uploadFile(image);
+
+                imageDto = ImageDto.Post
+                        .builder()
+                        .imgUrl(imgUrl)
+                        .portfolio(portfolio)
+                        .build();
+                imageAttachment = new ImageAttachment(imageDto.getImgUrl());
+                imageAttachment.setPortfolio(portfolio);
+
+                portfolio.getImageAttachments().add(imageAttachment);
+                imageAttachmentRepository.save(imageAttachment);
+
+            }
+        }
+    }
+
+    public void deleteImage(List<String> urlList) {
+        for (String url : urlList) {
+            String originalFileName = url.split("amazonaws.com/")[1];
+            s3Service.removeS3File(originalFileName);
+            imageAttachmentRepository.delete(imageAttachmentRepository.findByImgUrl(url));
+        }
     }
 
     @Transactional

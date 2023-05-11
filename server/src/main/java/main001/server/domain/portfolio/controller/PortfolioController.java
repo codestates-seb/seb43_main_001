@@ -63,11 +63,16 @@ public class PortfolioController {
     @PatchMapping("/{portfolio-id}")
     public ResponseEntity patchPortfolio(@PathVariable("portfolio-id") long portfolioId,
                                          @RequestPart PortfolioDto.Patch patchDto,
-                                         @RequestPart(value = "image", required = false) MultipartFile image,
-                                         @RequestPart(value = "file", required = false) MultipartFile file) throws IOException{
+                                         @RequestPart(value = "images", required = false) List<MultipartFile> images
+                                        ) throws IOException{
         patchDto.setPortfolioId(portfolioId);
         Portfolio portfolio = mapper.portfolioPatchDtoToPortfolio(patchDto);
 
+        List<String> deleteList = patchDto.getDelete();
+
+        if (images != null) portfolioService.updateImage(portfolioId, images);
+
+        if (deleteList != null) portfolioService.deleteImage(deleteList);
 
         Portfolio response = portfolioService.updatePortfolio(portfolio);
         return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response)), HttpStatus.OK);
