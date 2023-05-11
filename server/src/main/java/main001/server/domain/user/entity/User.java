@@ -1,5 +1,6 @@
 package main001.server.domain.user.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,38 +26,42 @@ public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
-    @Column(length = 50, nullable = false, unique = true)
+    @Column(length = 50, unique = true)
     private String email;
 
-    @Column(length = 20, nullable = false, unique = true)
+    @Column(length = 20)
     private String name;
+
+    @Column(length = 100)
+    private String password;
 
     @Column
     private String profileImg;
 
-    @Column(length = 50, unique = true)
+    @Column(length = 50)
     private String gitLink;
 
     @Column(length = 60)
     private String blogLink;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(length = 20, nullable = false)
+    @Column(length = 20)
     private Grade grade = Grade.NOVICE;
+
+    @Enumerated(value = EnumType.STRING)
+    private JobStatus jobStatus;
+
+    @Column(length = 500)
+    private String about;
 
     @Enumerated(value = EnumType.STRING)
     @Column(length = 20, nullable = false)
     private UserStatus userStatus = UserStatus.USER_ACTIVE;
 
-    @Enumerated(value = EnumType.STRING)
-    private JobStatus jobStatus;
-
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>(); // ROLE_USER<DEFAULT>, ADMIN
 
-    @Column(length = 500)
-    private String about;
-
+    private boolean auth = false;
 //    @OneToMany(mappedBy = "user")
 //    private List<Skill> skills = new ArrayList<>();
 
@@ -78,5 +83,11 @@ public class User extends BaseTimeEntity {
         this.blogLink = blogLink;
         this.jobStatus = jobStatus;
         this.about = about;
+    }
+
+    public User(String email, String name, String profileImg) {
+        this.email = email;
+        this.name = name;
+        this.profileImg = profileImg;
     }
 }
