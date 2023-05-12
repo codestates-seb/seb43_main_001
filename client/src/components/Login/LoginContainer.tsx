@@ -1,9 +1,19 @@
-import React from 'react';
 import { Github, Google } from '../common/icons';
 import OAuthBtn from './OAuthBtn';
 import * as S from './LoginContainer.style';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../store/slice/loginSlice';
+import { RootState } from '../../store';
 
 function LoginContainer() {
+  const dispatch = useDispatch();
+  const isLogin = useSelector((state: RootState) => state.login.isLogin);
+
+  const GithubLoginHandler = () => {
+    // 로그인 시도
+    window.location.assign('http://43.201.157.191:8080/oauth2/authorization/github');
+  };
+
   return (
     <S.LoginLayout>
       <S.ProjectName>
@@ -14,8 +24,17 @@ function LoginContainer() {
       <S.Detail>
         OOO으로 손쉽게 포트폴리오를 작성하고 <br /> 다른 사람들과 공유해보세요!
       </S.Detail>
-      <OAuthBtn logo={<Github />} text={'Github Login'}></OAuthBtn>
-      {/* <OauthBtn logo={<Google />} text={'Google Login'}></OauthBtn> */}
+      {!isLogin && (
+        <>
+          <OAuthBtn logo={<Github />} text={'Github Login'} onClick={GithubLoginHandler}></OAuthBtn>
+          {/* <OauthBtn logo={<Google />} text={'Google Login'}></OauthBtn> */}
+        </>
+      )}
+
+      {
+        //  로그아웃 예시
+        /* <button onClick={() => dispatch(logout(null))}>로그아웃</button> */
+      }
     </S.LoginLayout>
   );
 }
