@@ -28,14 +28,6 @@ public class PortfolioSkill {
         this.skill = skill;
     }
 
-    public void setPortfolio(Portfolio portfolio) {
-        this.portfolio = portfolio;
-
-        if(!portfolio.getSkills().contains(this)) {
-            portfolio.getSkills().add(this);
-        }
-    }
-
     public void setSkill(Skill skill) {
         this.skill = skill;
     }
