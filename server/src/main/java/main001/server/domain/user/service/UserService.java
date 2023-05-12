@@ -6,6 +6,7 @@ import main001.server.domain.user.entity.User;
 import main001.server.domain.user.repository.UserRepository;
 import main001.server.exception.BusinessLogicException;
 import main001.server.exception.ExceptionCode;
+import main001.server.security.utils.CustomAuthorityUtils;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -24,7 +25,7 @@ public class UserService {
 
 //    private final PasswordEncoder passwordEncoder; // Security 적용 후 사용
 //
-//    private final CustomAuthorityUtils authorityUtils;  // Security 적용 후 사용
+    private final CustomAuthorityUtils authorityUtils;  // Security 적용 후 사용
 
     public User createUser(User user) {
         verifyExistEmail(user.getEmail());
@@ -35,10 +36,13 @@ public class UserService {
 //        String encryptedPassword = passwordEncoder.encode(user.getPassword());
 //        user.setPassword(encryptedPassword);
 //
-//        /**
-//         * 초기 권한 부여 설정
-//         */
-//        List<String> roles = authorityUtils.createRoles(user.getEmail());
+
+        /**
+         * 초기 권한 부여 설정
+         */
+        List<String> roles = authorityUtils.createRoles(user.getEmail());
+        user.setRoles(roles);
+        user.setAuth(true);
 
         User savedUser = userRepository.save(user);
         return savedUser;
@@ -75,10 +79,7 @@ public class UserService {
         Optional.ofNullable(user.getProfileImg()).ifPresent(profileImg -> findUser.setProfileImg(profileImg));
         Optional.ofNullable(user.getGitLink()).ifPresent(gitLink -> findUser.setGitLink(gitLink));
         Optional.ofNullable(user.getBlogLink()).ifPresent(blogLink -> findUser.setBlogLink(blogLink));
-        Optional.ofNullable(user.getGrade()).ifPresent(grade -> findUser.setGrade(grade));
-        Optional.ofNullable(user.getUserStatus()).ifPresent(userStatus -> findUser.setUserStatus(userStatus));
         Optional.ofNullable(user.getJobStatus()).ifPresent(jobStatus -> findUser.setJobStatus(jobStatus));
-        Optional.ofNullable(user.getRoles()).ifPresent(roles -> findUser.setRoles(roles));
         Optional.ofNullable(user.getAbout()).ifPresent(about -> findUser.setAbout(about));
 
         return userRepository.save(findUser);

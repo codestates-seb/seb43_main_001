@@ -66,12 +66,20 @@ public class UserController {
                 new MultiResponseDto<>(mapper.usersToUserResponses(users), pageUsers), HttpStatus.OK
         );
     }
+
+    @GetMapping("/{user-id}/profile")
+    public ResponseEntity getUserProfile(@PathVariable("user-id") @Positive long userId) {
+        User user = userService.findUser(userId);
+        return new ResponseEntity<>(
+                new SingleResponseDto<>(mapper.userToUserProfileResponse(user)), HttpStatus.OK
+        );
+    }
     @GetMapping("/{user-id}/portfolio")
     public ResponseEntity getUserPortfolios(@PathVariable("user-id") @Positive long userId,
                                             @Positive @RequestParam(value = "page", defaultValue = "1") int page,
                                             @Positive @RequestParam(value = "size", defaultValue = "15") int size,
-                                            @RequestParam(value = "sort", defaultValue = "createdAt") String sort,
-                                            @RequestParam(value = "order", defaultValue = "desc") String order) {
+                                            @RequestParam(value = "order", defaultValue = "desc") String order,
+                                            @RequestParam(value = "sort", defaultValue = "createdAt") String sort) {
         Sort.Direction direction = order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
                 Page<Portfolio> pageUserPortfolios = userService.findPortfolioByUser(userId, page - 1, size, direction, sort);
 
@@ -90,7 +98,7 @@ public class UserController {
         User user = userService.updateUser(mapper.userPatchToUser(requestBody));
 
         return new ResponseEntity<>(
-                new SingleResponseDto<>(mapper.userToUserResponse(user)), HttpStatus.OK);
+                new SingleResponseDto<>(mapper.userToUserProfileResponse(user)), HttpStatus.OK);
     }
 
     @DeleteMapping("/{user-id}")
