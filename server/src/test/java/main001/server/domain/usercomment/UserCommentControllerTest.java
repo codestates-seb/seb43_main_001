@@ -72,7 +72,7 @@ public class UserCommentControllerTest {
     @DisplayName("유저 댓글 post 테스트")
     void postUserCommentTest() throws Exception {
         // given
-        UserCommentDto.Post post = new UserCommentDto.Post(1L, 1L, "1번 댓글");
+        UserCommentDto.Post post = new UserCommentDto.Post(1L, 3L, "1번 댓글");
         String json = gson.toJson(post);
 
         // when
@@ -114,7 +114,7 @@ public class UserCommentControllerTest {
     @DisplayName("유저 댓글 patch 테스트")
     void patchUserCommentTest() throws Exception {
         // given
-        UserCommentDto.Patch patch = new UserCommentDto.Patch(1L, "1번 수정 댓글", 1L, 2L);
+        UserCommentDto.Patch patch = new UserCommentDto.Patch(1L, "1번 수정 댓글", 1L, 3L);
         String json = gson.toJson(patch);
 
         // when
@@ -135,7 +135,7 @@ public class UserCommentControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
-                                parameterWithName("usercomment_id").description("유저 평가 댓글 식별자")
+                                parameterWithName("usercomment_id").description("유저 댓글 식별자")
                         ),
                         requestFields(
                                 List.of(

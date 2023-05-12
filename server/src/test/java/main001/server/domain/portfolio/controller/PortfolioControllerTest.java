@@ -5,8 +5,10 @@ import main001.server.domain.portfolio.dto.PortfolioDto;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.mapper.PortfolioMapper;
 import main001.server.domain.portfolio.service.PortfolioService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.mockito.internal.matchers.StartsWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,7 +23,10 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import javax.sound.sampled.Port;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -217,24 +222,27 @@ class PortfolioControllerTest {
 
         List<Portfolio> portfolios = List.of(new Portfolio(), new Portfolio());
 
-        given(portfolioService.findPortfolios(Mockito.anyInt(), Mockito.anyInt()))
-                .willReturn(new PageImpl<>(portfolios, PageRequest.of(page-1, size, Sort.by("portfolioId").descending()), portfolios.size()));
+        given(portfolioService.findAllOrderByCreatedAtDesc(Mockito.anyInt(),Mockito.anyInt(),Mockito.any(Sort.Direction.class)))
+                .willReturn(new PageImpl<>(new ArrayList<>()));
 
         given(mapper.portfolioToPortfolioResponseDtos(Mockito.anyList()))
                 .willReturn(List.of(
-                        new PortfolioDto.Response(1L, "title1", "https://github.com/codestates-seb/seb43_main_001.git",
-                        "http://localhost:8080", "description", "content", 1, LocalDateTime.now(), LocalDateTime.now()),
+                        new PortfolioDto.Response(3L, "title1", "https://github.com/codestates-seb/seb43_main_001.git",
+                                "http://localhost:8080", "description", "content", 3, LocalDateTime.now(), LocalDateTime.now()),
                         new PortfolioDto.Response(2L, "title2", "https://github.com/codestates-seb/seb43_main_001.git",
-                                "http://localhost:8080", "description", "content", 1, LocalDateTime.now(), LocalDateTime.now()),
-                        new PortfolioDto.Response(3L, "title3", "https://github.com/codestates-seb/seb43_main_001.git",
+                                "http://localhost:8080", "description", "content", 2, LocalDateTime.now(), LocalDateTime.now()),
+                        new PortfolioDto.Response(1L, "title3", "https://github.com/codestates-seb/seb43_main_001.git",
                                 "http://localhost:8080", "description", "content", 1, LocalDateTime.now(), LocalDateTime.now())
-                        )
-                );
+                ));
 
         //when
         ResultActions actions =
                 mockMvc.perform(
-                        get("/portfolios/?page={page}&size={size}", page, size)
+                        get("/portfolios")
+                                .param("page","1")
+                                .param("size","3")
+                                .param("order","desc")
+                                .param("sort","createdAt")
                                 .accept(MediaType.APPLICATION_JSON)
                 );
 
@@ -245,15 +253,17 @@ class PortfolioControllerTest {
                 .andDo(document("get-portfolios",
                         preprocessResponse(prettyPrint()),
                         requestParameters(List.of(parameterWithName("page").description("페이지 번호"),
-                                parameterWithName("size").description("페이지 크기"))),
+                                parameterWithName("size").description("페이지 크기"),
+                                parameterWithName("sort").description("정렬기준 : 생성날짜(createdAt), 조회수(views)"),
+                                parameterWithName("order").description("정렬순서 : desc(높은 값 우선), asc(낮은 값 우선)"))),
                         responseFields(
                                 List.of(
                                         fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터"),
-                                        fieldWithPath("data[].id").type(JsonFieldType.NUMBER).description("포트폴리오 식별자").ignored(),
+                                        fieldWithPath("data[].id").type(JsonFieldType.NUMBER).description("포트폴리오 식별자"),
                                         fieldWithPath("data[].title").type(JsonFieldType.STRING).description("포트폴리오 제목"),
-                                        fieldWithPath("data[].gitLink").type(JsonFieldType.STRING).description("깃 링크").optional(),
-                                        fieldWithPath("data[].distributionLink").type(JsonFieldType.STRING).description("배포 링크").optional(),
-                                        fieldWithPath("data[].description").type(JsonFieldType.STRING).description("프로젝트 소개글"),
+                                        fieldWithPath("data[].gitLink").type(JsonFieldType.STRING).description("깃 링크"),
+                                        fieldWithPath("data[].distributionLink").type(JsonFieldType.STRING).description("배포 링크"),
+                                        fieldWithPath("data[].description").type(JsonFieldType.STRING).description("The portfolio description"),
                                         fieldWithPath("data[].content").type(JsonFieldType.STRING).description("프로젝트 설명"),
                                         fieldWithPath("data[].views").type(JsonFieldType.NUMBER).description("조회수"),
                                         fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("생성 시간"),

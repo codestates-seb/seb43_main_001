@@ -1,18 +1,22 @@
 package main001.server.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
+import main001.server.domain.portfolio.entity.Portfolio;
+import main001.server.domain.skill.entity.UserSkill;
+import main001.server.domain.skill.service.SkillService;
 import main001.server.domain.user.entity.User;
 import main001.server.domain.user.repository.UserRepository;
 import main001.server.exception.BusinessLogicException;
 import main001.server.exception.ExceptionCode;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,6 +25,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final SkillService skillService;
 
 //    private final PasswordEncoder passwordEncoder; // Security 적용 후 사용
 //
@@ -51,6 +56,17 @@ public class UserService {
     public Page<User> findUsers(int page, int size) {
         return userRepository.findAll(PageRequest.of(page, size,
                 Sort.by("userId").descending()));
+    }
+
+    /**
+     * User별 Portfolio 조회 기능
+     */
+    public Page<Portfolio> findPortfolioByUser(long userId, int page, int size, Sort.Direction direction, String sort) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sort));
+        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+        List<Portfolio> portfolios = user.getPortfolios();
+
+        return new PageImpl<>(portfolios, pageable, portfolios.size());
     }
 
     /**
@@ -93,5 +109,22 @@ public class UserService {
         User findUser = otionalUser.orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
         return findUser;
+    }
+
+    public User setUserSkills(User user,String skills) {
+        List<String> list = Arrays.asList(skills.split(","));
+
+        Iterator<String> iterator = list.iterator();
+
+        while(iterator.hasNext()) {
+            String name = iterator.next().toUpperCase();
+
+            UserSkill userSkill =
+                    UserSkill.createUserSkill(skillService.findByName(name));
+
+            user.addSkill(userSkill);
+        }
+
+        return user;
     }
 }

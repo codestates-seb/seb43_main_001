@@ -6,6 +6,8 @@ import lombok.Setter;
 import main001.server.audit.BaseTimeEntity;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfoliocomment.entity.PortfolioComment;
+import main001.server.domain.skill.entity.PortfolioSkill;
+import main001.server.domain.skill.entity.UserSkill;
 import main001.server.domain.user.enums.Grade;
 import main001.server.domain.user.enums.JobStatus;
 import main001.server.domain.user.enums.UserStatus;
@@ -25,6 +27,7 @@ public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
+
     @Column(length = 50, nullable = false, unique = true)
     private String email;
 
@@ -57,17 +60,22 @@ public class User extends BaseTimeEntity {
     @Column(length = 500)
     private String about;
 
-//    @OneToMany(mappedBy = "user")
-//    private List<Skill> skills = new ArrayList<>();
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<UserSkill> skills = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Portfolio> portfolios = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserComment> userComments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<PortfolioComment> portfolioComments = new ArrayList<>();
+
+    public void addSkill(UserSkill userSkill) {
+        skills.add(userSkill);
+        userSkill.setUser(this);
+    }
 
     public User(Long userId, String email, String name, String profileImg, String gitLink, String blogLink, JobStatus jobStatus, String about) {
         this.userId = userId;

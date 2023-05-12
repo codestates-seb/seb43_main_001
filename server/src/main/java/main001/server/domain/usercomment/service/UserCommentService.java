@@ -5,8 +5,11 @@ import main001.server.domain.user.entity.User;
 import main001.server.domain.user.service.UserService;
 import main001.server.domain.usercomment.dto.UserCommentDto;
 import main001.server.domain.usercomment.entity.UserComment;
+import main001.server.domain.usercomment.entity.UserCommentStatus;
 import main001.server.domain.usercomment.mapper.UserCommentMapper;
 import main001.server.domain.usercomment.repository.UserCommentRepository;
+import main001.server.exception.BusinessLogicException;
+import main001.server.exception.ExceptionCode;
 import main001.server.response.PageInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,6 +54,7 @@ public class UserCommentService {
         return userCommentMapper.entityToResponse(savedComment);
     }
 
+    @Transactional(readOnly = true)
     public UserCommentDto.ResponseList findUserCommentsByUser(Long userId, int page, int size) {
         User user = userService.findUser(userId);
 
@@ -71,6 +75,7 @@ public class UserCommentService {
         );
     }
 
+    @Transactional(readOnly = true)
     public UserCommentDto.ResponseList findUserCommentsByWriter(Long writerId, int page, int size) {
         User writer = userService.findUser(writerId);
 
@@ -86,7 +91,8 @@ public class UserCommentService {
                 content,
                 new PageInfo(
                         writersPage.getTotalElements(),
-                        writersPage.getTotalPages())
+                        writersPage.getTotalPages()
+                )
         );
     }
 
@@ -96,13 +102,21 @@ public class UserCommentService {
     }
 
 
-    public UserComment findVerifiedUserComment(Long userCommentId) {
+    private UserComment findVerifiedUserComment(Long userCommentId) {
         Optional<UserComment> optionalUserComment = userCommentRepository.findById(userCommentId);
 
-        return optionalUserComment.orElseThrow(
-                () -> new RuntimeException("조회된 댓글이 없습니다.")
+        UserComment userComment = optionalUserComment.orElseThrow(
+                () -> new BusinessLogicException(ExceptionCode.COMMENT_NOT_FOUND)
         );
+
+        if(userComment.getUserCommentStatus() == UserCommentStatus.COMMENT_DELETED) {
+            throw new BusinessLogicException(ExceptionCode.COMMNET_DELETED);
+        }
+
+        return userComment;
     }
+
+
 
     private UserComment setUserAndWriter(UserComment userComment) {
         User user = userService.findUser(userComment.getUser().getUserId());

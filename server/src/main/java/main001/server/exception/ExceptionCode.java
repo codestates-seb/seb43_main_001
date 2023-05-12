@@ -16,10 +16,11 @@ public enum ExceptionCode {
 
 
     // comment 관련
-
+    COMMENT_NOT_FOUND(400,"댓글이 존재하지 않습니다."),
+    COMMNET_DELETED(204,"삭제된 댓글입니다."),
 
     // skill 관련
-    SKILL_EXISTS(409,"이미 존재하는 기술 태그입니다.");
+    SKILL_NOT_FOUND(400,"조회된 기술이 없습니다.");
 
     @Getter
     private int status;

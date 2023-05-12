@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class PortfolioDto {
@@ -61,9 +60,7 @@ public class PortfolioDto {
         private String description;
         private String content;
         private int views;
-
         private LocalDateTime createdAt;
-
         private LocalDateTime updatedAt;
     }
 }

@@ -2,6 +2,7 @@ package main001.server.domain.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.response.MultiResponseDto;
 import main001.server.response.SingleResponseDto;
 import main001.server.domain.user.dto.UserDto;
@@ -10,6 +11,7 @@ import main001.server.domain.user.mapper.UserMapper;
 import main001.server.domain.user.service.UserService;
 import main001.server.domain.user.utils.UriCreator;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -34,7 +36,7 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity join(@Valid @RequestBody UserDto.Post requestBody) {
         User user = mapper.userPostToUser(requestBody);
-
+        user = userService.setUserSkills(user, requestBody.getSkills());
         User createdUser = userService.createUser(user);
         URI location = UriCreator.createUri(USER_DEFAULT_URL, createdUser.getUserId());
 
@@ -62,6 +64,20 @@ public class UserController {
         List<User> users = pageUsers.getContent();
         return new ResponseEntity<>(
                 new MultiResponseDto<>(mapper.usersToUserResponses(users), pageUsers), HttpStatus.OK
+        );
+    }
+    @GetMapping("/{user-id}/portfolio")
+    public ResponseEntity getUserPortfolios(@PathVariable("user-id") @Positive long userId,
+                                            @Positive @RequestParam(value = "page", defaultValue = "1") int page,
+                                            @Positive @RequestParam(value = "size", defaultValue = "15") int size,
+                                            @RequestParam(value = "sort", defaultValue = "createdAt") String sort,
+                                            @RequestParam(value = "order", defaultValue = "desc") String order) {
+        Sort.Direction direction = order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+                Page<Portfolio> pageUserPortfolios = userService.findPortfolioByUser(userId, page - 1, size, direction, sort);
+
+        List<Portfolio> userPortfolios = pageUserPortfolios.getContent();
+        return new ResponseEntity<>(
+                new MultiResponseDto<>(mapper.userPortfolioToUserResponses(userPortfolios), pageUserPortfolios), HttpStatus.OK
         );
     }
 

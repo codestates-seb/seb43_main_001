@@ -47,12 +47,16 @@ public class PortfolioService {
         return findVerifiedPortfolio(portfolioId);
     }
 
-    public Page<Portfolio> findPortfolios(int page, int size) {
-        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by("id").descending()));
-    }
-
     public List<Portfolio> findPortfolios() {
         return (List<Portfolio>) portfolioRepository.findAll();
+    }
+
+    public Page<Portfolio> findAllOrderByViewsDesc(int page, int size, Sort.Direction direction) {
+        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by("views").descending()));
+    }
+
+    public Page<Portfolio> findAllOrderByCreatedAtDesc(int page, int size, Sort.Direction direction) {
+        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by("createdAt").descending()));
     }
 
     public void deletePortfolio(long portfolioId) {
@@ -66,7 +70,8 @@ public class PortfolioService {
         return findPortfolio;
     }
 
-    public int updateView(long portfolioId, HttpServletRequest request, HttpServletResponse response) {
+    @Transactional
+    public int updateView(Long portfolioId, HttpServletRequest request, HttpServletResponse response) {
 
         Cookie[] cookies = request.getCookies();
         boolean checkCookie = false;
@@ -96,8 +101,8 @@ public class PortfolioService {
      * @param cookie
      * @return
      * */
-    private Cookie createCookieForForNotOverlap(Long postId) {
-        Cookie cookie = new Cookie(VIEWCOOKIENAME+postId, String.valueOf(postId));
+    private Cookie createCookieForForNotOverlap(Long portfolioId) {
+        Cookie cookie = new Cookie(VIEWCOOKIENAME+portfolioId, String.valueOf(portfolioId));
         cookie.setComment("조회수 중복 증가 방지 쿠키");	// 쿠키 용도 설명 기재
         cookie.setMaxAge(getRemainSecondForTommorow()); 	// 하루를 준다.
         cookie.setHttpOnly(true);				// 서버에서만 조작 가능
