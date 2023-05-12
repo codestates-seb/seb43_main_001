@@ -4,11 +4,12 @@ import { OAuthButton } from './OAuthBtn.style';
 type OauthBtnProps = {
   logo: React.ReactNode;
   text: string;
+  onClick: (e: React.MouseEvent) => void;
 };
 
-const OAuthBtn: React.FC<OauthBtnProps> = ({ logo, text }) => {
+const OAuthBtn: React.FC<OauthBtnProps> = ({ logo, text, onClick }) => {
   return (
-    <OAuthButton>
+    <OAuthButton onClick={onClick}>
       {logo}
       {text}
     </OAuthButton>
