@@ -1,22 +1,25 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type Login = {
   isLogin: boolean;
-  token: string | null;
+  accessToken: string | null;
+  refreshToken: string | null;
 };
 
-const initialState: Login = { isLogin: false, token: null };
+const initialState: Login = { isLogin: false, accessToken: null, refreshToken: null };
 const loginSlice = createSlice({
   name: 'login',
   initialState,
   reducers: {
-    login: (state, action) => {
+    login: (state, action: PayloadAction<{ accessToken: string; refreshToken: string }>) => {
       state.isLogin = true;
-      state.token = action.payload;
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
     },
-    logout: (state, action) => {
+    logout: (state, action: PayloadAction<null>) => {
       state.isLogin = false;
-      state.token = null;
+      state.accessToken = null;
+      state.refreshToken = null;
     },
   },
 });
