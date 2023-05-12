@@ -52,9 +52,11 @@ public class PortfolioCommentDto {
     @AllArgsConstructor
     public static class Response {
         private Long portfolioCommentId;
-        private Long userId;
-        private Long portfolioId;
         private String content;
+        private Long userId;
+        private String userName;
+        private String userProfileImg;
+        private Long portfolioId;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
     }

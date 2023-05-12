@@ -36,7 +36,6 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity join(@Valid @RequestBody UserDto.Post requestBody) {
         User user = mapper.userPostToUser(requestBody);
-        user = userService.setUserSkills(user, requestBody.getSkills());
         User createdUser = userService.createUser(user);
         URI location = UriCreator.createUri(USER_DEFAULT_URL, createdUser.getUserId());
 

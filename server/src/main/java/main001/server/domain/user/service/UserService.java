@@ -111,21 +111,4 @@ public class UserService {
                 new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
         return findUser;
     }
-
-    public User setUserSkills(User user,String skills) {
-        List<String> list = Arrays.asList(skills.split(","));
-
-        Iterator<String> iterator = list.iterator();
-
-        while(iterator.hasNext()) {
-            String name = iterator.next().toUpperCase();
-
-            UserSkill userSkill =
-                    UserSkill.createUserSkill(skillService.findByName(name));
-
-            user.addSkill(userSkill);
-        }
-
-        return user;
-    }
 }
