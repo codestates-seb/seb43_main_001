@@ -1,18 +1,21 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import themeReducer from '../store/slice/themeSlice';
+import loginReducer from '../store/slice/loginSlice';
 import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 // reducer를 여기에 추가하시면 됩니다
 const rootReducer = combineReducers({
   theme: themeReducer,
+  login: loginReducer,
 });
 
 const persistConfig = {
   key: 'root',
   storage,
-  // theme Reducer만 persist 적용하기
-  whitelist: ['theme'],
+
+  // persist 적용하기
+  whitelist: ['theme', 'login'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
