@@ -22,7 +22,7 @@ public class PortfolioCommentMapper {
         portfolioComment.setUser(user);
 
         Portfolio portfolio = new Portfolio();
-        portfolio.setId(postDto.getPortfolioId());
+        portfolio.setPortfolioId(postDto.getPortfolioId());
         portfolioComment.setPortfolio(portfolio);
 
         return portfolioComment;
@@ -43,7 +43,7 @@ public class PortfolioCommentMapper {
         portfolioComment.setUser(user);
 
         Portfolio portfolio = new Portfolio();
-        portfolio.setId(patchDto.getPortfolioId());
+        portfolio.setPortfolioId(patchDto.getPortfolioId());
         portfolioComment.setPortfolio(portfolio);
 
         return portfolioComment;
@@ -53,9 +53,11 @@ public class PortfolioCommentMapper {
     public PortfolioCommentDto.Response entityToResponse(PortfolioComment portfolioComment) {
         PortfolioCommentDto.Response response = new PortfolioCommentDto.Response(
                 portfolioComment.getPortfolioCommentId(),
-                portfolioComment.getUser().getUserId(),
-                portfolioComment.getPortfolio().getId(),
                 portfolioComment.getContent(),
+                portfolioComment.getUser().getUserId(),
+                portfolioComment.getUser().getName(),
+                portfolioComment.getPortfolio().getPortfolioId(),
+                portfolioComment.getPortfolio().getTitle(),
                 portfolioComment.getCreatedAt(),
                 portfolioComment.getUpdatedAt()
         );

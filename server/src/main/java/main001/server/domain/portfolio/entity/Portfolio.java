@@ -1,12 +1,10 @@
 package main001.server.domain.portfolio.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import main001.server.audit.BaseTimeEntity;
 import main001.server.domain.portfoliocomment.entity.PortfolioComment;
-import main001.server.domain.skill.entity.PortfolioSkill;
 import main001.server.domain.user.entity.User;
 
 import javax.persistence.*;
@@ -18,10 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 public class Portfolio extends BaseTimeEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long portfolioId;
 
     @Column(length = 500, nullable = false)
     private String title;
@@ -41,30 +38,25 @@ public class Portfolio extends BaseTimeEntity {
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
     private List<PortfolioComment> answers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PortfolioSkill> skills = new ArrayList<>();
 
-    public void addSkill(PortfolioSkill skill) {
-        skills.add(skill);
-        skill.setPortfolio(this);
-    }
-
-    public void addComment(PortfolioComment comment) {
-        answers.add(comment);
-        comment.setPortfolio(this);
-    }
-
-    public Portfolio(Long id, String title, String gitLink, String distributionLink, String description, String content, int views, User user) {
-        this.id = id;
-        this.title = title;
-        this.gitLink = gitLink;
-        this.distributionLink = distributionLink;
-        this.description = description;
-        this.content = content;
-        this.views = views;
+    public void setUser(User user) {
         this.user = user;
+        if (!user.getPortfolios().contains(this)) {
+            user.getPortfolios().add(this);
+        }
     }
+
+    public void setPortfolioComment(PortfolioComment portfolioComment) {
+        this.getAnswers().add(portfolioComment);
+        if (portfolioComment.getPortfolio() != this) {
+            portfolioComment.setPortfolio(this);
+        }
+    }
+
+
+
 }

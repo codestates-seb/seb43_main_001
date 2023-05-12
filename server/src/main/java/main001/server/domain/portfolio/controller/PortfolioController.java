@@ -44,7 +44,7 @@ public class PortfolioController {
                 UriComponentsBuilder
                         .newInstance()
                         .path(PORTFOLIO_DEFAULT_URL + "/{portfolio-id}")
-                        .buildAndExpand(portfolio.getId())
+                        .buildAndExpand(portfolio.getPortfolioId())
                         .toUri();
         return ResponseEntity.created(location).build();
     }
@@ -52,6 +52,7 @@ public class PortfolioController {
     @PatchMapping("/{portfolio-id}")
     public ResponseEntity patchPortfolio(@PathVariable("portfolio-id") long portfolioId,
                                          @RequestBody PortfolioDto.Patch patchDto) {
+        patchDto.setPortfolioId(portfolioId);
 
         Portfolio response = portfolioService.updatePortfolio(mapper.portfolioPatchDtoToPortfolio(patchDto));
         return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response)), HttpStatus.OK);
@@ -72,10 +73,12 @@ public class PortfolioController {
                                         @RequestParam(value = "sort", defaultValue = "createdAt") String sort,
                                         @RequestParam(value = "order", defaultValue = "desc") String order) {
         Sort.Direction direction = order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Page<Portfolio> pagePortfolios = portfolioService.findAllOrderByCreatedAtDesc(page-1,size,direction);
+        Page<Portfolio> pagePortfolios;
 
         if (sort.equals("views")) {
             pagePortfolios = portfolioService.findAllOrderByViewsDesc(page - 1, size, direction);
+        } else {
+            pagePortfolios = portfolioService.findAllOrderByCreatedAtDesc(page - 1, size, direction);
         }
 
         List<Portfolio> portfolios = pagePortfolios.getContent();
