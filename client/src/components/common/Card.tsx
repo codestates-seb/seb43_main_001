@@ -1,12 +1,28 @@
 import * as S from './Card.style';
-// import YellowTag from './YellowTag';
+import { useRouter } from '../../hooks/useRouter';
 
 // 임시 데이터
 const tagList = ['React', 'TypeScript', 'Redux'];
 
-function Card() {
+// TODO: API 완성되면 수정
+type CardProps = {
+  portfolioId?: string;
+  description?: string;
+  title?: string;
+  views?: number;
+  userId?: number;
+  name?: string;
+};
+
+function Card({ portfolioId, description, title, views, userId, name }: CardProps) {
+  const { routeTo } = useRouter();
   return (
-    <S.Container>
+    <S.Container
+      onClick={() => {
+        routeTo('/Detail/1');
+        // routeTo(`/Detail/${portfolioId}`);
+      }}
+    >
       <S.Thumbnail>
         <img
           src='https://plus.unsplash.com/premium_photo-1672907031583-60041cf55a8f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80'
@@ -15,11 +31,8 @@ function Card() {
       </S.Thumbnail>
       <S.Content>
         <S.CardContentWrapper>
-          <h1>&#91;테스트&#93; 길이가 긴 제목입니다</h1>
-          <p>
-            프로젝트 소개글을 남기는 곳. 소개글은 60자 제한이 있습니다. 너무 길지도, 짧지도 않게
-            작성해 주세요.
-          </p>
+          <h1>제목</h1>
+          <p>소개글</p>
         </S.CardContentWrapper>
         <S.CardInfoWrapper>
           <S.UserProfile>
