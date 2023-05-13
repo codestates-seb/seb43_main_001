@@ -14,10 +14,19 @@ export const Header = styled.nav`
   background-color: ${(props) => props.theme.themeStyle.backgroundColor};
 `;
 
+export const UserImg = styled.img`
+  width: 50px;
+  height: 50px;
+  margin-right: 1.2rem;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+`;
+
 export const ButtonContainer = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
-
   .header-login,
   .header-signup {
     display: none;
