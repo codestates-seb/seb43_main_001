@@ -1,16 +1,8 @@
 package main001.server.domain.portfolio.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import main001.server.domain.attachment.image.dto.ImageDto;
-
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -69,6 +61,7 @@ public class PortfolioDto {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
+    @Builder
     public static class Response {
         private long portfolioId;
         private long userId;
@@ -79,6 +72,7 @@ public class PortfolioDto {
         private String description;
         private String content;
         private String imgUrl;
+        private String fileUrl;
         private int views;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;

@@ -15,7 +15,8 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import main001.server.amazon.s3.service.S3Service;
-import main001.server.domain.attachment.image.dto.ImageDto;
+import main001.server.domain.attachment.file.entity.FileAttachment;
+import main001.server.domain.attachment.file.repository.FileAttachmentRepository;
 import main001.server.domain.attachment.image.entity.ImageAttachment;
 import main001.server.domain.attachment.image.repository.ImageAttachmentRepository;
 import main001.server.domain.portfolio.entity.Portfolio;
@@ -58,8 +59,9 @@ public class PortfolioService {
     private final S3Service s3Service;
 
     private final ImageAttachmentRepository imageAttachmentRepository;
+    private final FileAttachmentRepository fileAttachmentRepository;
     private final static String VIEWCOOKIENAME = "alreadyViewCookie";
-    public Portfolio createPortfolio(Portfolio portfolio, List<MultipartFile> images) throws IOException{
+    public Portfolio createPortfolio(Portfolio portfolio, List<MultipartFile> images, List<MultipartFile> files) throws IOException{
         User user = portfolio.getUser();
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
@@ -75,18 +77,11 @@ public class PortfolioService {
         }
         portfolio.setUser(verifiedUser.get());
 
-        if (!CollectionUtils.isNullOrEmpty(images)) {
-            ImageDto.Post imageDto;
-            ImageAttachment imageAttachment;
-            for (MultipartFile image : images) {
-                String imgUrl = s3Service.uploadFile(image);
 
-                imageDto = ImageDto.Post
-                        .builder()
-                        .imgUrl(imgUrl)
-                        .portfolio(portfolio)
-                        .build();
-                imageAttachment = new ImageAttachment(imageDto.getImgUrl());
+        if (!CollectionUtils.isNullOrEmpty(images)) {
+            for (MultipartFile image : images) {
+                String imgUrl = s3Service.uploadFile(image, "images");
+                ImageAttachment imageAttachment = new ImageAttachment(imgUrl);
                 imageAttachment.setPortfolio(portfolio);
 
                 portfolio.getImageAttachments().add(imageAttachment);
@@ -94,8 +89,17 @@ public class PortfolioService {
 
             }
         }
-//        addImage(portfolio, images);
 
+        if (!CollectionUtils.isNullOrEmpty(files)) {
+            for (MultipartFile file : files) {
+                String fileUrl = s3Service.uploadFile(file, "files");
+                FileAttachment fileAttachment = new FileAttachment(fileUrl);
+                fileAttachment.setPortfolio(portfolio);
+
+                portfolio.getFileAttachments().add(fileAttachment);
+                fileAttachmentRepository.save(fileAttachment);
+            }
+        }
 
         return portfolioRepository.save(portfolio);
     }
@@ -107,8 +111,6 @@ public class PortfolioService {
         if (!verifiedUser.isPresent() || !findPortfolio.getUser().getUserId().equals(user.getUserId())) {
             throw new BusinessLogicException(ExceptionCode.NO_PERMISSION_EDITING_POST);
         }
-        Optional.ofNullable(portfolio.getImageAttachments())
-                .ifPresent(images -> portfolio.setImageAttachments(images));
         Optional.ofNullable(portfolio.getTitle())
                 .ifPresent(title -> findPortfolio.setTitle(title));
         Optional.ofNullable(portfolio.getDescription())
@@ -131,14 +133,22 @@ public class PortfolioService {
         return (List<Portfolio>) portfolioRepository.findAll();
     }
 
-    public Page<Portfolio> findAllOrderByViewsDesc(int page, int size, Sort.Direction direction) {
-        return portfolioRepository.findAll(PageRequest.of(page, size, direction, "views"));
+//    public Page<Portfolio> findAllOrderByViewsDesc(int page, int size, Sort.Direction direction) {
+//        return portfolioRepository.findAll(PageRequest.of(page, size, direction, "views"));
+//    }
+//
+//    public Page<Portfolio> findAllOrderByCreatedAtDesc(int page, int size, Sort.Direction direction) {
+//        return portfolioRepository.findAll(PageRequest.of(page, size, direction, "createdAt"));
+//    }
+
+
+    public Page<Portfolio> findAllOrderByViewsDesc(int page, int size) {
+        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "views")));
     }
 
-    public Page<Portfolio> findAllOrderByCreatedAtDesc(int page, int size, Sort.Direction direction) {
-        return portfolioRepository.findAll(PageRequest.of(page, size, direction, "createdAt"));
+    public Page<Portfolio> findAllOrderByCreatedAtDesc(int page, int size) {
+        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")));
     }
-
     public void deletePortfolio(long portfolioId) {
         Portfolio portfolio = findVerifiedPortfolio(portfolioId);
         User user = portfolio.getUser();
@@ -158,21 +168,36 @@ public class PortfolioService {
     public void updateImage(Long portfolioId, List<MultipartFile> files) throws IOException{
         Portfolio portfolio = findPortfolio(portfolioId);
         if (!CollectionUtils.isNullOrEmpty(files)) {
-            ImageDto.Post imageDto;
-            ImageAttachment imageAttachment;
-            for (MultipartFile image : files) {
-                String imgUrl = s3Service.uploadFile(image);
-
-                imageDto = ImageDto.Post
-                        .builder()
-                        .imgUrl(imgUrl)
-                        .portfolio(portfolio)
-                        .build();
-                imageAttachment = new ImageAttachment(imageDto.getImgUrl());
+            for (MultipartFile file : files) {
+                String folderName = "files";
+                if (file.getContentType().startsWith("image/")) {
+                    folderName = "images";
+                }
+                String imgUrl = s3Service.uploadFile(file, folderName);
+                ImageAttachment imageAttachment = new ImageAttachment(imgUrl);
                 imageAttachment.setPortfolio(portfolio);
 
                 portfolio.getImageAttachments().add(imageAttachment);
                 imageAttachmentRepository.save(imageAttachment);
+
+            }
+        }
+    }
+
+    public void updateFile(Long portfolioId, List<MultipartFile> files) throws IOException{
+        Portfolio portfolio = findPortfolio(portfolioId);
+        if (!CollectionUtils.isNullOrEmpty(files)) {
+            for (MultipartFile file : files) {
+                String folderName = "files";
+                if (file.getContentType().startsWith("image/")) {
+                    folderName = "images";
+                }
+                String fileUrl = s3Service.uploadFile(file, folderName);
+                FileAttachment fileAttachment = new FileAttachment(fileUrl);
+                fileAttachment.setPortfolio(portfolio);
+
+                portfolio.getFileAttachments().add(fileAttachment);
+                fileAttachmentRepository.save(fileAttachment);
 
             }
         }
@@ -183,6 +208,14 @@ public class PortfolioService {
             String originalFileName = url.split("amazonaws.com/")[1];
             s3Service.removeS3File(originalFileName);
             imageAttachmentRepository.delete(imageAttachmentRepository.findByImgUrl(url));
+        }
+    }
+
+    public void deleteFile(List<String> urlList) {
+        for (String url : urlList) {
+            String originalFileName = url.split("amazonaws.com/")[1];
+            s3Service.removeS3File(originalFileName);
+            fileAttachmentRepository.delete(fileAttachmentRepository.findByFileUrl(url));
         }
     }
 

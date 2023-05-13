@@ -33,7 +33,6 @@ public class PortfolioController {
     private final static String PORTFOLIO_DEFAULT_URL = "/portfolios";
     private final PortfolioService portfolioService;
     private final PortfolioMapper mapper;
-
     private final S3Service s3Service;
 
     public PortfolioController(PortfolioService portfolioService, PortfolioMapper mapper, S3Service s3Service) {
@@ -44,11 +43,12 @@ public class PortfolioController {
 
     @PostMapping
     public ResponseEntity postPortfolio(@Valid @RequestPart PortfolioDto.Post postDto,
-                                        @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
+                                        @RequestPart(value = "images", required = false) List<MultipartFile> images,
+                                        @RequestPart(value = "files", required = false) List<MultipartFile> files) throws IOException {
 
         Portfolio portfolio = mapper.portfolioPostDtoToPortfolio(postDto);
 
-        Portfolio response = portfolioService.createPortfolio(portfolio, images);
+        Portfolio response = portfolioService.createPortfolio(portfolio, images, files);
 
 
         URI location =
@@ -63,17 +63,19 @@ public class PortfolioController {
     @PatchMapping("/{portfolio-id}")
     public ResponseEntity patchPortfolio(@PathVariable("portfolio-id") long portfolioId,
                                          @RequestPart PortfolioDto.Patch patchDto,
-                                         @RequestPart(value = "images", required = false) List<MultipartFile> images
-                                        ) throws IOException{
+                                         @RequestPart(value = "images", required = false) List<MultipartFile> images,
+                                         @RequestPart(value = "files", required = false) List<MultipartFile> files) throws IOException{
         patchDto.setPortfolioId(portfolioId);
         Portfolio portfolio = mapper.portfolioPatchDtoToPortfolio(patchDto);
 
         List<String> deleteList = patchDto.getDelete();
 
         if (images != null) portfolioService.updateImage(portfolioId, images);
-
-        if (deleteList != null) portfolioService.deleteImage(deleteList);
-
+        if (files != null) portfolioService.updateFile(portfolioId, files);
+        if (deleteList != null) {
+            portfolioService.deleteImage(deleteList);
+            portfolioService.deleteFile(deleteList);
+        }
         Portfolio response = portfolioService.updatePortfolio(portfolio);
         return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response)), HttpStatus.OK);
     }
@@ -90,17 +92,13 @@ public class PortfolioController {
     @GetMapping
     public ResponseEntity getPortfolios(@Positive @RequestParam int page,
                                         @Positive @RequestParam int size,
-                                        @RequestParam(value = "sort", defaultValue = "createdAt") String sort,
-                                        @RequestParam(value = "order", defaultValue = "desc") String order) {
-        Sort.Direction direction = order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+                                        @RequestParam(value = "sort", defaultValue = "createdAt") String sort) {
         Page<Portfolio> pagePortfolios;
-
         if (sort.equals("views")) {
-            pagePortfolios = portfolioService.findAllOrderByViewsDesc(page - 1, size, direction);
+            pagePortfolios = portfolioService.findAllOrderByViewsDesc(page - 1, size);
         } else {
-            pagePortfolios = portfolioService.findAllOrderByCreatedAtDesc(page - 1, size, direction);
+            pagePortfolios = portfolioService.findAllOrderByCreatedAtDesc(page - 1, size);
         }
-
         List<Portfolio> portfolios = pagePortfolios.getContent();
         return new ResponseEntity<>(new MultiResponseDto<>(mapper.portfolioToPortfolioResponseDtos(portfolios), pagePortfolios), HttpStatus.OK);
     }

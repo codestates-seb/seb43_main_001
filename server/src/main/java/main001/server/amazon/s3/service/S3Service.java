@@ -11,15 +11,13 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import lombok.RequiredArgsConstructor;
-import main001.server.domain.attachment.image.dto.ImageDto;
-import main001.server.domain.attachment.image.entity.ImageAttachment;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.util.StringUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,24 +44,30 @@ public class S3Service {
     }
 
 
-    public String uploadFile(MultipartFile file) throws IOException {
-
+    public String uploadFile(MultipartFile file, String folderName) throws IOException {
         if (file == null || file.isEmpty()) {
             return null;
         }
 
-        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setCacheControl(file.getContentType());
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        String fileName = UUID.randomUUID().toString() + "." + extension;
+        String folderKey;
+        if (fileName != null && !fileName.isEmpty()) {
+            folderKey = folderName + "/";
+        } else folderKey = "";
 
-        try(InputStream inputStream = file.getInputStream()) {
-            s3Client.putObject(new PutObjectRequest(bucketName, fileName, inputStream,objectMetadata)
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(file.getContentType());
+        objectMetadata.setContentLength(file.getSize());
+
+        try (InputStream inputStream = file.getInputStream()) {
+            s3Client.putObject(new PutObjectRequest(bucketName, folderKey + fileName, inputStream, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
-        } catch(Exception e) {
-                throw new RuntimeException("cannot upload image");
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload file to S3", e);
         }
 
-        return s3Client.getUrl(bucketName, fileName).toString();
+        return s3Client.getUrl(bucketName, folderKey + fileName).toString();
     }
 
 
