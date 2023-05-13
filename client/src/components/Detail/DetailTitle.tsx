@@ -2,10 +2,18 @@ import * as S from './DetailTitle.style';
 
 type LinkName = readonly [string, string];
 
+type DetailTileProps = {
+  title?: string | undefined;
+  name: string | undefined;
+  gitLink: string | undefined;
+  distributionLink: string | undefined;
+};
+
 // 상세 페이지 포트폴리오 제목 및 사용자 정보
-function DetailTitle() {
+function DetailTitle({ name, title, gitLink, distributionLink }: DetailTileProps) {
   const dummy = ['JAVA', 'Spring'];
   const linkName: LinkName = ['깃헙링크', '배포링크'];
+
   return (
     <S.DetailTitle>
       <S.TitleUpper>
@@ -25,7 +33,11 @@ function DetailTitle() {
                 </S.Link>
               );
             }
-            return <S.Link key={idx}>{name}</S.Link>;
+            return (
+              <S.Link key={idx} href={''}>
+                {name}
+              </S.Link>
+            );
           })}
         </S.Links>
         <S.Tags>

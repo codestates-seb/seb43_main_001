@@ -19,6 +19,7 @@ export const Update = styled.div`
 `;
 
 export const Content = styled.div`
+  padding: 1.2rem;
   font-weight: 700;
 `;
 
