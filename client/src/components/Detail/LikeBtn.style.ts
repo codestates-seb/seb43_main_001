@@ -25,6 +25,9 @@ export const LikeBtnWrapper = styled.section`
   &:active,
   &:hover {
     border: 1px solid red;
+    svg {
+      color: red;
+    }
   }
 `;
 
@@ -32,10 +35,6 @@ export const LikeIcon = styled(RxHeartFilled)`
   font-size: 40px;
   color: ${subFontColor};
 
-  &:active,
-  &:hover {
-    color: red;
-  }
   @media ${({ theme }) => theme.breakpoints.TABLETMIN} {
     font-size: 33px;
   }

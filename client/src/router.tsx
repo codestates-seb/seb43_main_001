@@ -88,6 +88,7 @@ export const routers: RemixRouter = createBrowserRouter(
   // GeneralLayout 에는 페이지 컴포넌트를 children 으로 전달
   routerData.map((router) => {
     if (router.withAuth) {
+      // !: 로그인 페이지로 라우팅을 해야 할 것 같음!
       return {
         path: router.path,
         element: <GeneralLayout>{router.element}</GeneralLayout>,
