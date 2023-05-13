@@ -15,7 +15,7 @@ import { useState } from 'react';
 
 // redux
 import { useAppSelector, useAppDispatch } from '../../hooks/reduxHook';
-import { logout, login } from '../../store/slice/loginSlice';
+import { logout } from '../../store/slice/loginSlice';
 
 // *: header 컴포넌트
 function Header() {
@@ -25,7 +25,6 @@ function Header() {
   const dispatch = useAppDispatch();
 
   const handleLogoClick = () => {
-    dispatch(login(null));
     routeTo('/');
   };
 
