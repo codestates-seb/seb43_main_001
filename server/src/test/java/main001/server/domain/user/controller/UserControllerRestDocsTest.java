@@ -125,13 +125,8 @@ public class UserControllerRestDocsTest {
         long userId = 1L;
         UserDto.Response response = new UserDto.Response(1L,"test1@gmail.com",
                 "사용자1",
-                "",
-                "https://github.com/test1",
-                "https://blog.com/test1",
-                NOVICE,
                 USER_ACTIVE,
-                JOB_SEEKING,
-                "자기소개",
+                true,
                 LocalDateTime.now(),
                 LocalDateTime.now());
         given(userService.findUser(Mockito.anyLong())).willReturn(new User());
@@ -144,7 +139,6 @@ public class UserControllerRestDocsTest {
         actions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.email").value(response.getEmail()))
                 .andExpect(jsonPath("$.data.name").value(response.getName()))
-                .andExpect(jsonPath("$.data.about").value(response.getAbout()))
                 .andDo(document("get-user",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -154,18 +148,12 @@ public class UserControllerRestDocsTest {
                                 fieldWithPath("data.userId").type(JsonFieldType.NUMBER).description("회원 식별자"),
                                 fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
-                                fieldWithPath("data.profileImg").type(JsonFieldType.STRING).description("프로필 이미지"),
-                                fieldWithPath("data.gitLink").type(JsonFieldType.STRING).description("깃 링크"),
-                                fieldWithPath("data.blogLink").type(JsonFieldType.STRING).description("블로그 링크"),
-                                fieldWithPath("data.grade").type(JsonFieldType.STRING).description("회원등급 : NOVICE(초보자), INTERMEDIATE(중급자), ADVANCED(고급자), EXPERT(전문가), MASTER(마스터)"),
                                 fieldWithPath("data.userStatus").type(JsonFieldType.STRING).description("회원상태 : USER_ACTIVE(활동중), USER_SLEEP(휴면 상태), USER_QUIT(탈퇴 상태)"),
-                                fieldWithPath("data.jobStatus").type(JsonFieldType.STRING).description("구직현황 :  JOB_SEEKING(구직중), ON_THE_JOB(재직중), STUDENT(학생)"),
-                                fieldWithPath("data.about").type(JsonFieldType.STRING).description("자기소개"),
+                                fieldWithPath("data.auth").type(JsonFieldType.BOOLEAN).description("권한 여부"),
                                 fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("생성된 시간"),
                                 fieldWithPath("data.updatedAt").type(JsonFieldType.STRING).description("수정된 시간")
                         ))
                 ));
-
     }
 
     @Test
@@ -192,9 +180,9 @@ public class UserControllerRestDocsTest {
 
         Page<User> users = new PageImpl<>(List.of(user1, user2, user3),
                 PageRequest.of(0, 10, Sort.by("userId").descending()), 3);
-        List<UserDto.Response> responses = List.of(new UserDto.Response(1L, "test1@gmail.com", "사용자1", "", "https://github.com/test1", "https://blog.com/test1", NOVICE, USER_ACTIVE, JOB_SEEKING, "자기소개", LocalDateTime.now(), LocalDateTime.now()),
-                                                    new UserDto.Response(2L, "test2@gmail.com", "사용자2", "", "https://github.com/test2", "https://blog.com/test2", NOVICE, USER_ACTIVE, JOB_SEEKING, "자기소개", LocalDateTime.now(), LocalDateTime.now()),
-                                                    new UserDto.Response(3L, "test3@gmail.com", "사용자3", "", "https://github.com/test3", "https://blog.com/test3", NOVICE, USER_ACTIVE, JOB_SEEKING, "자기소개", LocalDateTime.now(), LocalDateTime.now()));
+        List<UserDto.Response> responses = List.of(new UserDto.Response(1L, "test1@gmail.com", "사용자1", USER_ACTIVE, true, LocalDateTime.now(), LocalDateTime.now()),
+                                                    new UserDto.Response(2L, "test2@gmail.com", "사용자2", USER_ACTIVE, true, LocalDateTime.now(), LocalDateTime.now()),
+                                                    new UserDto.Response(3L, "test3@gmail.com", "사용자3", USER_ACTIVE, true, LocalDateTime.now(), LocalDateTime.now()));
 
         given(userService.findUsers(Mockito.anyInt(), Mockito.anyInt())).willReturn(users);
         given(mapper.usersToUserResponses(Mockito.anyList())).willReturn(responses);
@@ -221,13 +209,8 @@ public class UserControllerRestDocsTest {
                                 fieldWithPath("data[].userId").type(JsonFieldType.NUMBER).description("회원 식별자"),
                                 fieldWithPath("data[].email").type(JsonFieldType.STRING).description("이메일"),
                                 fieldWithPath("data[].name").type(JsonFieldType.STRING).description("이름"),
-                                fieldWithPath("data[].profileImg").type(JsonFieldType.STRING).description("프로필 이미지"),
-                                fieldWithPath("data[].gitLink").type(JsonFieldType.STRING).description("깃 링크"),
-                                fieldWithPath("data[].blogLink").type(JsonFieldType.STRING).description("블로그 링크"),
-                                fieldWithPath("data[].grade").type(JsonFieldType.STRING).description("회원등급 : NOVICE(초보자), INTERMEDIATE(중급자), ADVANCED(고급자), EXPERT(전문가), MASTER(마스터)"),
                                 fieldWithPath("data[].userStatus").type(JsonFieldType.STRING).description("회원상태 : USER_ACTIVE(활동중), USER_SLEEP(휴면 상태), USER_QUIT(탈퇴 상태)"),
-                                fieldWithPath("data[].jobStatus").type(JsonFieldType.STRING).description("구직현황 :  JOB_SEEKING(구직중), ON_THE_JOB(재직중), STUDENT(학생)"),
-                                fieldWithPath("data[].about").type(JsonFieldType.STRING).description("자기소개"),
+                                fieldWithPath("data[].auth").type(JsonFieldType.BOOLEAN).description("권한 여부"),
                                 fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("생성된 시간"),
                                 fieldWithPath("data[].updatedAt").type(JsonFieldType.STRING).description("수정된 시간"),
                                 fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
@@ -238,6 +221,44 @@ public class UserControllerRestDocsTest {
                         ))
                 ))
                 .andReturn();
+    }
+
+    @Test
+    @DisplayName("회원 프로필 조회")
+    public void getUserProfileTest() throws Exception {
+        // given
+        long userId = 1L;
+        UserDto.UserProfileResponse response = new UserDto.UserProfileResponse(1L, "test1@gmail.com", "사용자1", "", "https://github.com/test1", "https://blog.com/test1", NOVICE, ON_THE_JOB, "자기 소개",true, LocalDateTime.now(), LocalDateTime.now());
+        given(userService.findUser(Mockito.anyLong())).willReturn(new User());
+        given(mapper.userToUserProfileResponse(Mockito.any(User.class))).willReturn(response);
+
+        // then
+        ResultActions actions = mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/users/{user-id}/profile", userId)
+                        .accept(MediaType.APPLICATION_JSON));
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.email").value(response.getEmail()))
+                .andExpect(jsonPath("$.data.about").value(response.getAbout()))
+                .andDo(document("get-userprofile",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(parameterWithName("user-id").description("회원 식별자")),
+                        responseFields(List.of(
+                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터"),
+                                fieldWithPath("data.userId").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
+                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
+                                fieldWithPath("data.profileImg").type(JsonFieldType.STRING).description("프로필 이미지"),
+                                fieldWithPath("data.gitLink").type(JsonFieldType.STRING).description("깃 링크"),
+                                fieldWithPath("data.blogLink").type(JsonFieldType.STRING).description("블로그 링크"),
+                                fieldWithPath("data.grade").type(JsonFieldType.STRING).description("회원등급 : NOVICE(초보자), INTERMEDIATE(중급자), ADVANCED(고급자), EXPERT(전문가), MASTER(마스터)"),
+                                fieldWithPath("data.jobStatus").type(JsonFieldType.STRING).description("구직현황 :  JOB_SEEKING(구직중), ON_THE_JOB(재직중), STUDENT(학생)"),
+                                fieldWithPath("data.about").type(JsonFieldType.STRING).description("자기소개"),
+                                fieldWithPath("data.auth").type(JsonFieldType.BOOLEAN).description("권한 여부"),
+                                fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("생성된 시간"),
+                                fieldWithPath("data.updatedAt").type(JsonFieldType.STRING).description("수정된 시간")
+                        ))
+                ));
     }
 
     @Test
@@ -252,9 +273,9 @@ public class UserControllerRestDocsTest {
 
         Long userId = 1L;
         User user = new User(1L, "test1@gmail.com","사용자1","","https://github.com/test1","https://blog.com/test1", JOB_SEEKING,"자기소개");
-        Portfolio portfolio1 = new Portfolio(1L, "제목", "https://github.com/test1", "https://distribution.com/test1", "소개글", "내용", 0, user);
-        Portfolio portfolio2 = new Portfolio(1L, "제목", "https://github.com/test1", "https://distribution.com/test1", "소개글", "내용", 0, user);
-        Portfolio portfolio3 = new Portfolio(1L, "제목", "https://github.com/test1", "https://distribution.com/test1", "소개글", "내용", 0, user);
+        Portfolio portfolio1 = new Portfolio();
+        Portfolio portfolio2 = new Portfolio();
+        Portfolio portfolio3 = new Portfolio();
 
         Page<Portfolio> portfolioPage =
                 new PageImpl<>(List.of(portfolio1, portfolio2, portfolio3),
@@ -317,16 +338,15 @@ public class UserControllerRestDocsTest {
                 "",
                 "https://github.com/patch1", // 변경전 "https://github.com/test1"
                 "https://blog.com/patch1", //변경전 "https://blog.com/test1"
-                USER_ACTIVE,
                 ON_THE_JOB, // 변경전 JOB_SEEKING
                 "수정 완료"); // 변경전 "자기소개"
         String patchContent = gson.toJson(patch);
 
-        UserDto.Response responseDto = new UserDto.Response(1L, "test1@gmail.com", "변경1", "", "https://github.com/patch1", "https://blog.com/patch1", NOVICE, USER_ACTIVE, ON_THE_JOB, "수정 완료", LocalDateTime.now(), LocalDateTime.now());
+        UserDto.UserProfileResponse responseDto = new UserDto.UserProfileResponse(1L, "test1@gmail.com", "변경1", "", "https://github.com/patch1", "https://blog.com/patch1", NOVICE, ON_THE_JOB, "수정 완료",true, LocalDateTime.now(), LocalDateTime.now());
 
         given(mapper.userPatchToUser(Mockito.any(UserDto.Patch.class))).willReturn(new User());
         given(userService.updateUser(Mockito.any(User.class))).willReturn(new User());
-        given(mapper.userToUserResponse(Mockito.any(User.class))).willReturn(responseDto);
+        given(mapper.userToUserProfileResponse(Mockito.any(User.class))).willReturn(responseDto);
 
         // when
         ResultActions actions =
@@ -356,7 +376,6 @@ public class UserControllerRestDocsTest {
                                 fieldWithPath("profileImg").type(JsonFieldType.STRING).description("프로필 이미지").optional(),
                                 fieldWithPath("gitLink").type(JsonFieldType.STRING).description("깃 링크").optional(),
                                 fieldWithPath("blogLink").type(JsonFieldType.STRING).description("블로그 링크").optional(),
-                                fieldWithPath("userStatus").type(JsonFieldType.STRING).description("회원상태 : USER_ACTIVE(활동중), USER_SLEEP(휴면 상태), USER_QUIT(탈퇴 상태)").optional(),
                                 fieldWithPath("jobStatus").type(JsonFieldType.STRING).description("구직현황 : JOB_SEEKING(구직중), ON_THE_JOB(재직중), STUDENT(학생)").optional(),
                                 fieldWithPath("about").type(JsonFieldType.STRING).description("자기소개").optional()
 
@@ -370,9 +389,9 @@ public class UserControllerRestDocsTest {
                                 fieldWithPath("data.gitLink").type(JsonFieldType.STRING).description("깃 링크"),
                                 fieldWithPath("data.blogLink").type(JsonFieldType.STRING).description("블로그 링크"),
                                 fieldWithPath("data.grade").type(JsonFieldType.STRING).description("회원등급 : NOVICE(초보자), INTERMEDIATE(중급자), ADVANCED(고급자), EXPERT(전문가), MASTER(마스터)"),
-                                fieldWithPath("data.userStatus").type(JsonFieldType.STRING).description("회원상태 : USER_ACTIVE(활동중), USER_SLEEP(휴면 상태), USER_QUIT(탈퇴 상태)"),
                                 fieldWithPath("data.jobStatus").type(JsonFieldType.STRING).description("구직현황 :  JOB_SEEKING(구직중), ON_THE_JOB(재직중), STUDENT(학생)"),
                                 fieldWithPath("data.about").type(JsonFieldType.STRING).description("자기소개"),
+                                fieldWithPath("data.auth").type(JsonFieldType.BOOLEAN).description("권한 여부"),
                                 fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("생성된 시간"),
                                 fieldWithPath("data.updatedAt").type(JsonFieldType.STRING).description("수정된 시간")
                         ))
