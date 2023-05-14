@@ -1,12 +1,45 @@
+import { useDispatch } from 'react-redux';
 import { YellowBtn } from '../common/Button.style';
-import { user } from './mock';
+// import { user } from './mock';
 import * as S from './UserBasicInfo.style';
+import { setImg, setName } from '../../store/slice/userInfoSlice';
+import { useState } from 'react';
 
 type UserBasicInfoProps = {
   onEdit: boolean;
-  photo: string;
+  name: string;
+  profileImg: string;
+  gitLink: string;
+  auth: boolean;
 };
-const UserBasicInfo: React.FC<UserBasicInfoProps> = ({ onEdit, photo }) => {
+const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
+  onEdit,
+  name,
+  profileImg,
+  gitLink,
+  auth,
+}) => {
+  const [photo, setPhoto] = useState<string>(profileImg);
+  const [userName, setUserName] = useState<string>(name);
+  const dispatch = useDispatch();
+  const fileUploadHanlder = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const target = e.currentTarget;
+    const files = (target.files as FileList)[0];
+    if (!files) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPhoto(reader.result as string);
+    };
+    reader.readAsDataURL(files);
+
+    // ? : axios를 통해서 전달하는 부분이 files여야 하는지 photo(url)이어야 하는지?
+    dispatch(setImg(files));
+  };
+  const nameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value;
+    setUserName(value);
+    dispatch(setName(value));
+  };
   return (
     <S.BasicInfo>
       {onEdit ? (
@@ -16,38 +49,36 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({ onEdit, photo }) => {
             변경
           </div>
           <img src={photo} />
-          <input id='attach-file' type='file' accept='image/*' />
+          <input id='attach-file' type='file' accept='image/*' onChange={fileUploadHanlder} />
         </S.EditImg>
       ) : (
         <S.UserImg>
-          <img src={user.img} />
+          <img src={profileImg} />
         </S.UserImg>
       )}
       <div>
         {onEdit ? (
           <S.EditName>
             Name
-            <input />
+            <input onChange={nameHandler} value={userName} />
           </S.EditName>
         ) : (
-          <S.UserName>{user.name}</S.UserName>
+          <S.UserName>{name}</S.UserName>
         )}
         <S.GitBtn>
-          <a href={user.github} target='_blank' rel='noreferrer'>
+          <a href={gitLink} target='_blank' rel='noreferrer'>
             <S.GithubIcon />
             <span>Github</span>
           </a>
         </S.GitBtn>
         <div>
           <S.FollowrIcon />
-          <span>{user.follower}</span>
-          <S.ViewIcon />
-          <span>{user.view}</span>
+          {/* <span>{follower}</span> */}
+          {/* <S.ViewIcon /> */}
+          {/* <span>{view}</span> */}
         </div>
       </div>
-      <S.Buttons>
-        <YellowBtn>Follow</YellowBtn>
-      </S.Buttons>
+      <S.Buttons>{!auth && <YellowBtn>Follow</YellowBtn>}</S.Buttons>
     </S.BasicInfo>
   );
 };

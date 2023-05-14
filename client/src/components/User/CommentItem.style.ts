@@ -3,7 +3,7 @@ import { RxCross2, RxPencil2, RxCheck, RxDoubleArrowRight } from 'react-icons/rx
 import { COLOR } from '../../constants/index';
 const { subFontColor } = COLOR;
 
-export const Feedback = styled.li`
+export const CommentItem = styled.li`
   padding: 10px;
   padding-bottom: 40px;
   margin: 10px 0;
@@ -37,7 +37,7 @@ export const ImgBox = styled.div`
     height: 20px;
   }
 `;
-export const FeedbackUser = styled.div`
+export const CommentUser = styled.div`
   display: flex;
   position: absolute;
   bottom: 10px;
