@@ -12,6 +12,28 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  profiles:
+    active: local
+    group:
+      local: profiles-local
+      dev: profiles-dev
+
+# AWS 설정
+cloud:
+  aws:
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
+    s3:
+      bucket: ${S3_BUCKET_NAME}
+    region:
+      static: ap-northeast-2  # AWS 기본 리전을 설정
+    stack:
+      auto: false
+
+---
+# Multipart 설정
+spring:
   servlet:
     multipart:
       location: c:\\portfolio
@@ -41,6 +63,8 @@ spring:
             scope:
               - email
               - profile
+      max-file-size: 100MB # 요청한 파일 한 개의 크기
+      max-request-size: 100MB # 요청한 파일 전체의 크기
 
 logging:
   level:
@@ -61,3 +85,4 @@ jwt:
   secret-key: ${JWT_SECRET_KEY}
   access-token-expiration: 1440 # Access Token 유효기간(단위 : 분단위)
   refresh-token-expiration: 2880 # Refresh Token 유효기간(단위 : 분단위)
+

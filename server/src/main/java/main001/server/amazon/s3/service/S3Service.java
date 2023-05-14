@@ -60,12 +60,17 @@ public class S3Service {
         objectMetadata.setContentType(file.getContentType());
         objectMetadata.setContentLength(file.getSize());
 
-        try (InputStream inputStream = file.getInputStream()) {
-            s3Client.putObject(new PutObjectRequest(bucketName, folderKey + fileName, inputStream, objectMetadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to upload file to S3", e);
-        }
+        InputStream inputStream = file.getInputStream();
+
+        s3Client.putObject(new PutObjectRequest(bucketName, folderKey + fileName, inputStream, objectMetadata)
+                .withCannedAcl(CannedAccessControlList.PublicRead));
+
+//        try (InputStream inputStream = file.getInputStream()) {
+//            s3Client.putObject(new PutObjectRequest(bucketName, folderKey + fileName, inputStream, objectMetadata)
+//                    .withCannedAcl(CannedAccessControlList.PublicRead));
+//        } catch (Exception e) {
+//            throw new RuntimeException("Failed to upload file to S3", e);
+//        }
 
         return s3Client.getUrl(bucketName, folderKey + fileName).toString();
     }
