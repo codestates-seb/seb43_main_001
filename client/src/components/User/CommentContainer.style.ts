@@ -2,11 +2,11 @@ import styled from 'styled-components';
 import { COLOR } from '../../constants/index';
 const { subFontColor, mainColor } = COLOR;
 
-export const FeedbackContainer = styled.div`
+export const CommentContainer = styled.div`
   padding: 10px;
   border-top: 1px double black;
 `;
-export const Feedbacks = styled.ul`
+export const Comments = styled.ul`
   height: 300px;
   overflow: scroll;
   -ms-overflow-style: none;
@@ -14,7 +14,7 @@ export const Feedbacks = styled.ul`
     display: none;
   }
 `;
-export const FeedbackAdd = styled.form`
+export const CommentAdd = styled.form`
   width: 100%;
   display: flex;
   flex-direction: column;
