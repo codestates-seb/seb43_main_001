@@ -1,0 +1,137 @@
+{
+  "users": {
+    "userId": 1,
+    "email": "test1@gmail.com",
+    "name": "사용자 수정",
+    "profileImg": "https://images.unsplash.com/photo-1488161628813-04466f872be2?crop=entropy&cs=srgb&fm=jpg&ixid=Mnw3MjAxN3wwfDF8c2VhcmNofDl8fHBlb3BsZXxlbnwwfHx8fDE2ODMwODA2MDQ&ixlib=rb-4.0.3&q=85&q=85&fmt=jpg&crop=entropy&cs=tinysrgb&w=450",
+    "gitLink": "https://github.com/test1",
+    "blogLink": "https://blog.com/test123123",
+    "grade": "NOVICE",
+    "userStatus": "USER_ACTIVE",
+    "jobStatus": "STUDENT",
+    "about": "자기소개 수정 완료",
+    "createdAt": "2023-05-08T14:21:15.3725817",
+    "updatedAt": "2023-05-08T14:21:15.3735807",
+    "auth": true
+  },
+  "portfoloi": {
+    "data": [
+      {
+        "id": 3,
+        "title": "title1",
+        "gitLink": "https://github.com/codestates-seb/seb43_main_001.git",
+        "distributionLink": "http://localhost:8080",
+        "description": "description",
+        "content": "content",
+        "views": 3,
+        "createdAt": "2023-05-08T14:29:05.0657432",
+        "updatedAt": "2023-05-08T14:29:05.0657432"
+      },
+      {
+        "id": 2,
+        "title": "title2",
+        "gitLink": "https://github.com/codestates-seb/seb43_main_001.git",
+        "distributionLink": "http://localhost:8080",
+        "description": "description",
+        "content": "content",
+        "views": 2,
+        "createdAt": "2023-05-08T14:29:05.0657432",
+        "updatedAt": "2023-05-08T14:29:05.0657432"
+      },
+      {
+        "id": 1,
+        "title": "title3",
+        "gitLink": "https://github.com/codestates-seb/seb43_main_001.git",
+        "distributionLink": "http://localhost:8080",
+        "description": "description",
+        "content": "content",
+        "views": 1,
+        "createdAt": "2023-05-08T14:29:05.0657432",
+        "updatedAt": "2023-05-08T14:29:05.0657432"
+      }
+    ],
+    "pageInfo": {
+      "totalElements": 0,
+      "totalPages": 1
+    }
+  },
+  "comment": {
+    "data": [
+      {
+        "userCommentId": 1,
+        "userId": 1,
+        "writerName": "name",
+        "writerId": 3,
+        "content": "1번 댓글",
+        "createdAt": "2023-05-08T14:21:15.83477",
+        "updatedAt": "2023-05-08T14:21:15.83477"
+      },
+      {
+        "userCommentId": 3,
+        "writerName": "name",
+        "userId": 1,
+        "writerId": 4,
+        "content": "1번 댓글",
+        "createdAt": "2023-05-08T14:21:15.83477",
+        "updatedAt": "2023-05-08T14:21:15.83477"
+      }
+    ],
+    "pageInfo": {
+      "totalElements": 2,
+      "totalPages": 1
+    }
+  },
+  "toUser": {
+    "data": [
+      {
+        "userCommentId": 1,
+        "userId": 1,
+        "writerName": "name",
+        "writerId": 3,
+        "content": "1번 유저 댓글",
+        "createdAt": "2023-05-08T14:21:19.2886952",
+        "updatedAt": "2023-05-08T14:21:19.2886952"
+      },
+      {
+        "userCommentId": 2,
+        "userId": 2,
+        "writerName": "name",
+        "writerId": 3,
+        "content": "2번 유저 댓글",
+        "createdAt": "2023-05-08T14:21:19.2886952",
+        "updatedAt": "2023-05-08T14:21:19.2886952"
+      }
+    ],
+    "pageInfo": {
+      "totalElements": 2,
+      "totalPages": 1
+    },
+    "content": "1번 유저 댓글 수정"
+  },
+  "toPortfolio": {
+    "data": [
+      {
+        "portfolioCommentId": 1,
+        "userId": 1,
+        "writerName": "name",
+        "portfolioId": 1,
+        "content": "1번 포트폴리오 댓글",
+        "createdAt": "2023-05-08T14:20:57.3121778",
+        "updatedAt": "2023-05-08T14:20:57.3121778"
+      },
+      {
+        "portfolioCommentId": 3,
+        "userId": 1,
+        "writerName": "name",
+        "portfolioId": 2,
+        "content": "1번 포트폴리오 댓글",
+        "createdAt": "2023-05-08T14:20:57.3121778",
+        "updatedAt": "2023-05-08T14:20:57.3121778"
+      }
+    ],
+    "pageInfo": {
+      "totalElements": 2,
+      "totalPages": 1
+    }
+  }
+}
