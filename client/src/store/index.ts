@@ -1,6 +1,7 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import themeReducer from '../store/slice/themeSlice';
 import loginReducer from '../store/slice/loginSlice';
+import userInfoReducer from './slice/userInfoSlice';
 import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
@@ -8,6 +9,7 @@ import storage from 'redux-persist/lib/storage';
 const rootReducer = combineReducers({
   theme: themeReducer,
   login: loginReducer,
+  userInfo: userInfoReducer,
 });
 
 const persistConfig = {
@@ -15,7 +17,7 @@ const persistConfig = {
   storage,
 
   // persist 적용하기
-  whitelist: ['theme', 'login'],
+  whitelist: ['theme', 'login', 'userInfo'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
