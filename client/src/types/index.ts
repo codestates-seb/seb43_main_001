@@ -15,6 +15,17 @@ export type GetUserProfile = {
 };
 
 // Portfolio
+export type PostPortfolio = {
+  userId: number;
+  title: string;
+  img: File;
+  gitLink: string;
+  distributionLink: string;
+  description: string;
+  tags: string[];
+  content: string;
+};
+
 export type GetPortfolio = {
   portfolioId: number;
   userId: number;
