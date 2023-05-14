@@ -2,13 +2,19 @@ import React from 'react';
 import * as S from './TextBox.style';
 type TextBoxProps = {
   text: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  value: string;
 };
 
-const TextBox: React.FC<TextBoxProps> = ({ text }) => {
+const TextBox: React.FC<TextBoxProps> = ({ text, onChange, value }) => {
   return (
     <S.TextContainer>
       <S.Title>{text}</S.Title>
-      <S.InputBox placeholder={text + '을(를) 입력해주세요'}></S.InputBox>
+      <S.InputBox
+        placeholder={text + '을(를) 입력해주세요'}
+        onChange={onChange}
+        value={value}
+      ></S.InputBox>
     </S.TextContainer>
   );
 };
