@@ -24,6 +24,17 @@ export const PageTitle = styled.span`
     margin-bottom: 80px;
   }
 `;
-
+export const caution = styled.span`
+  color: red;
+  font-size: 0.5rem;
+  padding: 0.5rem;
+  font-weight: 500;
+  @media ${(props) => props.theme.breakpoints.TABLETMIN} {
+    font-size: 0.7rem;
+  }
+  @media ${(props) => props.theme.breakpoints.DESKTOPMIN} {
+    font-size: 0.9rem;
+  }
+`;
 export const ButtonContainer = styled(P.ButtonContainer)``;
 export const SubmitBtn = styled(P.SubmitBtn)``;
