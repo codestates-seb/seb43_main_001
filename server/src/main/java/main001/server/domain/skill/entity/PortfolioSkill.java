@@ -23,12 +23,31 @@ public class PortfolioSkill {
     @JoinColumn(name = "skill_id")
     private Skill skill;
 
-    public PortfolioSkill(Portfolio portfolio, Skill skill) {
+    public void deletePortfolioSkill() {
+        skill.decreaseCounting();
+    }
+
+    public static PortfolioSkill createPortfolioSkill( Skill skill) {
+        PortfolioSkill portfolioSkill = new PortfolioSkill();
+        portfolioSkill.setSkill(skill);
+
+        return portfolioSkill;
+    }
+
+    public void setPortfolio(Portfolio portfolio) {
         this.portfolio = portfolio;
-        this.skill = skill;
+
+        if(!portfolio.getSkills().contains(this)) {
+            portfolio.addSkill(this);
+        }
     }
 
     public void setSkill(Skill skill) {
         this.skill = skill;
+
+        if(!skill.getPortfolioSkills().contains(this)) {
+            skill.getPortfolioSkills().add(this);
+        }
+        skill.increaseCounting();
     }
 }

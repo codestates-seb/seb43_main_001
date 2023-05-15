@@ -28,10 +28,10 @@ public class Skill extends BaseTimeEntity {
     @Column(nullable = false, columnDefinition = "integer default 0")
     private int counting;
 
-    @OneToMany(mappedBy = "skill", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "skill", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<UserSkill> userSkills = new ArrayList<>();
 
-    @OneToMany(mappedBy = "skill", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "skill", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PortfolioSkill> portfolioSkills = new ArrayList<>();
 
     public Skill(String name) {

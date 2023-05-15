@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -110,5 +111,23 @@ public class UserService {
         User findUser = otionalUser.orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
         return findUser;
+    }
+
+    public void addSkills(User user,String skills) {
+        List<String> strings = Arrays.asList(skills.split(","));
+
+        user.getSkills()
+                .forEach(UserSkill::deleteUserSkill);
+
+        user.getSkills().clear();
+
+        strings.stream()
+                .map(name -> {
+                    UserSkill userSkill = UserSkill.createUserSkill(
+                            skillService.findByName(name.toUpperCase())
+                    );
+                    return userSkill;
+                })
+                .forEach(user::addSkill);
     }
 }

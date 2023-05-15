@@ -1,5 +1,6 @@
 package main001.server.domain.skill.entity;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import main001.server.domain.user.entity.User;
@@ -8,7 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserSkill {
 
     @Id

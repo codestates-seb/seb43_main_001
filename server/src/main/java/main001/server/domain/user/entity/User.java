@@ -64,7 +64,7 @@ public class User extends BaseTimeEntity {
 
     private boolean auth = false;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserSkill> skills = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
@@ -91,5 +91,10 @@ public class User extends BaseTimeEntity {
         this.email = email;
         this.name = name;
         this.profileImg = profileImg;
+    }
+
+    public void addSkill(UserSkill userSkill) {
+        skills.add(userSkill);
+        userSkill.setUser(this);
     }
 }
