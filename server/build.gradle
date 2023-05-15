@@ -8,7 +8,6 @@ group = 'main001'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
-
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -20,6 +19,7 @@ repositories {
 }
 
 dependencies {
+//    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -38,6 +38,8 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly	'io.jsonwebtoken:jjwt-jackson:0.11.5'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    runtimeOnly 'mysql:mysql-connector-java'
+    implementation 'mysql:mysql-connector-java:8.0.28'
 }
 
 tasks.named('test') {

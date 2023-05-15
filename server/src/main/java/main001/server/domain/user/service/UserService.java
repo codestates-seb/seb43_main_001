@@ -113,6 +113,28 @@ public class UserService {
         return findUser;
     }
 
+    /**
+     * OAuth2.0 로그인시 기존 회원여부 확인시 사용
+     */
+    public boolean isExistEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    public Long getUserId(String email) {
+        return userRepository.findByEmail(email).get().getUserId();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    public User updateEmail(User user) {
+        User findUser = findVerifiedUser(user.getUserId());
+
+        Optional.ofNullable(user.getEmail()).ifPresent(email -> findUser.setEmail(email));
+        Optional.ofNullable(user.getName()).ifPresent(name -> findUser.setName(name));
+        Optional.ofNullable(user.getProfileImg()).ifPresent(profileImg -> findUser.setProfileImg(profileImg));
+
+        return userRepository.save(findUser);
+    }
+
     public void addSkills(User user,String skills) {
         List<String> strings = Arrays.asList(skills.split(","));
 

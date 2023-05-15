@@ -19,6 +19,8 @@ public interface UserMapper {
     @Mapping(target = "skills", ignore = true)
     User userPatchToUser(UserDto.Patch requestBody);
 
+    User userPatchEmailToUser(UserDto.PatchEmail requestBody);
+
     default UserDto.Response userToUserResponse(User user) {
         if (user == null) {
             return null;
