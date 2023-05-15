@@ -103,10 +103,10 @@ const DetailBox: React.FC<DetailBoxProps> = ({ text, content, setContent }) => {
           ['clean'],
         ],
 
-        // 내부 이미지를 url로 받아오는 handler
-        handlers: {
-          image: imageHandler,
-        },
+        // // 내부 이미지를 url로 받아오는 handler
+        // handlers: {
+        //   image: imageHandler,
+        // },
       },
     };
   }, []);
