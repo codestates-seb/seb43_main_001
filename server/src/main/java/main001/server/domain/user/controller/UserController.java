@@ -38,6 +38,9 @@ public class UserController {
         User user = mapper.userPostToUser(requestBody);
 
         User createdUser = userService.createUser(user);
+
+        userService.addSkills(createdUser, requestBody.getSkills());
+
         URI location = UriCreator.createUri(USER_DEFAULT_URL, createdUser.getUserId());
 
         return ResponseEntity.created(location).build();
@@ -96,6 +99,8 @@ public class UserController {
         requestBody.setUserId(userId);
 
         User user = userService.updateUser(mapper.userPatchToUser(requestBody));
+
+        userService.addSkills(user, requestBody.getSkills());
 
         return new ResponseEntity<>(
                 new SingleResponseDto<>(mapper.userToUserProfileResponse(user)), HttpStatus.OK);

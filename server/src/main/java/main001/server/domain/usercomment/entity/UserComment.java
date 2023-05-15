@@ -10,10 +10,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(indexes ={
-        @Index(columnList = "userId"),
-        @Index(columnList = "writerId")
-})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,4 +30,23 @@ public class UserComment extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "writerId")
     private User writer;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "status")
+    private UserCommentStatus userCommentStatus = UserCommentStatus.COMMENT_REGISTERED;
+
+
+    public void setUser(User user) {
+        this.user = user;
+        if(!this.user.getUserComments().contains(this)) {
+            this.user.getUserComments().add(this);
+        }
+    }
+
+    public void setWriter(User writer) {
+        this.writer = writer;
+        if(!this.writer.getUserComments().contains(this)) {
+            this.writer.getUserComments().add(this);
+        }
+    }
 }

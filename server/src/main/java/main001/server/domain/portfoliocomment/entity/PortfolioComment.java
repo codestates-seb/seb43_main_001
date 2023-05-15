@@ -11,11 +11,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "portfoliocomments",
-        indexes ={
-        @Index(columnList = "userId"),
-        @Index(columnList = "portfolioId")
-})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -36,6 +31,10 @@ public class PortfolioComment extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "portfolioId")
     private Portfolio portfolio;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "status")
+    private PortfolioCommentStatus portfolioCommentStatus = PortfolioCommentStatus.COMMENT_REGISTERED;
 
     public void setUser(User user) {
         this.user = user;

@@ -38,7 +38,11 @@ public class PortfolioController {
 
     @PostMapping
     public ResponseEntity postPortfolio(@Valid @RequestBody PortfolioDto.Post postDto) {
-        Portfolio portfolio = portfolioService.createPortfolio(mapper.portfolioPostDtoToPortfolio(postDto));
+        Portfolio portfolio = mapper.portfolioPostDtoToPortfolio(postDto);
+
+        portfolio = portfolioService.createPortfolio(portfolio);
+
+        portfolioService.addSkills(portfolio,postDto.getSkills());
 
         URI location =
                 UriComponentsBuilder
@@ -55,6 +59,9 @@ public class PortfolioController {
         patchDto.setPortfolioId(portfolioId);
 
         Portfolio response = portfolioService.updatePortfolio(mapper.portfolioPatchDtoToPortfolio(patchDto));
+
+        portfolioService.addSkills(response, patchDto.getSkills());
+
         return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response)), HttpStatus.OK);
     }
 

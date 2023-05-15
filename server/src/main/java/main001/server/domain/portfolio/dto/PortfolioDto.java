@@ -1,15 +1,13 @@
 package main001.server.domain.portfolio.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class PortfolioDto {
     @Getter
@@ -29,6 +27,8 @@ public class PortfolioDto {
 
         @NotBlank(message = "설명을 작성해주세요.")
         private String content;
+
+        private String skills;
     }
 
     @Getter
@@ -49,9 +49,10 @@ public class PortfolioDto {
         @NotBlank(message = "소개글을 작성해주세요.")
         private String description;
 
-
         @NotBlank(message = "설명을 작성해주세요.")
         private String content;
+
+        private String skills;
 
         public void setPortfolioId(long portfolioId) {
             this.portfolioId = portfolioId;
@@ -63,6 +64,7 @@ public class PortfolioDto {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
+    @Builder
     public static class Response {
         private long portfolioId;
         private long userId;
@@ -72,6 +74,7 @@ public class PortfolioDto {
         private String distributionLink;
         private String description;
         private String content;
+        private List<String> skills;
         private int views;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;

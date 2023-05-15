@@ -4,15 +4,19 @@ import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.user.dto.UserDto;
 import main001.server.domain.user.entity.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
 public interface UserMapper {
 
+    @Mapping(target = "skills", ignore = true)
     User userPostToUser(UserDto.Post requestBody);
 
+    @Mapping(target = "skills", ignore = true)
     User userPatchToUser(UserDto.Patch requestBody);
 
     User userPatchEmailToUser(UserDto.PatchEmail requestBody);
@@ -43,6 +47,9 @@ public interface UserMapper {
                 .profileImg(user.getProfileImg())
                 .gitLink( user.getGitLink())
                 .blogLink( user.getBlogLink())
+                .skills(user.getSkills().stream()
+                        .map(userSkill -> userSkill.getSkill().getName())
+                        .collect(Collectors.toList()))
                 .grade( user.getGrade())
                 .jobStatus( user.getJobStatus())
                 .about( user.getAbout())

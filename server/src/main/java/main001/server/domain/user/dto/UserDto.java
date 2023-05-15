@@ -8,6 +8,7 @@ import main001.server.domain.user.enums.UserStatus;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class UserDto {
 
@@ -24,6 +25,7 @@ public class UserDto {
         private String profileImg;
         private String gitLink;
         private String blogLink;
+        private String skills;
         private JobStatus jobStatus;
         private String about;
     }
@@ -38,6 +40,7 @@ public class UserDto {
         private String profileImg;
         private String gitLink;
         private String blogLink;
+        private String skills;
         private JobStatus jobStatus;
         private String about;
     }
@@ -80,6 +83,7 @@ public class UserDto {
         private String profileImg;
         private String gitLink;
         private String blogLink;
+        private List<String> skills;
         private Grade grade;
         private JobStatus jobStatus;
         private String about;

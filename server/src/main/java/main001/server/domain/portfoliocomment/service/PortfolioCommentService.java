@@ -9,6 +9,7 @@ import main001.server.domain.portfoliocomment.mapper.PortfolioCommentMapper;
 import main001.server.domain.portfoliocomment.repository.PortfolioCommentRepository;
 import main001.server.domain.user.entity.User;
 import main001.server.domain.user.service.UserService;
+import main001.server.response.PageInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +36,9 @@ public class PortfolioCommentService {
      */
     public PortfolioCommentDto.Response createPortfolioComment(PortfolioCommentDto.Post postDto) {
         PortfolioComment portfolioComment = portfolioCommentMapper.postToEntity(postDto);
+
         PortfolioComment savedComment = portfolioCommentRepository.save(setUserAndPortfolio(portfolioComment));
+
         return portfolioCommentMapper.entityToResponse(savedComment);
     }
 
@@ -46,8 +49,11 @@ public class PortfolioCommentService {
      */
     public PortfolioCommentDto.Response updatePortfolioComment(PortfolioCommentDto.Patch patchDto) {
         findVerifiedPortfolioComment(patchDto.getPortfolioCommentId());
+
         PortfolioComment portfolioComment = portfolioCommentMapper.patchToEntity(patchDto);
+
         PortfolioComment savedComment = portfolioCommentRepository.save(setUserAndPortfolio(portfolioComment));
+
         return portfolioCommentMapper.entityToResponse(savedComment);
     }
 
@@ -60,10 +66,21 @@ public class PortfolioCommentService {
      */
     public PortfolioCommentDto.ResponseList findPortfolioCommentsByUser(Long userId, int page, int size) {
         User user = userService.findUser(userId);
+
         Pageable pageable = PageRequest.of(page, size);
-        Page<PortfolioCommentDto.Response> portfoliosPage = portfolioCommentRepository.findByUser(user,pageable).map(portfolioCommentMapper::entityToResponse);
+
+        Page<PortfolioCommentDto.Response> portfoliosPage =
+                portfolioCommentRepository.findByUser(user,pageable)
+                        .map(portfolioCommentMapper::entityToResponse);
+
         List<PortfolioCommentDto.Response> content = portfoliosPage.getContent();
-        return new PortfolioCommentDto.ResponseList(content,page,size, (int) portfoliosPage.getTotalElements(),portfoliosPage.getTotalPages());
+
+        return new PortfolioCommentDto.ResponseList(
+                content,
+                new PageInfo(
+                        portfoliosPage.getTotalElements(),
+                        portfoliosPage.getTotalPages()
+                ));
     }
 
     /**
@@ -75,10 +92,21 @@ public class PortfolioCommentService {
      */
     public PortfolioCommentDto.ResponseList findPortfolioCommentsByPortfolio(Long portfolioId, int page, int size) {
         Portfolio portfolio = portfolioService.findPortfolio(portfolioId);
+
         Pageable pageable = PageRequest.of(page,size);
-        Page<PortfolioCommentDto.Response> portfoliosPage = portfolioCommentRepository.findByPortfolio(portfolio,pageable).map(portfolioCommentMapper::entityToResponse);
+
+        Page<PortfolioCommentDto.Response> portfoliosPage =
+                portfolioCommentRepository.findByPortfolio(portfolio,pageable)
+                        .map(portfolioCommentMapper::entityToResponse);
+
         List<PortfolioCommentDto.Response> content = portfoliosPage.getContent();
-        return new PortfolioCommentDto.ResponseList(content,page,size, (int) portfoliosPage.getTotalElements(),portfoliosPage.getTotalPages());
+
+        return new PortfolioCommentDto.ResponseList(
+                content,
+                new PageInfo(
+                        portfoliosPage.getTotalElements(),
+                        portfoliosPage.getTotalPages()
+                ));
     }
 
     public void deletePortfolioComment(Long portfolioCommentId) {

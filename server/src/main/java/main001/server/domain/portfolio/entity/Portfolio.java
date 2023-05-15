@@ -5,7 +5,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import main001.server.audit.BaseTimeEntity;
 import main001.server.domain.portfoliocomment.entity.PortfolioComment;
+import main001.server.domain.skill.entity.PortfolioSkill;
 import main001.server.domain.user.entity.User;
+import org.springframework.security.core.parameters.P;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -38,6 +40,8 @@ public class Portfolio extends BaseTimeEntity {
     @JoinColumn(name = "USER_ID")
     private User user;
 
+    @OneToMany(mappedBy = "portfolio", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PortfolioSkill> skills = new ArrayList<>();
 
     @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
     private List<PortfolioComment> answers = new ArrayList<>();
@@ -57,6 +61,8 @@ public class Portfolio extends BaseTimeEntity {
         }
     }
 
-
-
+    public void addSkill(PortfolioSkill portfolioSkill) {
+        skills.add(portfolioSkill);
+        portfolioSkill.setPortfolio(this);
+    }
 }
