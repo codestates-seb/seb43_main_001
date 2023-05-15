@@ -2,6 +2,7 @@ package main001.server.security.handler;
 
 import lombok.RequiredArgsConstructor;
 import main001.server.domain.user.entity.User;
+import main001.server.domain.user.repository.UserRepository;
 import main001.server.domain.user.service.UserService;
 import main001.server.security.jwt.JwtTokenizer;
 import main001.server.security.utils.CustomAuthorityUtils;
@@ -36,9 +37,15 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         String profileImg = String.valueOf(oAuth2User.getAttributes().get("profileImg"));
         List<String> authorities = authorityUtils.createRoles(email);
 
+        if (userService.isExistEmail(email)) {
+            redirect(request, response, email, authorities);
+        } else if (email.equals("null") || email.isEmpty()) {
+            response.setHeader("Refresh", "0;url=/addemail");
+            response.getWriter().println("<script>window.open('/addemail', '_blank');</script>");
+        } else {
         saveUser(email, name, profileImg);
         redirect(request, response, email, authorities);
-
+        }
     }
     private void saveUser(String email, String name, String profileImg) {
         User user = new User(email, name, profileImg);

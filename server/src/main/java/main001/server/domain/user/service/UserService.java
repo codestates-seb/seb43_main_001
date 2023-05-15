@@ -106,4 +106,11 @@ public class UserService {
                 new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
         return findUser;
     }
+
+    /**
+     * OAuth2.0 로그인시 기존 회원여부 확인시 사용
+     */
+    public boolean isExistEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
 }
