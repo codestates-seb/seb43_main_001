@@ -2,8 +2,8 @@ import React from 'react';
 import * as S from './TextBox.style';
 type TextBoxProps = {
   text: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  value: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  value?: string;
 };
 
 const TextBox: React.FC<TextBoxProps> = ({ text, onChange, value }) => {
