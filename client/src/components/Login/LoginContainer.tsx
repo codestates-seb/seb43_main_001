@@ -11,7 +11,16 @@ function LoginContainer() {
 
   const GithubLoginHandler = () => {
     // 로그인 시도
-    window.location.assign('http://43.201.157.191:8080/oauth2/authorization/github');
+    window.location.assign(
+      'http://ec2-43-201-157-191.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/github',
+    );
+  };
+
+  const GoogleLoginHandler = () => {
+    // 로그인 시도
+    window.location.assign(
+      'http://ec2-43-201-157-191.ap-northeast-2.compute.amazonaws.com:8080/login/oauth2/code/%7BregistrationId%7D',
+    );
   };
 
   return (
@@ -27,6 +36,7 @@ function LoginContainer() {
       {!isLogin && (
         <>
           <OAuthBtn logo={<Github />} text={'Github Login'} onClick={GithubLoginHandler}></OAuthBtn>
+          <OAuthBtn logo={<Google />} text={'Google Login'} onClick={GithubLoginHandler}></OAuthBtn>
           {/* <OauthBtn logo={<Google />} text={'Google Login'}></OauthBtn> */}
         </>
       )}
