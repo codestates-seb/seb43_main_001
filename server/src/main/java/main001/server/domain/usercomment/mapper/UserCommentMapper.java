@@ -54,6 +54,8 @@ public class UserCommentMapper {
                 userComment.getUserCommentId(),
                 userComment.getUser().getUserId(),
                 userComment.getWriter().getUserId(),
+                userComment.getWriter().getName(),
+                userComment.getWriter().getProfileImg(),
                 userComment.getContent(),
                 userComment.getCreatedAt(),
                 userComment.getUpdatedAt()

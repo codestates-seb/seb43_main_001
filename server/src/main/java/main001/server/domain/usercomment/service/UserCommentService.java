@@ -45,11 +45,13 @@ public class UserCommentService {
     }
 
     public UserCommentDto.Response updateUserComment(UserCommentDto.Patch patchDto) {
-        findVerifiedUserComment(patchDto.getUserCommentId());
+        UserComment userComment = findVerifiedUserComment(patchDto.getUserCommentId());
 
-        UserComment userComment = userCommentMapper.patchToEntity(patchDto);
+        UserComment patch = userCommentMapper.patchToEntity(patchDto);
 
-        UserComment savedComment = userCommentRepository.save(setUserAndWriter(userComment));
+        userComment.setContent(patch.getContent());
+
+        UserComment savedComment = userCommentRepository.save(userComment);
 
         return userCommentMapper.entityToResponse(savedComment);
     }

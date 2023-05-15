@@ -2,6 +2,7 @@ package main001.server.domain.portfoliocomment.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import main001.server.response.PageInfo;
 
@@ -14,6 +15,7 @@ public class PortfolioCommentDto {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Post {
 
         @NotNull
@@ -30,6 +32,7 @@ public class PortfolioCommentDto {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Patch {
 
         @Setter
