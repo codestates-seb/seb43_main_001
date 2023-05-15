@@ -22,6 +22,7 @@ export const ContentWrapper = styled.section`
 export const CardWrapper = styled.div`
   display: grid;
   gap: 20px;
+  justify-items: center;
   grid-template-columns: repeat(1, 1fr);
 
   @media ${({ theme }) => theme.breakpoints.TABLETMIN} {
@@ -31,4 +32,8 @@ export const CardWrapper = styled.div`
   @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
     grid-template-columns: repeat(3, 1fr);
   }
+`;
+
+export const Target = styled.div`
+  height: 1px;
 `;

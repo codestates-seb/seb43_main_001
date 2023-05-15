@@ -1,16 +1,10 @@
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../../hooks/reduxHook';
 import { useRouter } from '../../hooks/useRouter';
 import * as S from './Banner.style';
 
-// * type
-// ? 공용 타입으로 옮기기..?
-type LoginState = {
-  login: { isLogin: boolean };
-};
-
 function Banner() {
   const { routeTo } = useRouter();
-  const isLogin = useSelector((state: LoginState) => state.login.isLogin);
+  const isLogin = useAppSelector((state) => state.login.isLogin);
 
   const handleClickButton = () => {
     if (isLogin) {

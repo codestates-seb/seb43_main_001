@@ -31,18 +31,30 @@ function Card({ portfolioId, description, title, views, userId, name }: CardProp
       </S.Thumbnail>
       <S.Content>
         <S.CardContentWrapper>
-          <h1>제목</h1>
-          <p>소개글</p>
+          <h1>{title}</h1>
+          <p>{description}</p>
         </S.CardContentWrapper>
         <S.CardInfoWrapper>
           <S.UserProfile>
-            <S.UserImage>
+            <S.UserImage
+              onClick={(e) => {
+                e.stopPropagation();
+                routeTo('/User');
+              }}
+            >
               <img
                 src='https://i.pinimg.com/originals/28/e0/40/28e0405ea8da9e7e33030be5580d9053.png'
                 alt='프로필 이미지'
               />
             </S.UserImage>
-            <S.UserName>사용자 이름</S.UserName>
+            <S.UserName
+              onClick={(e) => {
+                e.stopPropagation();
+                routeTo('/User');
+              }}
+            >
+              {name}
+            </S.UserName>
           </S.UserProfile>
           <S.TagWrapper>
             {/* TODO: index는 id로 수정 */}
@@ -54,7 +66,7 @@ function Card({ portfolioId, description, title, views, userId, name }: CardProp
             {/* TODO: 조회수, 추천수 숫자로 교체하기 */}
             <div>
               <S.ViewIcon />
-              <span>조회수</span>
+              <span>{views}</span>
             </div>
             <div>
               <S.LikeIcon />
