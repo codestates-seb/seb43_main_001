@@ -7,10 +7,12 @@ import typescript from 'highlight.js/lib/languages/typescript';
 import c from 'highlight.js/lib/languages/c';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { ImageResize } from 'quill-image-resize-module-ts';
 import axios from 'axios';
+import { ImageActions } from '@xeger/quill-image-actions';
+import { ImageFormats } from '@xeger/quill-image-formats';
 
-Quill.register('modules/ImageResize', ImageResize);
+Quill.register('modules/imageActions', ImageActions);
+Quill.register('modules/imageFormats', ImageFormats);
 
 type DetailBoxProps = {
   text: string;
@@ -54,54 +56,67 @@ const DetailBox: React.FC<DetailBoxProps> = ({ text, content, setContent }) => {
     };
   };
 
+  const formats = [
+    'align',
+    'background',
+    'blockquote',
+    'bold',
+    'code-block',
+    'color',
+    'float',
+    'font',
+    'header',
+    'height',
+    'image',
+    'italic',
+    'link',
+    'script',
+    'strike',
+    'size',
+    'underline',
+    'width',
+    'image',
+  ];
+
   const modules = useMemo(() => {
     return {
-      // syntax: {
-      //   highlight: (text: any) => hljs.highlightAuto(text).value,
-      // },
+      imageActions: {},
+      imageFormats: {},
       toolbar: {
         container: [
-          [{ header: [1, 2, false] }, { header: '2' }, { font: [String] }],
-          [{ size: [String] }],
-          ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-          [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
-          ['link', 'image', 'code-block'],
+          ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+          ['blockquote', 'image', 'code-block'],
+
+          [{ header: 1 }, { header: 2 }], // custom button values
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+          [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+          [{ direction: 'rtl' }], // text direction
+
+          [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+          [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+          [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+          [{ font: [] }],
+          [{ align: [] }],
+
           ['clean'],
         ],
-        // handlers: {
-        //   image: imageHandler,
-        // },
-      },
-      // 이미지 조절 시 오류
-      ImageResize: {
-        modules: ['Resize', 'DisplaySize', 'Toolbar'],
+
+        // 내부 이미지를 url로 받아오는 handler
+        handlers: {
+          image: imageHandler,
+        },
       },
     };
   }, []);
-
-  const formats = [
-    'header',
-    'font',
-    'size',
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'blockquote',
-    'list',
-    'bullet',
-    'indent',
-    'link',
-    'image',
-    'video',
-    'code-block',
-  ];
 
   return (
     <S.DetailContainer>
       <S.Title>{text}</S.Title>
       <ReactQuill
         ref={quillRef}
+        formats={formats}
         modules={modules}
         onChange={setContent}
         value={content}
