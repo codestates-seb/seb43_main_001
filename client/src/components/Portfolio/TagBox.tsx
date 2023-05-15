@@ -5,24 +5,12 @@ import { TiDeleteOutline } from 'react-icons/ti';
 
 type TagBoxProps = {
   text: string;
+  tags: string[];
+  addTags: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  removeTags: (indexToRemove: number) => void;
 };
 
-const TagBox: React.FC<TagBoxProps> = ({ text }) => {
-  const [tags, setTags] = useState([] as any);
-  const removeTags = (indexToRemove: number) => {
-    setTags(tags.filter((it: string, index: number) => index !== indexToRemove));
-  };
-
-  const addTags = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    const tag = event.currentTarget.value;
-    if (tags.includes(tag) || tag.length === 0) {
-      console.log('Fail!');
-      return;
-    }
-    event.currentTarget.value = '';
-    setTags([...tags, tag]);
-  };
-
+const TagBox: React.FC<TagBoxProps> = ({ text, tags, addTags, removeTags }) => {
   return (
     <S.TagContainer>
       <S.Title>{text}</S.Title>
