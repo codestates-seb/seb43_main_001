@@ -2,6 +2,7 @@ package main001.server.domain.usercomment.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import main001.server.response.PageInfo;
 
 import javax.validation.constraints.NotBlank;
@@ -13,6 +14,7 @@ public class UserCommentDto {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Post {
 
         @NotNull
@@ -29,6 +31,7 @@ public class UserCommentDto {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Patch {
 
         private Long userCommentId;
@@ -51,6 +54,8 @@ public class UserCommentDto {
         private Long userCommentId;
         private Long userId;
         private Long writerId;
+        private String writerName;
+        private String writerProfileImg;
         private String content;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;

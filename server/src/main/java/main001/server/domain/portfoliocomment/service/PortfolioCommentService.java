@@ -48,11 +48,13 @@ public class PortfolioCommentService {
      * @return
      */
     public PortfolioCommentDto.Response updatePortfolioComment(PortfolioCommentDto.Patch patchDto) {
-        findVerifiedPortfolioComment(patchDto.getPortfolioCommentId());
+        PortfolioComment portfolioComment = findVerifiedPortfolioComment(patchDto.getPortfolioCommentId());
 
-        PortfolioComment portfolioComment = portfolioCommentMapper.patchToEntity(patchDto);
+        PortfolioComment patch = portfolioCommentMapper.patchToEntity(patchDto);
 
-        PortfolioComment savedComment = portfolioCommentRepository.save(setUserAndPortfolio(portfolioComment));
+        portfolioComment.setContent(patch.getContent());
+
+        PortfolioComment savedComment = portfolioCommentRepository.save(portfolioComment);
 
         return portfolioCommentMapper.entityToResponse(savedComment);
     }
