@@ -15,6 +15,8 @@ public interface UserMapper {
 
     User userPatchToUser(UserDto.Patch requestBody);
 
+    User userPatchEmailToUser(UserDto.PatchEmail requestBody);
+
     default UserDto.Response userToUserResponse(User user) {
         if (user == null) {
             return null;

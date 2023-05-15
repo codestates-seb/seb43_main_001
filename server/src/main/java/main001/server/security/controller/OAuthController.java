@@ -1,21 +1,37 @@
 package main001.server.security.controller;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import main001.server.domain.user.dto.UserDto;
+import main001.server.domain.user.entity.User;
+import main001.server.domain.user.mapper.UserMapper;
+import main001.server.domain.user.service.UserService;
+import main001.server.response.SingleResponseDto;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 
 @RestController
-@RequestMapping("/oauth")
+@RequiredArgsConstructor
+@RequestMapping("/")
+@Validated
+@Slf4j
 public class OAuthController {
 
-    @GetMapping("/loginInfo)")
-    public String oauthLoginInfo(Authentication authentication) {
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-        return attributes.toString();
+    private final UserService userService;
+    private final UserMapper mapper;
+
+    @PatchMapping("/addemail")
+    public ResponseEntity addEmail(@Positive @RequestParam(value = "userId") Long userId,
+                                   @Valid @RequestBody UserDto.PatchEmail requestBody) {
+        requestBody.setUserId(userId);
+        User user = userService.updateEmail(mapper.userPatchEmailToUser(requestBody));
+
+        return new ResponseEntity<>(
+                new SingleResponseDto<>(mapper.userToUserProfileResponse(user)), HttpStatus.OK);
     }
 }
