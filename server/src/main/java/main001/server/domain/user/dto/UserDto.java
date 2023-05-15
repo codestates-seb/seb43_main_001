@@ -46,6 +46,17 @@ public class UserDto {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
+    public static class PatchEmail {
+        private long userId;
+        private String email;
+        private String name;
+        private String profileImg;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
     @Builder
     public static class Response {
         private long userId;

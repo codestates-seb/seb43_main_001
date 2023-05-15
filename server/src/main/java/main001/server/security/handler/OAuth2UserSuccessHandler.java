@@ -40,8 +40,18 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         if (userService.isExistEmail(email)) {
             redirect(request, response, email, authorities);
         } else if (email.equals("null") || email.isEmpty()) {
-            response.setHeader("Refresh", "0;url=/addemail");
-            response.getWriter().println("<script>window.open('/addemail', '_blank');</script>");
+            saveUser(email, name, profileImg);
+            Long userId = userService.getUserId(email);
+            String addemail = UriComponentsBuilder
+                    .newInstance()
+                    .scheme("http")
+                    .host("localhost")
+                    .port(3000)
+                    .path("/addemail") // addemail 페이지로 이동
+                    .queryParam("userId", userId)
+                    .build()
+                    .toUri().toString();
+            getRedirectStrategy().sendRedirect(request, response, addemail);
         } else {
         saveUser(email, name, profileImg);
         redirect(request, response, email, authorities);
@@ -96,8 +106,9 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
                 .newInstance()
                 .scheme("http")
                 .host("localhost")
-//                .port(80)
-                .path("/receive-token.html")
+                .port(3000) // 프론트 테스트
+//                .port(80) // 배포
+                .path("/") // 로그인 후 홈으로 이동
                 .queryParams(queryParams)
                 .build()
                 .toUri();
