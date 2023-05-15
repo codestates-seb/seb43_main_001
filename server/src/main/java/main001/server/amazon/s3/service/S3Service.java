@@ -60,34 +60,16 @@ public class S3Service {
         objectMetadata.setContentType(file.getContentType());
         objectMetadata.setContentLength(file.getSize());
 
-        InputStream inputStream = file.getInputStream();
-
-        s3Client.putObject(new PutObjectRequest(bucketName, folderKey + fileName, inputStream, objectMetadata)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
-
-//        try (InputStream inputStream = file.getInputStream()) {
-//            s3Client.putObject(new PutObjectRequest(bucketName, folderKey + fileName, inputStream, objectMetadata)
-//                    .withCannedAcl(CannedAccessControlList.PublicRead));
-//        } catch (Exception e) {
-//            throw new RuntimeException("Failed to upload file to S3", e);
-//        }
+        try (InputStream inputStream = file.getInputStream()) {
+            s3Client.putObject(new PutObjectRequest(bucketName, folderKey + fileName, inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload file to S3", e);
+        }
 
         return s3Client.getUrl(bucketName, folderKey + fileName).toString();
     }
 
-
-    public String getFileUrl(String fileName) {
-        return s3Client.getUrl(bucketName, fileName).toString();
-    }
-
-    public String uploadLocal(String filePath) throws RuntimeException {
-        File targetFile = new File(filePath);
-
-        String uploadImageUrl = putS3(targetFile, targetFile.getName());
-        removeOriginalFile(targetFile);
-
-        return uploadImageUrl;
-    }
 
     private String putS3(File uploadFile, String fileName) throws RuntimeException {
         s3Client.putObject(new PutObjectRequest(bucketName, fileName, uploadFile)
@@ -110,18 +92,5 @@ public class S3Service {
     }
 
 
-
-    private void removeNewFile(File targetFile) {
-        if (targetFile.delete()) {
-            return;
-        }
-    }
-
-
-    private void validateFileExists(MultipartFile multipartFile) {
-        if (multipartFile.isEmpty()) {
-            throw new RuntimeException();
-        }
-    }
 
 }

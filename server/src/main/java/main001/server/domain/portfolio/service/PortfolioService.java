@@ -165,15 +165,15 @@ public class PortfolioService {
         return findPortfolio;
     }
 
-    public void updateImage(Long portfolioId, List<MultipartFile> files) throws IOException{
+    public void updateImage(Long portfolioId, List<MultipartFile> images) throws IOException{
         Portfolio portfolio = findPortfolio(portfolioId);
-        if (!CollectionUtils.isNullOrEmpty(files)) {
-            for (MultipartFile file : files) {
-                String folderName = "files";
-                if (file.getContentType().startsWith("image/")) {
-                    folderName = "images";
-                }
-                String imgUrl = s3Service.uploadFile(file, folderName);
+        List<ImageAttachment> currentImageAttachments = portfolio.getImageAttachments();
+        currentImageAttachments.clear();
+        imageAttachmentRepository.deleteAll(currentImageAttachments);
+
+        if (!CollectionUtils.isNullOrEmpty(images)) {
+            for (MultipartFile image : images) {
+                String imgUrl = s3Service.uploadFile(image, "images");
                 ImageAttachment imageAttachment = new ImageAttachment(imgUrl);
                 imageAttachment.setPortfolio(portfolio);
 
@@ -186,19 +186,20 @@ public class PortfolioService {
 
     public void updateFile(Long portfolioId, List<MultipartFile> files) throws IOException{
         Portfolio portfolio = findPortfolio(portfolioId);
+
+        // 기존 파일 첨부 리스트 삭제
+        List<FileAttachment> currentFileAttachments = portfolio.getFileAttachments();
+        currentFileAttachments.clear();
+        fileAttachmentRepository.deleteAll(currentFileAttachments);
+
         if (!CollectionUtils.isNullOrEmpty(files)) {
             for (MultipartFile file : files) {
-                String folderName = "files";
-                if (file.getContentType().startsWith("image/")) {
-                    folderName = "images";
-                }
-                String fileUrl = s3Service.uploadFile(file, folderName);
+                String fileUrl = s3Service.uploadFile(file, "files");
                 FileAttachment fileAttachment = new FileAttachment(fileUrl);
                 fileAttachment.setPortfolio(portfolio);
 
                 portfolio.getFileAttachments().add(fileAttachment);
                 fileAttachmentRepository.save(fileAttachment);
-
             }
         }
     }
