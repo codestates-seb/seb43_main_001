@@ -7,6 +7,7 @@ export const OAuthButton = styled.button`
   height: 75px;
   border-radius: 50px;
   cursor: pointer;
+  margin-bottom: 1rem;
 
   border: black solid 0.1rem;
   background-color: white;
