@@ -1,9 +1,13 @@
 package main001.server.domain.portfolio.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import main001.server.audit.BaseTimeEntity;
+import main001.server.domain.attachment.file.entity.FileAttachment;
+import main001.server.domain.attachment.image.entity.ImageAttachment;
 import main001.server.domain.portfoliocomment.entity.PortfolioComment;
 import main001.server.domain.skill.entity.PortfolioSkill;
 import main001.server.domain.user.entity.User;
@@ -33,6 +37,15 @@ public class Portfolio extends BaseTimeEntity {
     @Column(nullable = false)
     private String description; // 프로젝트 소개글
     private String content; //프로젝트 설명
+
+
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
+    private List<ImageAttachment> imageAttachments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
+    private List<FileAttachment> fileAttachments = new ArrayList<>();
+
+
     @Column(columnDefinition = "integer default 0", nullable = false)
     private int views;
 
