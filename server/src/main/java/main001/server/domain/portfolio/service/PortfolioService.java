@@ -195,121 +195,109 @@ public class PortfolioService {
         return findPortfolio;
     }
 
-    public void updateRepresentativeImage(Long portfolioId, MultipartFile representativeImg) throws IOException{
+//    public void updateRepresentativeImage(Long portfolioId, MultipartFile representativeImg) throws IOException{
+//        Portfolio portfolio = findPortfolio(portfolioId);
+//        RepresentativeAttachment currentImageAttachment  = portfolio.getRepresentativeAttachment();
+//
+//        if(representativeImg != null) {
+//            String representativeImgUrl = s3Service.uploadFile(representativeImg, "images");
+//            RepresentativeAttachment representativeAttachment = new RepresentativeAttachment(representativeImgUrl);
+//            representativeAttachment.setPortfolio(portfolio);
+//
+//            if (currentImageAttachment != null) {
+//                s3Service.deleteFile(currentImageAttachment.getRepresentativeImgUrl());
+//                representativeImageRepository.delete(currentImageAttachment);
+//            }
+//            portfolio.setRepresentativeAttachment(representativeAttachment);
+//
+//            representativeImageRepository.save(representativeAttachment);
+//        }
+//    }
+
+    public void updateRepresentativeImage(Long portfolioId, MultipartFile representativeImg) throws IOException {
         Portfolio portfolio = findPortfolio(portfolioId);
-        RepresentativeAttachment currentImageAttachment  = portfolio.getRepresentativeAttachment();
+        RepresentativeAttachment currentImageAttachment = portfolio.getRepresentativeAttachment();
 
-        if(representativeImg != null) {
-            String representativeImgUrl = s3Service.uploadFile(representativeImg, "images");
-            RepresentativeAttachment representativeAttachment = new RepresentativeAttachment(representativeImgUrl);
-            representativeAttachment.setPortfolio(portfolio);
+        // Delete existing representative image attachment
+        if (currentImageAttachment != null) {
+            // Delete existing image from S3
+            s3Service.deleteFile(currentImageAttachment.getRepresentativeImgUrl());
+            // Remove the existing representative image attachment from the portfolio
+            portfolio.setRepresentativeAttachment(null);
+            representativeImageRepository.delete(currentImageAttachment);
+        }
 
-            if (currentImageAttachment != null) {
-                s3Service.deleteFile(currentImageAttachment.getRepresentativeImgUrl());
-                representativeImageRepository.delete(currentImageAttachment);
-            }
-            portfolio.setRepresentativeAttachment(representativeAttachment);
+        // Add new representative image attachment
+        if (representativeImg != null) {
+            String imgUrl = s3Service.uploadFile(representativeImg, "images");
+            RepresentativeAttachment newImageAttachment = new RepresentativeAttachment(imgUrl);
+            newImageAttachment.setPortfolio(portfolio);
 
-            representativeImageRepository.save(representativeAttachment);
+            portfolio.setRepresentativeAttachment(newImageAttachment);
+            representativeImageRepository.save(newImageAttachment);
         }
     }
 
     @Transactional
-    public void updateImage(Long portfolioId, List<MultipartFile> images) throws IOException{
+    public void updateImage(Long portfolioId, List<MultipartFile> images) throws IOException {
         Portfolio portfolio = findPortfolio(portfolioId);
         List<ImageAttachment> currentImageAttachments = portfolio.getImageAttachments();
 
-        // 삭제할 이미지 url 추적하기 위한 리스트 생성
-//        List<String> imageUrlsToRemove = new ArrayList<>();
-
-        if (CollectionUtils.isNullOrEmpty(currentImageAttachments)) {
-            for (MultipartFile image : images) {
-                if (image != null && !image.isEmpty()) {
-                    String imgUrl = s3Service.uploadFile(image, "images");
-
-                    ImageAttachment newImageAttachment = new ImageAttachment(imgUrl);
-                    newImageAttachment.setPortfolio(portfolio);
-                    portfolio.getImageAttachments().add(newImageAttachment);
-                    imageAttachmentRepository.save(newImageAttachment);
-                }
+        // Delete existing image attachments
+        if (!CollectionUtils.isNullOrEmpty(currentImageAttachments)) {
+            // Delete existing image attachments
+            Iterator<ImageAttachment> iterator = currentImageAttachments.iterator();
+            while (iterator.hasNext()) {
+                ImageAttachment imageAttachment = iterator.next();
+                // Delete existing image from S3
+                s3Service.deleteFile(imageAttachment.getImgUrl());
+                // Remove the existing image attachment from the portfolio
+                iterator.remove();
+                imageAttachmentRepository.delete(imageAttachment);
             }
-        } else {
+        }
+
+        // Add new image attachments
+        if (!CollectionUtils.isNullOrEmpty(images)) {
             for (MultipartFile image : images) {
-                if (image != null && !image.isEmpty()) {
-                    String imgUrl = s3Service.uploadFile(image, "images");
+                String imgUrl = s3Service.uploadFile(image, "images");
+                ImageAttachment newImageAttachment = new ImageAttachment(imgUrl);
+                newImageAttachment.setPortfolio(portfolio);
 
-                    Optional<ImageAttachment> optionalImageAttachment = currentImageAttachments.stream()
-                            .filter(imageAttachment -> imageAttachment != null && imageAttachment.getImgUrl() != null && imageAttachment.getImgUrl().equals(imgUrl))
-                            .findFirst();
-
-                    if (optionalImageAttachment.isPresent()) {
-                        ImageAttachment imageAttachment = optionalImageAttachment.get();
-                        imageAttachment.setImgUrl(imgUrl);
-                        imageAttachmentRepository.save(imageAttachment);
-                    } else {
-                        boolean isAlreadyExists = false;
-                        for (ImageAttachment currentImageAttachment : currentImageAttachments) {
-                            if (imgUrl.equals(currentImageAttachment.getImgUrl())) {
-                                isAlreadyExists = true;
-                                break;
-                            }
-                        }
-                        if (!isAlreadyExists) {
-                            ImageAttachment newImageAttachment = new ImageAttachment(imgUrl);
-                            newImageAttachment.setPortfolio(portfolio);
-                            portfolio.getImageAttachments().add(newImageAttachment);
-                            imageAttachmentRepository.save(newImageAttachment);
-                        }
-                    }
-                }
+                portfolio.getImageAttachments().add(newImageAttachment);
+                imageAttachmentRepository.save(newImageAttachment);
             }
         }
     }
+
 
     public void updateFile(Long portfolioId, List<MultipartFile> files) throws IOException {
         Portfolio portfolio = findPortfolio(portfolioId);
         List<FileAttachment> currentFileAttachments = portfolio.getFileAttachments();
 
-        if (CollectionUtils.isNullOrEmpty(currentFileAttachments)) {
-            for (MultipartFile file : files) {
-                if (file != null && !file.isEmpty()) {
-                    String fileUrl = s3Service.uploadFile(file, "files");
-
-                    FileAttachment newFileAttachment = new FileAttachment(fileUrl);
-                    newFileAttachment.setPortfolio(portfolio);
-                    portfolio.getFileAttachments().add(newFileAttachment);
-                    fileAttachmentRepository.save(newFileAttachment);
-                }
+        // Delete existing image attachments
+        if (!CollectionUtils.isNullOrEmpty(currentFileAttachments)) {
+            // Delete existing image attachments
+            Iterator<FileAttachment> iterator = currentFileAttachments.iterator();
+            while (iterator.hasNext()) {
+                FileAttachment fileAttachment = iterator.next();
+                // Delete existing image from S3
+                s3Service.deleteFile(fileAttachment.getFileUrl());
+                // Remove the existing image attachment from the portfolio
+                iterator.remove();
+                fileAttachmentRepository.delete(fileAttachment);
             }
-        } else {
+        }
+
+        // Add new image attachments
+        if (!CollectionUtils.isNullOrEmpty(files)) {
             for (MultipartFile file : files) {
-                if (file != null && !file.isEmpty()) {
-                    String fileUrl = s3Service.uploadFile(file, "files");
+                String fileUrl = s3Service.uploadFile(file, "files");
+                FileAttachment newFileAttachment = new FileAttachment(fileUrl);
+                newFileAttachment.setPortfolio(portfolio);
 
-                    Optional<FileAttachment> optionalFileAttachment = currentFileAttachments.stream()
-                            .filter(fileAttachment -> fileAttachment != null && fileAttachment.getFileUrl() != null && fileAttachment.getFileUrl().equals(fileUrl))
-                            .findFirst();
-
-                    if (optionalFileAttachment.isPresent()) {
-                        FileAttachment fileAttachment = optionalFileAttachment.get();
-                        fileAttachment.setFileUrl(fileUrl);
-                        fileAttachmentRepository.save(fileAttachment);
-                    } else {
-                        boolean isAlreadyExists = false;
-                        for (FileAttachment currentFileAttachment : currentFileAttachments) {
-                            if (fileUrl.equals(currentFileAttachment.getFileUrl())) {
-                                isAlreadyExists = true;
-                                break;
-                            }
-                        }
-                        if (!isAlreadyExists) {
-                            FileAttachment newFileAttachment = new FileAttachment(fileUrl);
-                            newFileAttachment.setPortfolio(portfolio);
-                            portfolio.getFileAttachments().add(newFileAttachment);
-                            fileAttachmentRepository.save(newFileAttachment);
-                        }
-                    }
-                }
+                portfolio.getFileAttachments().add(newFileAttachment);
+                fileAttachmentRepository.save(newFileAttachment);
             }
         }
     }
