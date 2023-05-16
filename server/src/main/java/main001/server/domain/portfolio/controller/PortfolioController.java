@@ -1,5 +1,6 @@
 package main001.server.domain.portfolio.controller;
 
+import com.amazonaws.util.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
 import main001.server.amazon.s3.service.S3Service;
 import main001.server.domain.portfolio.dto.PortfolioDto;
@@ -42,12 +43,13 @@ public class PortfolioController {
 
     @PostMapping
     public ResponseEntity postPortfolio(@Valid @RequestPart PortfolioDto.Post postDto,
+                                        @RequestPart(value = "representativeImg", required = false) MultipartFile representativeImg,
                                         @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                         @RequestPart(value = "files", required = false) List<MultipartFile> files) throws IOException {
 
         Portfolio portfolio = mapper.portfolioPostDtoToPortfolio(postDto);
 
-        Portfolio response = portfolioService.createPortfolio(portfolio, images, files);
+        Portfolio response = portfolioService.createPortfolio(portfolio, representativeImg, images, files);
 
 
         portfolioService.addSkills(portfolio,postDto.getSkills());
@@ -64,20 +66,16 @@ public class PortfolioController {
     @PatchMapping("/{portfolio-id}")
     public ResponseEntity patchPortfolio(@PathVariable("portfolio-id") long portfolioId,
                                          @RequestPart PortfolioDto.Patch patchDto,
+                                         @RequestPart(value = "representativeImg", required = false) MultipartFile representativeImg,
                                          @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                          @RequestPart(value = "files", required = false) List<MultipartFile> files) throws IOException{
         patchDto.setPortfolioId(portfolioId);
         Portfolio portfolio = mapper.portfolioPatchDtoToPortfolio(patchDto);
 
-        List<String> deleteList = patchDto.getDelete();
+//        List<String> deleteList = patchDto.getDelete();
 
-        if (images != null) portfolioService.updateImage(portfolioId, images);
-        if (files != null) portfolioService.updateFile(portfolioId, files);
-        if (deleteList != null) {
-            portfolioService.deleteImage(deleteList);
-            portfolioService.deleteFile(deleteList);
-        }
-        Portfolio response = portfolioService.updatePortfolio(portfolio);
+
+        Portfolio response = portfolioService.updatePortfolio(portfolio, portfolioId, representativeImg, images, files);
 
         portfolioService.addSkills(response, patchDto.getSkills());
 
