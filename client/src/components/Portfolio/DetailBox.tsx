@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as S from './DetailBox.style';
-import hljs from 'highlight.js/lib/core';
-import javascript from 'highlight.js/lib/languages/javascript';
-import python from 'highlight.js/lib/languages/python';
-import typescript from 'highlight.js/lib/languages/typescript';
-import c from 'highlight.js/lib/languages/c';
+
+import hljs from 'highlight.js';
+import 'highlight.js/styles/rainbow.css';
+
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
@@ -20,10 +19,9 @@ type DetailBoxProps = {
   setContent: React.Dispatch<React.SetStateAction<string>>;
 };
 
-hljs.registerLanguage('javascript', javascript);
-hljs.registerLanguage('python', python);
-hljs.registerLanguage('typescript', typescript);
-hljs.registerLanguage('c', c);
+hljs.configure({
+  languages: ['javascript', 'ruby', 'python', 'java', 'cpp', 'kotlin', 'sql'],
+});
 
 const DetailBox: React.FC<DetailBoxProps> = ({ text, content, setContent }) => {
   const quillRef = useRef<ReactQuill | null>(null);
@@ -82,6 +80,9 @@ const DetailBox: React.FC<DetailBoxProps> = ({ text, content, setContent }) => {
     return {
       imageActions: {},
       imageFormats: {},
+      syntax: {
+        highlight: (text: any) => hljs.highlightAuto(text).value,
+      },
       toolbar: {
         container: [
           ['bold', 'italic', 'underline', 'strike'], // toggled buttons

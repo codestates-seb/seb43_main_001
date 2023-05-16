@@ -7,6 +7,7 @@ export const DetailContainer = styled.div`
 
   .ql-container {
     background-color: ${(props) => props.theme.themeStyle.inputColor};
+    min-height: 15rem;
   }
 `;
 export const Title = styled.span`
