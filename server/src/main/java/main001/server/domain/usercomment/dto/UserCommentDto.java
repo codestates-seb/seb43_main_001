@@ -2,6 +2,9 @@ package main001.server.domain.usercomment.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import main001.server.response.PageInfo;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -11,6 +14,7 @@ public class UserCommentDto {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Post {
 
         @NotNull
@@ -27,6 +31,7 @@ public class UserCommentDto {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Patch {
 
         private Long userCommentId;
@@ -47,11 +52,11 @@ public class UserCommentDto {
     @AllArgsConstructor
     public static class Response {
         private Long userCommentId;
-        private String content;
         private Long userId;
-        private String userName;
         private Long writerId;
         private String writerName;
+        private String writerProfileImg;
+        private String content;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
     }
@@ -59,9 +64,6 @@ public class UserCommentDto {
     @AllArgsConstructor
     public static class ResponseList<T>{
         private T data;
-        private int page;
-        private int size;
-        private int totalElements;
-        private int totalPages;
+        private PageInfo pageInfo;
     }
 }

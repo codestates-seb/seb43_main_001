@@ -7,6 +7,7 @@ import lombok.Setter;
 import main001.server.audit.BaseTimeEntity;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfoliocomment.entity.PortfolioComment;
+import main001.server.domain.skill.entity.UserSkill;
 import main001.server.domain.user.enums.Grade;
 import main001.server.domain.user.enums.JobStatus;
 import main001.server.domain.user.enums.UserStatus;
@@ -62,16 +63,17 @@ public class User extends BaseTimeEntity {
     private List<String> roles = new ArrayList<>(); // ROLE_USER<DEFAULT>, ADMIN
 
     private boolean auth = false;
-//    @OneToMany(mappedBy = "user")
-//    private List<Skill> skills = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserSkill> skills = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Portfolio> portfolios = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserComment> userComments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PortfolioComment> portfolioComments = new ArrayList<>();
 
     public User(Long userId, String email, String name, String profileImg, String gitLink, String blogLink, JobStatus jobStatus, String about) {
@@ -89,5 +91,10 @@ public class User extends BaseTimeEntity {
         this.email = email;
         this.name = name;
         this.profileImg = profileImg;
+    }
+
+    public void addSkill(UserSkill userSkill) {
+        skills.add(userSkill);
+        userSkill.setUser(this);
     }
 }

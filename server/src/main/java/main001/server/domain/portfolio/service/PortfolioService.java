@@ -21,8 +21,11 @@ import main001.server.domain.attachment.image.entity.ImageAttachment;
 import main001.server.domain.attachment.image.repository.ImageAttachmentRepository;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.repository.PortfolioRepository;
+import main001.server.domain.skill.entity.PortfolioSkill;
+import main001.server.domain.skill.service.SkillService;
 import main001.server.domain.user.entity.User;
 import main001.server.domain.user.repository.UserRepository;
+import main001.server.domain.user.service.UserService;
 import main001.server.exception.BusinessLogicException;
 import main001.server.exception.ExceptionCode;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,6 +49,7 @@ import java.time.LocalDateTime;
 
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -60,6 +64,8 @@ public class PortfolioService {
 
     private final ImageAttachmentRepository imageAttachmentRepository;
     private final FileAttachmentRepository fileAttachmentRepository;
+    private final UserService userService;
+    private final SkillService skillService;
     private final static String VIEWCOOKIENAME = "alreadyViewCookie";
     public Portfolio createPortfolio(Portfolio portfolio, List<MultipartFile> images, List<MultipartFile> files) throws IOException{
         User user = portfolio.getUser();
@@ -264,6 +270,20 @@ public class PortfolioService {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime tommorow = LocalDateTime.now().plusDays(1L).truncatedTo(ChronoUnit.DAYS);
         return (int) now.until(tommorow, ChronoUnit.SECONDS);
+    }
+
+    public void addSkills(Portfolio portfolio, String skills) {
+        portfolio.getSkills().forEach(PortfolioSkill::deletePortfolioSkill);
+
+        portfolio.getSkills().clear();
+
+        Arrays.asList(skills.split(","))
+                .stream()
+                .map(name -> {
+                    return PortfolioSkill.createPortfolioSkill(
+                            skillService.findByName(name.toUpperCase()));
+                })
+                .forEach(portfolio::addSkill);
     }
 
 

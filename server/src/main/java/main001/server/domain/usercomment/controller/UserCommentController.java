@@ -25,7 +25,6 @@ public class UserCommentController {
         return response;
     }
 
-
     @PatchMapping("/{userComment_id}")
     @ResponseStatus(HttpStatus.OK)
     public UserCommentDto.Response patchUserComment(@PathVariable("userComment_id") @Positive Long userCommentId,

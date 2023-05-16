@@ -1,7 +1,6 @@
 plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.11'
-    id "org.asciidoctor.jvm.convert" version "3.3.2"
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
@@ -10,28 +9,18 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
-    asciidoctorExtensions
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
 }
-//configurations {
-//	compileOnly {
-//		extendsFrom annotationProcessor
-//	}
-//}
 
 repositories {
     mavenCentral()
 }
 
-ext {
-    set('snippetsDir', file("build/generated-snippets"))
-}
-
 dependencies {
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-    asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'commons-io:commons-io:2.6'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -49,34 +38,11 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly	'io.jsonwebtoken:jjwt-jackson:0.11.5'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    runtimeOnly 'mysql:mysql-connector-java'
+    implementation 'mysql:mysql-connector-java:8.0.28'
+    implementation 'commons-io:commons-io:2.6'
 }
 
 tasks.named('test') {
-    outputs.dir snippetsDir
-    useJUnitPlatform()
-}
-//tasks.named('test') {
-//	useJUnitPlatform()
-//}
-
-tasks.named('asciidoctor') {
-    configurations "asciidoctorExtensions"
-    inputs.dir snippetsDir
-    dependsOn test
-}
-
-task copyDocument(type: Copy) {
-    dependsOn asciidoctor
-    from file("${asciidoctor.outputDir}")
-    into file("src/main/resources/static/docs")
-}
-build {
-    dependsOn copyDocument
-}
-
-bootJar {
-    dependsOn copyDocument
-    from ("${asciidoctor.outputDir}") {
-        into 'static/docs'
-    }
+	useJUnitPlatform()
 }

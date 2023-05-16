@@ -9,7 +9,6 @@ import main001.server.domain.portfolio.service.PortfolioService;
 import main001.server.response.MultiResponseDto;
 import main001.server.response.SingleResponseDto;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -51,6 +50,8 @@ public class PortfolioController {
         Portfolio response = portfolioService.createPortfolio(portfolio, images, files);
 
 
+        portfolioService.addSkills(portfolio,postDto.getSkills());
+
         URI location =
                 UriComponentsBuilder
                         .newInstance()
@@ -77,6 +78,9 @@ public class PortfolioController {
             portfolioService.deleteFile(deleteList);
         }
         Portfolio response = portfolioService.updatePortfolio(portfolio);
+
+        portfolioService.addSkills(response, patchDto.getSkills());
+
         return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response)), HttpStatus.OK);
     }
 

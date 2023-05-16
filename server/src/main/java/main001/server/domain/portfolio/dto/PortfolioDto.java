@@ -25,6 +25,7 @@ public class PortfolioDto {
         @NotBlank(message = "설명을 작성해주세요.")
         private String content;
 
+        private String skills;
     }
 
     @Getter
@@ -50,6 +51,7 @@ public class PortfolioDto {
 
         List<String> delete;
 
+        private String skills;
 
         public void setPortfolioId(long portfolioId) {
             this.portfolioId = portfolioId;
@@ -73,6 +75,7 @@ public class PortfolioDto {
         private String content;
         private String imgUrl;
         private String fileUrl;
+        private List<String> skills;
         private int views;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
