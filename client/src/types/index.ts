@@ -36,12 +36,15 @@ export type GetPortfolio = {
   description: string;
   content: string;
   views: number;
+  skills: string[];
+  updatedAt: number[];
+  createdAt: number[];
 };
 
 // Portfolio Comment
 
 export type PostPortfolioComment = {
-  userId: string;
+  userId: number | undefined;
   portfolioId: number;
   content: string;
 };
@@ -62,5 +65,3 @@ export type GetPortfolioCommentById = {
   createdAt: string;
   updatedAt: string;
 };
-
-export type PortfolioCommentAPIArray = PatchPortfolioComment[] | any[];

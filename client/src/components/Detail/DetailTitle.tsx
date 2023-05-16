@@ -1,5 +1,8 @@
 import * as S from './DetailTitle.style';
 
+// custom hoosk
+import { useGetPortfolio } from '../../hooks/useGetPortfolio';
+
 type LinkName = readonly [string, string];
 
 type DetailTileProps = {
@@ -11,6 +14,9 @@ type DetailTileProps = {
 
 // 상세 페이지 포트폴리오 제목 및 사용자 정보
 function DetailTitle({ name, title, gitLink, distributionLink }: DetailTileProps) {
+  // !: userId를 뽑아서 줘야 한다.
+  const { getPortfolioLoading, getPortfolioError, PortfolioInfo } = useGetPortfolio('1');
+
   const dummy = ['JAVA', 'Spring'];
   const linkName: LinkName = ['깃헙링크', '배포링크'];
 

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { act } from '@testing-library/react';
 
 type Login = {
   isLogin: boolean;
@@ -21,9 +22,12 @@ const loginSlice = createSlice({
       state.accessToken = null;
       state.refreshToken = null;
     },
+    setAccessToken: (state, action: PayloadAction<{ accessToken: string }>) => {
+      state.accessToken = action.payload.accessToken;
+    },
   },
 });
 
-export const { login, logout } = loginSlice.actions;
+export const { login, logout, setAccessToken } = loginSlice.actions;
 
 export default loginSlice.reducer;
