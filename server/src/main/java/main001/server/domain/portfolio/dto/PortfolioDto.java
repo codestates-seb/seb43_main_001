@@ -25,7 +25,7 @@ public class PortfolioDto {
         @NotBlank(message = "설명을 작성해주세요.")
         private String content;
 
-        private String skills;
+        private List<String> skills;
     }
 
     @Getter
@@ -51,7 +51,7 @@ public class PortfolioDto {
 
         List<String> delete;
 
-        private String skills;
+        private List<String> skills;
 
         public void setPortfolioId(long portfolioId) {
             this.portfolioId = portfolioId;

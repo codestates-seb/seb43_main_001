@@ -1,7 +1,6 @@
 package main001.server.domain.skill.repository;
 
 import main001.server.domain.skill.entity.Skill;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -10,8 +9,8 @@ import java.util.Optional;
 
 public interface SkillRepository extends JpaRepository<Skill,Long> {
 
-    @Query("select s.name from Skill s where s.name like :name%")
-    List<String> findSkillsByName(String name, Sort sort);
+    @Query("SELECT s.name FROM Skill s WHERE LOWER(s.name) LIKE LOWER(:name)||'%' ORDER BY s.name ASC")
+    List<String> findSkillsByName(String name);
 
-    Optional<Skill> findByName(String name);
+    Optional<Skill> findSkillByNameIgnoreCase(String name);
 }
