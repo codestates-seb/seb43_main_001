@@ -276,18 +276,15 @@ public class PortfolioService {
         return (int) now.until(tommorow, ChronoUnit.SECONDS);
     }
 
-    public void addSkills(Portfolio portfolio, String skills) {
-        Type listType = new TypeToken<List<String>>(){}.getType();
-        List<String> list = gson.fromJson(skills, listType);
-
+    public void addSkills(Portfolio portfolio, List<String> skills) {
         portfolio.getSkills().forEach(PortfolioSkill::deletePortfolioSkill);
 
         portfolio.getSkills().clear();
 
-        list.stream()
+        skills.stream()
                 .map(name -> {
                     return PortfolioSkill.createPortfolioSkill(
-                            skillService.findByName(name.toUpperCase()));
+                            skillService.findByName(name));
                 })
                 .forEach(portfolio::addSkill);
     }

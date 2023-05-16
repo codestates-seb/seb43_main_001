@@ -139,19 +139,16 @@ public class UserService {
         return userRepository.save(findUser);
     }
 
-    public void addSkills(User user,String skills) {
-        Type listType = new TypeToken<List<String>>(){}.getType();
-        List<String> list = gson.fromJson(skills, listType);
-
+    public void addSkills(User user,List<String> skills) {
         user.getSkills()
                 .forEach(UserSkill::deleteUserSkill);
 
         user.getSkills().clear();
 
-        list.stream()
+        skills.stream()
                 .map(name -> {
                     UserSkill userSkill = UserSkill.createUserSkill(
-                            skillService.findByName(name.toUpperCase())
+                            skillService.findByName(name)
                     );
                     return userSkill;
                 })
