@@ -12,34 +12,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  profiles:
-    active: local
-    group:
-      local: profiles-local
-      dev: profiles-dev
-
-# AWS 설정
-cloud:
-  aws:
-    credentials:
-      access-key: ${S3_ACCESS_KEY}
-      secret-key: ${S3_SECRET_KEY}
-    s3:
-      bucket: ${S3_BUCKET_NAME}
-    region:
-      static: ap-northeast-2  # AWS 기본 리전을 설정
-    stack:
-      auto: false
-
----
-# Multipart 설정
-spring:
-  servlet:
+  servlet: # Multipart 설정
     multipart:
       location: c:\\portfolio
       enabled: true
-      max-file-size: 1MB # 파일 하나의 최대사이즈 설정
-      max-request-size: 10MB #여러 파일 업로드 시 전체 합의 크기 설정
+      max-file-size: 10MB # 파일 하나의 최대사이즈 설정
+      max-request-size: 100MB #여러 파일 업로드 시 전체 합의 크기 설정
   security:
     oauth2:
       client:
@@ -63,8 +41,19 @@ spring:
             scope:
               - email
               - profile
-      max-file-size: 100MB # 요청한 파일 한 개의 크기
-      max-request-size: 100MB # 요청한 파일 전체의 크기
+
+# AWS 설정
+cloud:
+  aws:
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
+    s3:
+      bucket: ${S3_BUCKET_NAME}
+    region:
+      static: ap-northeast-2  # AWS 기본 리전을 설정
+    stack:
+      auto: false
 
 logging:
   level:
