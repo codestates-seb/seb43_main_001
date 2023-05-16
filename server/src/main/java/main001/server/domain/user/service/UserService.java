@@ -1,5 +1,7 @@
 package main001.server.domain.user.service;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import lombok.RequiredArgsConstructor;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.skill.entity.UserSkill;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +31,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final SkillService skillService;
+    private final Gson gson;
 
 //    private final PasswordEncoder passwordEncoder; // Security 적용 후 사용
 //
@@ -136,14 +140,15 @@ public class UserService {
     }
 
     public void addSkills(User user,String skills) {
-        List<String> strings = Arrays.asList(skills.split(","));
+        Type listType = new TypeToken<List<String>>(){}.getType();
+        List<String> list = gson.fromJson(skills, listType);
 
         user.getSkills()
                 .forEach(UserSkill::deleteUserSkill);
 
         user.getSkills().clear();
 
-        strings.stream()
+        list.stream()
                 .map(name -> {
                     UserSkill userSkill = UserSkill.createUserSkill(
                             skillService.findByName(name.toUpperCase())
