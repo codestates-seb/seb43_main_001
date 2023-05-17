@@ -8,7 +8,15 @@ import { useAppSelector, useAppDispatch } from '../hooks/reduxHook';
 import { getNewAccessToken } from '../utils/getAccessToken';
 
 // types
-import { GetPortfolioCommentById, GetPortfolio, PostPortfolioComment } from '../types/index';
+import {
+  GetPortfolioCommentById,
+  GetPortfolio,
+  PostPortfolioComment,
+  GetUserPortfolio,
+  GetUserProfile,
+  GetUserComment,
+  PatchUserProfile,
+} from '../types/index';
 
 // redux
 import { setAccessToken } from '../store/slice/loginSlice';
@@ -109,6 +117,89 @@ export const PortfolioCommentAPI = {
       portfolioId,
       content,
     });
+  },
+};
+
+// UserComponents
+export const UserProfileAPI = {
+  getUserProfile: async (userId: number): Promise<GetUserProfile> => {
+    // ! : 실제 사용을 할 때는 /users/1/profile
+    const userProfileData = await noneTokenClient.get(
+      `${process.env.REACT_APP_API_URL}/users/${userId}/profile`,
+      // 'http://43.201.157.191:8080/users/1/profile',
+    );
+    return userProfileData.data.data;
+  },
+  patchUserProfile: async ({
+    userId,
+    name,
+    profileImg,
+    gitLink,
+    blogLink,
+    jobStatus,
+    about,
+  }: PatchUserProfile) => {
+    // http://localhost:8080/users/1
+    await axios.patch(`${process.env.REACT_APP_API_URL}/users/${userId}`, {
+      name,
+      profileImg,
+      gitLink,
+      blogLink,
+      jobStatus,
+      about,
+    });
+  },
+  deleteUserProfile: async (userId: number) => {
+    await axios.delete(`${process.env.REACT_APP_API_URL}/users/${userId}`);
+  },
+};
+
+export const UserPortfolioAPI = {
+  getUserPortfolio: async (userId: number): Promise<GetUserPortfolio[]> => {
+    // ! : 실제 작동할 때는 위 api 링크 사용
+    const userPortfoliosData = await axios.get(
+      `${process.env.REACT_APP_API_URL}/users/${userId}/portfolio?page=1&size=15&order=asc&sort=createdAt`,
+      // `${process.env.REACT_APP_API_URL}/portfolio`,
+    );
+    return userPortfoliosData.data.data;
+  },
+};
+
+export const UserCommentsAPI = {
+  getUserComments: async (userId: number): Promise<GetUserComment[]> => {
+    // http://localhost:8080/api/usercomments/users/1?page=1&size=10
+    const userCommentsData = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/usercomments/users/${userId}?page=1&size=10`,
+    );
+    return userCommentsData.data.data;
+  },
+  // * : 한 유저가 다른 사람의 포트폴리에 작성한 댓글
+  getCommentsToPortfolio: async (userId: number): Promise<GetUserComment[]> => {
+    // http://localhost:8080/api/portfoliocomments/users/1
+    const commentsToPortfolioData = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/portfoliocomments/users/${userId}`,
+    );
+    return commentsToPortfolioData.data.data;
+  },
+  // * : 한 유저가 다른 사람에게 작성한 댓글
+  getCommentsToUser: async (userId: number): Promise<GetUserComment[]> => {
+    // http://localhost:8080/api/usercomments/writers/2?page=1&size=10
+    const commentsToUserData = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/usercomments/writers/${userId}?page=1&size=10`,
+    );
+    return commentsToUserData.data.data;
+  },
+
+  // ! : 전달되는게 어떤 id값인지 확인 필요
+  deleteUserComment: async (userCommentId: number) => {
+    // http://localhost:8080/api/usercomments/1
+    await axios.delete(`${process.env.REACT_APP_API_URL}/api/usercomments/${userCommentId}`);
+  },
+  deletePortfolioComment: async (portfolioCommentId: number) => {
+    // http://localhost:8080/api/portfoliocomments/2
+    await axios.delete(
+      `${process.env.REACT_APP_API_URL}/api/portfoliocomments/${portfolioCommentId}`,
+    );
   },
 };
 

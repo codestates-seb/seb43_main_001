@@ -8,8 +8,6 @@ type CommentItemProps = {
   path: string;
 };
 
-const url = 'http://localhost:3001';
-
 // TODO : 삭제 기능 구현
 const CommentItem: React.FC<CommentItemProps> = ({ data, path }) => {
   const [onEdit, setOnEdit] = useState<boolean>(false);
@@ -23,7 +21,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, path }) => {
     // await axios.post(url, {
     //   comment: editText,
     // });
-    await axios.patch(`${url}/${path}`, {
+    await axios.patch(`${process.env.REACT_APP_API_URL}/${path}`, {
       data: [
         {
           ...data,
@@ -33,6 +31,9 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, path }) => {
     });
     setOnEdit(false);
   };
+  // const onDeleteHandler = async () => {
+  //   await axios.delete(`${process.env.REACT_APP_API_URL}`)
+  // };
 
   return (
     <S.CommentItem>
