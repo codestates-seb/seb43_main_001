@@ -6,10 +6,10 @@ const tagList = ['React', 'TypeScript', 'Redux'];
 
 // TODO: API 완성되면 수정
 type CardProps = {
-  portfolioId?: string;
-  description?: string;
-  title?: string;
-  views?: number;
+  portfolioId: number | string;
+  description: string;
+  title: string;
+  views: number;
   userId?: number;
   name?: string;
 };
@@ -35,27 +35,29 @@ function Card({ portfolioId, description, title, views, userId, name }: CardProp
           <p>{description}</p>
         </S.CardContentWrapper>
         <S.CardInfoWrapper>
-          <S.UserProfile>
-            <S.UserImage
-              onClick={(e) => {
-                e.stopPropagation();
-                routeTo('/User');
-              }}
-            >
-              <img
-                src='https://i.pinimg.com/originals/28/e0/40/28e0405ea8da9e7e33030be5580d9053.png'
-                alt='프로필 이미지'
-              />
-            </S.UserImage>
-            <S.UserName
-              onClick={(e) => {
-                e.stopPropagation();
-                routeTo('/User');
-              }}
-            >
-              {name}
-            </S.UserName>
-          </S.UserProfile>
+          {userId && (
+            <S.UserProfile>
+              <S.UserImage
+                onClick={(e) => {
+                  e.stopPropagation();
+                  routeTo('/User');
+                }}
+              >
+                <img
+                  src='https://i.pinimg.com/originals/28/e0/40/28e0405ea8da9e7e33030be5580d9053.png'
+                  alt='프로필 이미지'
+                />
+              </S.UserImage>
+              <S.UserName
+                onClick={(e) => {
+                  e.stopPropagation();
+                  routeTo('/User');
+                }}
+              >
+                {name}
+              </S.UserName>
+            </S.UserProfile>
+          )}
           <S.TagWrapper>
             {/* TODO: index는 id로 수정 */}
             {tagList.map((tag, index) => (
