@@ -71,7 +71,8 @@ public class PortfolioService {
     private final UserService userService;
     private final SkillService skillService;
     private final static String VIEWCOOKIENAME = "alreadyViewCookie";
-    public Portfolio createPortfolio(Portfolio portfolio, List<MultipartFile> images, List<MultipartFile> files) throws IOException{
+
+    public Portfolio createPortfolio(Portfolio portfolio, List<String> skills, List<MultipartFile> images, List<MultipartFile> files) throws IOException{
         User user = portfolio.getUser();
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
@@ -111,10 +112,12 @@ public class PortfolioService {
             }
         }
 
+        addSkills(portfolio, skills);
+
         return portfolioRepository.save(portfolio);
     }
 
-    public Portfolio updatePortfolio(Portfolio portfolio) {
+    public Portfolio updatePortfolio(Portfolio portfolio, List<String> skills) {
         Portfolio findPortfolio = findVerifiedPortfolio(portfolio.getPortfolioId());
         User user = portfolio.getUser();
         Optional<User> verifiedUser = userRepository.findById(user.getUserId());
@@ -130,7 +133,7 @@ public class PortfolioService {
         Optional.ofNullable(portfolio.getContent())
                 .ifPresent(content -> findPortfolio.setContent(content));
 
-
+        addSkills(portfolio, skills);
 
         return portfolioRepository.save(findPortfolio);
     }

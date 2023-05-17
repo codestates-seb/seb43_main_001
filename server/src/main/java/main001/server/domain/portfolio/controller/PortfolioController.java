@@ -47,9 +47,7 @@ public class PortfolioController {
 
         Portfolio portfolio = mapper.portfolioPostDtoToPortfolio(postDto);
 
-        Portfolio response = portfolioService.createPortfolio(portfolio, images, files);
-
-        portfolioService.addSkills(portfolio,postDto.getSkills());
+        Portfolio response = portfolioService.createPortfolio(portfolio, postDto.getSkills(), images, files);
 
         URI location =
                 UriComponentsBuilder
@@ -76,9 +74,8 @@ public class PortfolioController {
             portfolioService.deleteImage(deleteList);
             portfolioService.deleteFile(deleteList);
         }
-        Portfolio response = portfolioService.updatePortfolio(portfolio);
 
-        portfolioService.addSkills(response, patchDto.getSkills());
+        Portfolio response = portfolioService.updatePortfolio(portfolio, patchDto.getSkills());
 
         return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response)), HttpStatus.OK);
     }

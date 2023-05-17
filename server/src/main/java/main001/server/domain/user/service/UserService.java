@@ -31,7 +31,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final SkillService skillService;
-    private final Gson gson;
 
 //    private final PasswordEncoder passwordEncoder; // Security 적용 후 사용
 //
@@ -53,6 +52,30 @@ public class UserService {
         List<String> roles = authorityUtils.createRoles(user.getEmail());
         user.setRoles(roles);
         user.setAuth(true);
+
+        User savedUser = userRepository.save(user);
+        return savedUser;
+    }
+
+
+    public User createUser(User user, List<String> skills) {
+        verifyExistEmail(user.getEmail());
+
+//        /**
+//         * 암호화된 비밀번호 설정
+//         */
+//        String encryptedPassword = passwordEncoder.encode(user.getPassword());
+//        user.setPassword(encryptedPassword);
+//
+
+        /**
+         * 초기 권한 부여 설정
+         */
+        List<String> roles = authorityUtils.createRoles(user.getEmail());
+        user.setRoles(roles);
+        user.setAuth(true);
+
+        addSkills(user,skills);
 
         User savedUser = userRepository.save(user);
         return savedUser;
@@ -82,7 +105,7 @@ public class UserService {
      * 유저 정보 수정 기능 : 수정 가능한 정보 등 논의 필요
      */
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public User updateUser(User user) {
+    public User updateUser(User user, List<String> skills) {
         User findUser = findVerifiedUser(user.getUserId());
 
         Optional.ofNullable(user.getName()).ifPresent(name -> findUser.setName(name));
@@ -91,6 +114,8 @@ public class UserService {
         Optional.ofNullable(user.getBlogLink()).ifPresent(blogLink -> findUser.setBlogLink(blogLink));
         Optional.ofNullable(user.getJobStatus()).ifPresent(jobStatus -> findUser.setJobStatus(jobStatus));
         Optional.ofNullable(user.getAbout()).ifPresent(about -> findUser.setAbout(about));
+
+        addSkills(user, skills);
 
         return userRepository.save(findUser);
     }
@@ -111,8 +136,8 @@ public class UserService {
     }
 
     public User findVerifiedUser(long userId) {
-        Optional<User> otionalUser = userRepository.findById(userId);
-        User findUser = otionalUser.orElseThrow(() ->
+        Optional<User> optionalUser = userRepository.findById(userId);
+        User findUser = optionalUser.orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
         return findUser;
     }
