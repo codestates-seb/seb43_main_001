@@ -8,6 +8,7 @@ import lombok.Setter;
 import main001.server.audit.BaseTimeEntity;
 import main001.server.domain.attachment.file.entity.FileAttachment;
 import main001.server.domain.attachment.image.entity.ImageAttachment;
+import main001.server.domain.attachment.image.entity.RepresentativeAttachment;
 import main001.server.domain.portfoliocomment.entity.PortfolioComment;
 import main001.server.domain.skill.entity.PortfolioSkill;
 import main001.server.domain.user.entity.User;
@@ -38,6 +39,8 @@ public class Portfolio extends BaseTimeEntity {
     private String description; // 프로젝트 소개글
     private String content; //프로젝트 설명
 
+    @OneToOne(mappedBy = "portfolio", cascade = CascadeType.ALL)
+    private RepresentativeAttachment representativeAttachment;
 
     @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
     private List<ImageAttachment> imageAttachments = new ArrayList<>();

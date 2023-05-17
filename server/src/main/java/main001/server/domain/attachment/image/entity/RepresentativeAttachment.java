@@ -13,20 +13,19 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ImageAttachment extends BaseTimeEntity {
+public class RepresentativeAttachment extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long imageId;
+    private Long representativeImgId;
 
-    private String imgUrl;
+    private String representativeImgUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PORTFOLIO_ID")
     private Portfolio portfolio;
 
     @Builder
-    public ImageAttachment(String imgUrl) {
-        this.imgUrl = imgUrl;
+    public RepresentativeAttachment(String representativeImgUrl) {
+        this.representativeImgUrl = representativeImgUrl;
     }
-
 }

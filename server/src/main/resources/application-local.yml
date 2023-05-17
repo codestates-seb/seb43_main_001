@@ -70,7 +70,6 @@ server:
 mail:
   address:
     admin: admin@gmail.com
-
 jwt:
   secret-key: ${JWT_SECRET_KEY}
   access-token-expiration: 1440 # Access Token 유효기간(단위 : 분단위)

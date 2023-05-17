@@ -6,7 +6,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
@@ -39,19 +39,6 @@ spring:
             scope:
               - email
               - profile
-
-# AWS 설정
-cloud:
-  aws:
-    credentials:
-      access-key: ${S3_ACCESS_KEY}
-      secret-key: ${S3_SECRET_KEY}
-    s3:
-      bucket: ${S3_BUCKET_NAME}
-    region:
-      static: ap-northeast-2  # AWS 기본 리전을 설정
-    stack:
-      auto: false
 
 logging:
   level:
