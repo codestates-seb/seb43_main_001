@@ -70,10 +70,12 @@ export type GetPortfolio = {
   distributionLink: string;
   description: string;
   content: string;
+  imgUrl: string;
+  fileUrl: string;
   views: number;
-  skills: string[];
-  updatedAt: number[];
-  createdAt: number[];
+  skills?: string[];
+  updatedAt: string;
+  createdAt: string;
 };
 
 // Portfolio Comment
@@ -95,8 +97,9 @@ export type GetPortfolioCommentById = {
   portfolioCommentId: number;
   userId: number;
   userName: string;
+  userProfileImg: string;
   portfolioId: number;
   content: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string[];
+  updatedAt: string[];
 };

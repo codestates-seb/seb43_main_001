@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { act } from '@testing-library/react';
+import { RootState } from '..';
 
 type Login = {
   isLogin: boolean;
@@ -27,6 +27,10 @@ const loginSlice = createSlice({
     },
   },
 });
+
+export const refresh = (state: RootState) => state.login.refreshToken;
+export const access = (state: RootState) => state.login.accessToken;
+export const loginState = (state: RootState) => state.login.isLogin;
 
 export const { login, logout, setAccessToken } = loginSlice.actions;
 

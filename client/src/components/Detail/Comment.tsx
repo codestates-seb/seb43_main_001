@@ -43,10 +43,10 @@ function Comment() {
   // !: data가 없을 때 어떻게 표시되는지 꼭 확인해야 한다.
   return (
     <S.Container>
-      {PortfoliocommentLoading ? (
-        <Loading />
-      ) : (
-        <S.CommentWrapper>
+      <S.CommentWrapper>
+        {PortfoliocommentLoading ? (
+          <Loading />
+        ) : (
           <S.CommentShow>
             {(PortfolioCommentData ?? []).map(
               ({
@@ -71,16 +71,16 @@ function Comment() {
               },
             )}
           </S.CommentShow>
-          <S.CommentForm onSubmit={handleSubmit}>
-            <S.CommentArea
-              placeholder='Enter your comment here'
-              value={content}
-              onChange={handleCommentChange}
-            />
-            <S.YellowBtnCustom>COMMENT</S.YellowBtnCustom>
-          </S.CommentForm>
-        </S.CommentWrapper>
-      )}
+        )}
+        <S.CommentForm onSubmit={handleSubmit}>
+          <S.CommentArea
+            placeholder='Enter your comment here'
+            value={content}
+            onChange={handleCommentChange}
+          />
+          <S.YellowBtnCustom>COMMENT</S.YellowBtnCustom>
+        </S.CommentForm>
+      </S.CommentWrapper>
     </S.Container>
   );
 }

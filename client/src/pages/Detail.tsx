@@ -8,54 +8,62 @@ import ProjectContent from '../components/Detail/ProjectContent';
 import Comment from '../components/Detail/Comment';
 import LikeBtn from '../components/Detail/LikeBtn';
 
-// axios
-import axios from 'axios';
+// custom Hooks
+import { useGetPortfolio } from '../hooks/useGetPortfolio';
 
-// react hook
-import { useEffect, useState } from 'react';
+// react-router-dom
+import { useParams } from 'react-router-dom';
 
-type portfolios = {
-  portfolioId: number;
-  userId: number;
-  name: string;
-  title: string;
-  gitLink: string;
-  distributionLink: string;
-  description: string;
-  content: string;
-  views: number;
-  createdAt: number[];
-  updatedAt: number[];
-};
+// common component
+import Loading from '../components/common/Loading';
 
 function Detail() {
-  // 타입 추가를 해야 한다?
-  const [dummyData, setDummyData] = useState<portfolios | never>();
-  // axios처리를 진행해야 겠다
+  const { portfolioId } = useParams();
 
-  useEffect(() => {
-    // 여기에서 axios 처리를 해야 겠다.
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/portfolios/1`)
-      .then((res) => {
-        console.log('res', res);
-        setDummyData(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  const { getPortfolioLoading, getPortfolioError, PortfolioInfo, ErrorInfo } = useGetPortfolio(
+    Number(portfolioId),
+  );
 
-  const { name, content, description, distributionLink, gitLink, title, views } = dummyData || {};
+  // if (getPortfolioLoading) {
+  //   return (
+  //     <S.Container>
+  //       <Loading />
+  //     </S.Container>
+  //   );
+  // }
+  // // 에러 처리를  다시 고민 해보자 (굳이 없어도 될듯)
+  // if (getPortfolioError) {
+  //   console.log('error 발생', ErrorInfo);
+  //   return (
+  //     <S.Container>
+  //       <Loading />
+  //     </S.Container>
+  //   );
+  // }
 
   return (
     <S.Container>
+      {/* {PortfolioInfo && (
+        <>
+          <LikeBtn />
+          <DetailTitle
+          // title={PortfolioInfo.title}
+          // name={PortfolioInfo.name}
+          // gitLink={PortfolioInfo.gitLink}
+          // distributionLink={PortfolioInfo.distributionLink}
+          />
+          <ProjectImg />
+          <Description />
+          <ProjectContent />
+          <Comment />
+        </>
+      )} */}
       <LikeBtn />
       <DetailTitle
-        title={title}
-        name={name}
-        gitLink={gitLink}
-        distributionLink={distributionLink}
+      // title={PortfolioInfo.title}
+      // name={PortfolioInfo.name}
+      // gitLink={PortfolioInfo.gitLink}
+      // distributionLink={PortfolioInfo.distributionLink}
       />
       <ProjectImg />
       <Description />

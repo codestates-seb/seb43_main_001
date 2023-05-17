@@ -8,7 +8,9 @@ type MyToken = {
 };
 
 export const getUserIdFromAccessToken = (isLogin: boolean, token: string | null) => {
+  // console.log(isLogin, typeof token);
   if (token !== null && isLogin) {
+    console.log(jwtDecode<MyToken>(token));
     return jwtDecode<MyToken>(token).userId;
   }
 };

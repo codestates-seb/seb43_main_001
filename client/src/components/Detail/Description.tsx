@@ -6,7 +6,7 @@ import { useGetPortfolio } from '../../hooks/useGetPortfolio';
 // 상세 페이지 포트폴리오 상세 설명 컴포넌트
 function Description() {
   // !: userId를 뽑아서 사용해야 한다 여기에선 Description만 추가된다.
-  const { getPortfolioLoading, getPortfolioError, PortfolioInfo } = useGetPortfolio('1');
+  const { getPortfolioLoading, getPortfolioError, PortfolioInfo } = useGetPortfolio(1);
 
   return (
     <S.Container>

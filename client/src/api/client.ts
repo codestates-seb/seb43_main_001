@@ -1,9 +1,6 @@
 // axios
 import axios from 'axios';
 
-// redux
-import { useAppSelector, useAppDispatch } from '../hooks/reduxHook';
-
 // util
 import { getNewAccessToken } from '../utils/getAccessToken';
 
@@ -12,6 +9,7 @@ import {
   GetPortfolioCommentById,
   GetPortfolio,
   PostPortfolioComment,
+  PatchPortfolioComment,
   GetUserPortfolio,
   GetUserProfile,
   GetUserComment,
@@ -19,26 +17,34 @@ import {
 } from '../types/index';
 
 // redux
-import { setAccessToken } from '../store/slice/loginSlice';
+import { loginState, access, refresh, setAccessToken } from '../store/slice/loginSlice';
+import store from '../store';
 
 // ? 변수 선언 말고 바로 넣는 게 보안상 더 좋으려나?
 
 const REFRESH_URL = ''; // refresh URL을 새롭게 추가를 해야 한다.
-
+// ! nontoken은 제외
 const noneTokenClient = axios.create({ baseURL: process.env.REACT_APP_API_URL });
 const tokenClient = axios.create({ baseURL: process.env.REACT_APP_API_URL });
-
 // *: 요청하는 상태에 따라서 무조건 토큰을 담아서 보낸다.
+
+const isLogin = loginState(store.getState());
+const accessToken = access(store.getState());
+const refreshToken = refresh(store.getState());
+
 tokenClient.interceptors.request.use((config) => {
   // * :요청 헤더가 있으면 기존의 것을 반환하고 없으면 아래 처럼 새롭게 지정해준다.
-  if (!config.headers) return config;
-
-  if (config.url === REFRESH_URL) {
-    config.headers.Authorization = `${useAppSelector((state) => state.login.refreshToken)}`;
-  } else {
-    config.headers.Authorization = `${useAppSelector((state) => state.login.accessToken)}`;
+  // !login 상태가 아니면 그냥 일반 헤더 반환
+  // !login 상태면 아래와 같이 그냥 진행
+  if (!config.headers || !isLogin) {
+    return config;
   }
-
+  // REFRESH_URL 기준으로 분류 처리를
+  if (config.url === REFRESH_URL) {
+    config.headers.Authorization = `${accessToken}`;
+  } else {
+    config.headers.Authorization = `${refreshToken}`;
+  }
   return config;
 });
 
@@ -49,6 +55,13 @@ tokenClient.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
+    // !판단 기준은 state.login에 토큰이 있냐 없냐로 판별해라
+    // !로그인을 안 했을 때의 401은 그냥 reject(Promise)를 반환해라!
+
+    // Login 상태가 아닐 때는 그냥 error을 반환하는 형식
+    if (isLogin && error.response.status === 401) {
+      return Promise.reject(error);
+    }
 
     // originalRequest._retry은 재시도 여부를 나타낸다(계속 요청하는 loop를 방지하기 위해)
     if (error.response.status === 401 && originalRequest && !originalRequest._retry) {
@@ -59,9 +72,7 @@ tokenClient.interceptors.response.use(
         const { accessToken } = await getNewAccessToken();
 
         // 새롭게 발급 받은 accessToken을 로컬 스토리지에 저장하기
-        const dispatch = useAppDispatch();
-
-        dispatch(setAccessToken(accessToken));
+        store.dispatch(setAccessToken(accessToken));
 
         // *:새롭게 받은 accessToken을 다시 기존의 요청 헤더 권한에 부여
         originalRequest.headers.authorization = `${accessToken}`;
@@ -96,9 +107,9 @@ noneTokenClient.interceptors.response.use(
 export const userAPI = {};
 
 export const PortfolioAPI = {
-  getPortfolio: async (userId: string): Promise<GetPortfolio> => {
-    const PortfolioData = await tokenClient.get(
-      `${process.env.REACT_APP_API_URL}/portfolios/${userId}`,
+  getPortfolio: async (portfolioId: number): Promise<GetPortfolio> => {
+    const PortfolioData = await axios.get(
+      `${process.env.REACT_APP_API_URL}/portfolios/${portfolioId}`,
     );
     return PortfolioData.data;
   },
@@ -118,13 +129,29 @@ export const PortfolioCommentAPI = {
       content,
     });
   },
+  patchPortfolioComment: async ({
+    portfolioCommentId,
+    userId,
+    portfolioId,
+    content,
+  }: PatchPortfolioComment) => {
+    return await tokenClient.patch(
+      `${process.env.REACT_APP_API_URL}/api/portfoliocomments/${portfolioCommentId}`,
+      {
+        portfolioCommentId,
+        userId,
+        portfolioId,
+        content,
+      },
+    );
+  },
 };
 
 // UserComponents
 export const UserProfileAPI = {
   getUserProfile: async (userId: number): Promise<GetUserProfile> => {
     // ! : 실제 사용을 할 때는 /users/1/profile
-    const userProfileData = await noneTokenClient.get(
+    const userProfileData = await tokenClient.get(
       `${process.env.REACT_APP_API_URL}/users/${userId}/profile`,
       // 'http://43.201.157.191:8080/users/1/profile',
     );
