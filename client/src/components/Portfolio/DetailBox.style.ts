@@ -1,5 +1,7 @@
 import styled from 'styled-components';
+import { COLOR } from '../../constants';
 
+const { mainColor } = COLOR;
 export const DetailContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -8,6 +10,9 @@ export const DetailContainer = styled.div`
   .ql-container {
     background-color: ${(props) => props.theme.themeStyle.inputColor};
     min-height: 15rem;
+  }
+  .ql-toolbar {
+    background-color: ${mainColor};
   }
 `;
 export const Title = styled.span`
