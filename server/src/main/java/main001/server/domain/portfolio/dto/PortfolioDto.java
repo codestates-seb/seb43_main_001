@@ -79,5 +79,6 @@ public class PortfolioDto {
         private int views;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
+        private boolean isAuth;
     }
 }

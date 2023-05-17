@@ -62,6 +62,7 @@ public class PortfolioCommentDto {
         private Long portfolioId;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
+        private boolean auth;
     }
 
     @Getter

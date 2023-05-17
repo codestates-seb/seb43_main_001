@@ -66,9 +66,9 @@ public class UserDto {
         private String email;
         private String name;
         private UserStatus userStatus;
-        private boolean isAuth;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
+        private boolean isAuth;
     }
 
     @Getter
@@ -87,9 +87,9 @@ public class UserDto {
         private Grade grade;
         private JobStatus jobStatus;
         private String about;
-        private boolean isAuth;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
+        private boolean isAuth;
     }
 
     @Getter

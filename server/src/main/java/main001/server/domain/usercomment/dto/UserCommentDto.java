@@ -59,6 +59,7 @@ public class UserCommentDto {
         private String content;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
+        private boolean isAuth;
     }
     @Getter
     @AllArgsConstructor
