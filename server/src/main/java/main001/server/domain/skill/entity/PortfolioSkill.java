@@ -24,6 +24,7 @@ public class PortfolioSkill {
     private Skill skill;
 
     public void deletePortfolioSkill() {
+        this.getSkill().getPortfolioSkills().remove(this);
         skill.decreaseCounting();
     }
 

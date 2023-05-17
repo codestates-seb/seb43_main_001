@@ -32,6 +32,7 @@ public class UserSkill {
     }
 
     public void deleteUserSkill() {
+        this.getSkill().getUserSkills().remove(this);
         this.skill.decreaseCounting();
     }
 

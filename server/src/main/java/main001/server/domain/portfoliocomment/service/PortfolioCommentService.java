@@ -9,6 +9,8 @@ import main001.server.domain.portfoliocomment.mapper.PortfolioCommentMapper;
 import main001.server.domain.portfoliocomment.repository.PortfolioCommentRepository;
 import main001.server.domain.user.entity.User;
 import main001.server.domain.user.service.UserService;
+import main001.server.exception.BusinessLogicException;
+import main001.server.exception.ExceptionCode;
 import main001.server.response.PageInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -118,7 +120,8 @@ public class PortfolioCommentService {
 
     private PortfolioComment findVerifiedPortfolioComment(Long portfolioCommentId) {
         Optional<PortfolioComment> optionalPortfolioComment = portfolioCommentRepository.findById(portfolioCommentId);
-        return optionalPortfolioComment.orElseThrow(() -> new RuntimeException("조회된 댓글이 없습니다."));
+        return optionalPortfolioComment.orElseThrow(() ->
+                new BusinessLogicException(ExceptionCode.COMMENT_NOT_FOUND));
     }
 
     private PortfolioComment setUserAndPortfolio(PortfolioComment portfolioComment) {

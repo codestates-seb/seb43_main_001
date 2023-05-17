@@ -103,7 +103,6 @@ public class UserCommentService {
         userCommentRepository.deleteById(userCommentId);
     }
 
-
     private UserComment findVerifiedUserComment(Long userCommentId) {
         Optional<UserComment> optionalUserComment = userCommentRepository.findById(userCommentId);
 

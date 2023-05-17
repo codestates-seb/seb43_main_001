@@ -14,14 +14,15 @@ public enum ExceptionCode {
     NO_PERMISSION_DELETING_POST(403,"작성자만 삭제할 수 있습니다."),
 
     // portfolio 관련
-
+    PORTFOLIO_NOT_FOUND(404, "포트폴리오가 존재하지 않습니다."),
 
     // comment 관련
-    COMMENT_NOT_FOUND(400,"댓글이 존재하지 않습니다."),
+    COMMENT_NOT_FOUND(404,"댓글이 존재하지 않습니다."),
     COMMNET_DELETED(204,"삭제된 댓글입니다."),
 
     // skill 관련
-    SKILL_NOT_FOUND(400,"조회된 기술이 없습니다.");
+    SKILL_NOT_FOUND(404,"조회된 기술이 없습니다."),
+    SKILL_NOT_EXIST(400, "등록할 기술이 없습니다.");
 
     @Getter
     private int status;
