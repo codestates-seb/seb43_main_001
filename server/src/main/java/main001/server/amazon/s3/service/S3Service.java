@@ -90,4 +90,17 @@ public class S3Service {
                 new DeleteObjectRequest(bucketName, fileName);
         s3Client.deleteObject(deleteObjectRequest);
     }
+
+    public boolean deleteFile(String fileName) {
+        try {
+            s3Client.deleteObject("my-bucket", fileName);
+            return true;
+        } catch (Exception exception) {
+            return false;
+        }
+    }
+
+
+
+
 }

@@ -73,8 +73,9 @@ public class PortfolioDto {
         private String distributionLink;
         private String description;
         private String content;
-        private String imgUrl;
-        private String fileUrl;
+        private String representativeImgUrl;
+        private List<String> imgUrl;
+        private List<String> fileUrl;
         private List<String> skills;
         private int views;
         private LocalDateTime createdAt;

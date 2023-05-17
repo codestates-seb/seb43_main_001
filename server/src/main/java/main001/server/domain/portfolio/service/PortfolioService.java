@@ -2,6 +2,7 @@ package main001.server.domain.portfolio.service;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -20,7 +21,9 @@ import main001.server.amazon.s3.service.S3Service;
 import main001.server.domain.attachment.file.entity.FileAttachment;
 import main001.server.domain.attachment.file.repository.FileAttachmentRepository;
 import main001.server.domain.attachment.image.entity.ImageAttachment;
+import main001.server.domain.attachment.image.entity.RepresentativeAttachment;
 import main001.server.domain.attachment.image.repository.ImageAttachmentRepository;
+import main001.server.domain.attachment.image.repository.RepresentativeImageRepository;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.repository.PortfolioRepository;
 import main001.server.domain.skill.entity.PortfolioSkill;
@@ -65,14 +68,14 @@ public class PortfolioService {
     private final UserRepository userRepository;
     private final Gson gson;
     private final S3Service s3Service;
-
+    private final RepresentativeImageRepository representativeImageRepository;
     private final ImageAttachmentRepository imageAttachmentRepository;
     private final FileAttachmentRepository fileAttachmentRepository;
     private final UserService userService;
     private final SkillService skillService;
     private final static String VIEWCOOKIENAME = "alreadyViewCookie";
 
-    public Portfolio createPortfolio(Portfolio portfolio, List<String> skills, List<MultipartFile> images, List<MultipartFile> files) throws IOException{
+    public Portfolio createPortfolio(Portfolio portfolio, List<String> skills, MultipartFile representativeImg,List<MultipartFile> images, List<MultipartFile> files) throws IOException{
         User user = portfolio.getUser();
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
@@ -87,6 +90,17 @@ public class PortfolioService {
             throw new BusinessLogicException(ExceptionCode.NO_PERMISSION_CREATING_POST);
         }
         portfolio.setUser(verifiedUser.get());
+
+        if(representativeImg != null) {
+            String representativeImgUrl = s3Service.uploadFile(representativeImg, "images");
+            RepresentativeAttachment representativeAttachment = new RepresentativeAttachment(representativeImgUrl);
+            representativeAttachment.setPortfolio(portfolio);
+
+            portfolio.setRepresentativeAttachment(representativeAttachment);
+
+            representativeImageRepository.save(representativeAttachment);
+        }
+
 
 
         if (!CollectionUtils.isNullOrEmpty(images)) {
@@ -119,7 +133,7 @@ public class PortfolioService {
         return saved;
     }
 
-    public Portfolio updatePortfolio(Portfolio portfolio, List<String> skills) {
+    public Portfolio updatePortfolio(Portfolio portfolio, Long portfolioId, List<String> skills, MultipartFile representativeImg, List<MultipartFile> images, List<MultipartFile> files) throws IOException{
         Portfolio findPortfolio = findVerifiedPortfolio(portfolio.getPortfolioId());
         User user = portfolio.getUser();
         Optional<User> verifiedUser = userRepository.findById(user.getUserId());
@@ -135,8 +149,18 @@ public class PortfolioService {
         Optional.ofNullable(portfolio.getContent())
                 .ifPresent(content -> findPortfolio.setContent(content));
 
-        Portfolio saved = portfolioRepository.save(findPortfolio);
+        if (representativeImg != null && !representativeImg.isEmpty()) {
+            updateRepresentativeImage(portfolioId, representativeImg);
+        }
 
+        if (images != null && !images.isEmpty()) {
+            updateImage(portfolioId, images);
+        }
+
+        if (files != null && !files.isEmpty()) {
+            updateFile(portfolioId, files);
+        }
+        Portfolio saved = portfolioRepository.save(findPortfolio);
         addSkills(saved, skills);
 
         return saved;
@@ -183,63 +207,95 @@ public class PortfolioService {
         return findPortfolio;
     }
 
-    public void updateImage(Long portfolioId, List<MultipartFile> images) throws IOException{
+
+    public void updateRepresentativeImage(Long portfolioId, MultipartFile representativeImg) throws IOException {
         Portfolio portfolio = findPortfolio(portfolioId);
-        List<ImageAttachment> currentImageAttachments = portfolio.getImageAttachments();
-        currentImageAttachments.clear();
-        imageAttachmentRepository.deleteAll(currentImageAttachments);
+        RepresentativeAttachment currentImageAttachment = portfolio.getRepresentativeAttachment();
 
-        if (!CollectionUtils.isNullOrEmpty(images)) {
-            for (MultipartFile image : images) {
-                String imgUrl = s3Service.uploadFile(image, "images");
-                ImageAttachment imageAttachment = new ImageAttachment(imgUrl);
-                imageAttachment.setPortfolio(portfolio);
-
-                portfolio.getImageAttachments().add(imageAttachment);
-                imageAttachmentRepository.save(imageAttachment);
-
-            }
+        // 현재 첨부된 대표 이미지 파일을 삭제
+        if (currentImageAttachment != null) {
+            // Delete existing image from S3
+            s3Service.deleteFile(currentImageAttachment.getRepresentativeImgUrl());
+            // Remove the existing representative image attachment from the portfolio
+            portfolio.setRepresentativeAttachment(null);
+            representativeImageRepository.delete(currentImageAttachment);
         }
-    }
 
-    public void updateFile(Long portfolioId, List<MultipartFile> files) throws IOException{
-        Portfolio portfolio = findPortfolio(portfolioId);
+        // 새로운 대표 이미지 파일 첨부
+        if (representativeImg != null) {
+            String imgUrl = s3Service.uploadFile(representativeImg, "images");
+            RepresentativeAttachment newImageAttachment = new RepresentativeAttachment(imgUrl);
+            newImageAttachment.setPortfolio(portfolio);
 
-        // 기존 파일 첨부 리스트 삭제
-        List<FileAttachment> currentFileAttachments = portfolio.getFileAttachments();
-        currentFileAttachments.clear();
-        fileAttachmentRepository.deleteAll(currentFileAttachments);
-
-        if (!CollectionUtils.isNullOrEmpty(files)) {
-            for (MultipartFile file : files) {
-                String fileUrl = s3Service.uploadFile(file, "files");
-                FileAttachment fileAttachment = new FileAttachment(fileUrl);
-                fileAttachment.setPortfolio(portfolio);
-
-                portfolio.getFileAttachments().add(fileAttachment);
-                fileAttachmentRepository.save(fileAttachment);
-            }
-        }
-    }
-
-    public void deleteImage(List<String> urlList) {
-        for (String url : urlList) {
-            String originalFileName = url.split("amazonaws.com/")[1];
-            s3Service.removeS3File(originalFileName);
-            imageAttachmentRepository.delete(imageAttachmentRepository.findByImgUrl(url));
-        }
-    }
-
-    public void deleteFile(List<String> urlList) {
-        for (String url : urlList) {
-            String originalFileName = url.split("amazonaws.com/")[1];
-            s3Service.removeS3File(originalFileName);
-            fileAttachmentRepository.delete(fileAttachmentRepository.findByFileUrl(url));
+            portfolio.setRepresentativeAttachment(newImageAttachment);
+            representativeImageRepository.save(newImageAttachment);
         }
     }
 
     @Transactional
-    public int updateView(Long portfolioId, HttpServletRequest request, HttpServletResponse response) {
+    public void updateImage(Long portfolioId, List<MultipartFile> images) throws IOException {
+        Portfolio portfolio = findPortfolio(portfolioId);
+        List<ImageAttachment> currentImageAttachments = portfolio.getImageAttachments();
+
+        // 기존 이미지 파일 첨부를 삭제
+        if (!CollectionUtils.isNullOrEmpty(currentImageAttachments)) {
+            Iterator<ImageAttachment> iterator = currentImageAttachments.iterator();
+            while (iterator.hasNext()) {
+                ImageAttachment imageAttachment = iterator.next();
+                // s3에서 이미지 파일 삭제
+                s3Service.deleteFile(imageAttachment.getImgUrl());
+                // 포트폴리오에서 이미지 첨부 파일 삭제
+                iterator.remove();
+                imageAttachmentRepository.delete(imageAttachment);
+            }
+        }
+
+        // 새로운 이미지 파일을 첨부
+        if (!CollectionUtils.isNullOrEmpty(images)) {
+            for (MultipartFile image : images) {
+                String imgUrl = s3Service.uploadFile(image, "images");
+                ImageAttachment newImageAttachment = new ImageAttachment(imgUrl);
+                newImageAttachment.setPortfolio(portfolio);
+
+                portfolio.getImageAttachments().add(newImageAttachment);
+                imageAttachmentRepository.save(newImageAttachment);
+            }
+        }
+    }
+
+
+    public void updateFile(Long portfolioId, List<MultipartFile> files) throws IOException {
+        Portfolio portfolio = findPortfolio(portfolioId);
+        List<FileAttachment> currentFileAttachments = portfolio.getFileAttachments();
+
+        // 기존 첨부 파일을 삭제
+        if (!CollectionUtils.isNullOrEmpty(currentFileAttachments)) {
+            Iterator<FileAttachment> iterator = currentFileAttachments.iterator();
+            while (iterator.hasNext()) {
+                FileAttachment fileAttachment = iterator.next();
+                // s3에서 파일 삭제
+                s3Service.deleteFile(fileAttachment.getFileUrl());
+                // 포트폴리오에서 첨부 파일 삭제
+                iterator.remove();
+                fileAttachmentRepository.delete(fileAttachment);
+            }
+        }
+
+        // 새로운 첨부 파일을 첨부
+        if (!CollectionUtils.isNullOrEmpty(files)) {
+            for (MultipartFile file : files) {
+                String fileUrl = s3Service.uploadFile(file, "files");
+                FileAttachment newFileAttachment = new FileAttachment(fileUrl);
+                newFileAttachment.setPortfolio(portfolio);
+
+                portfolio.getFileAttachments().add(newFileAttachment);
+                fileAttachmentRepository.save(newFileAttachment);
+            }
+        }
+    }
+
+    @Transactional
+    public int countView(Long portfolioId, HttpServletRequest request, HttpServletResponse response) {
 
         Cookie[] cookies = request.getCookies();
         boolean checkCookie = false;
