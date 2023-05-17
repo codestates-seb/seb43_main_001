@@ -36,7 +36,7 @@ function LoginContainer() {
       {!isLogin && (
         <>
           <OAuthBtn logo={<Github />} text={'Github Login'} onClick={GithubLoginHandler}></OAuthBtn>
-          <OAuthBtn logo={<Google />} text={'Google Login'} onClick={GithubLoginHandler}></OAuthBtn>
+          <OAuthBtn logo={<Google />} text={'Google Login'} onClick={GoogleLoginHandler}></OAuthBtn>
           {/* <OauthBtn logo={<Google />} text={'Google Login'}></OauthBtn> */}
         </>
       )}
