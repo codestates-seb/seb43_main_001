@@ -30,11 +30,14 @@ public class User extends BaseTimeEntity {
     @Column(length = 50, unique = true)
     private String email;
 
-    @Column(length = 20)
-    private String name;
+    @Column(length = 50, unique = true)
+    private String oauthId;
 
     @Column(length = 100)
     private String password;
+
+    @Column(length = 20)
+    private String name;
 
     @Column
     private String profileImg;
