@@ -17,8 +17,9 @@ const initialState: UserInfo = {
   jobStatus: '',
   blogLink: '',
 };
-const UserInfoSlice = createSlice({
-  name: 'userinfo',
+
+const EditUserProfileSlice = createSlice({
+  name: 'editUserProfile',
   initialState,
   reducers: {
     setName: (state, action) => {
@@ -39,6 +40,6 @@ const UserInfoSlice = createSlice({
   },
 });
 
-export const { setName, setImg, setAbout, setJobStatus, setBlog } = UserInfoSlice.actions;
+export const { setName, setImg, setAbout, setJobStatus, setBlog } = EditUserProfileSlice.actions;
 
-export default UserInfoSlice.reducer;
+export default EditUserProfileSlice.reducer;

@@ -1,24 +1,33 @@
 import * as S from './Portfolio.style';
 import Card from '../common/Card';
 import Sort from '../Home/Sort';
+import React from 'react';
+import { useGetUserPortfolios } from '../../hooks/useGetUserPortfolios';
 
-const data = [1, 2, 3, 4, 5, 6];
-const Portfolio = () => {
+type IdProps = {
+  userId: number;
+};
+const Portfolio: React.FC<IdProps> = ({ userId }) => {
+  // ! : 실제 테스트에서는 0 대신 id값 넣을 것
+  const { UserPortfolios } = useGetUserPortfolios(userId);
   return (
     <>
-      {/* <S.PortfolioBtns>
-        <button>최신순</button>
-        <button>추천순</button>
-        <button>조회순</button>
-      </S.PortfolioBtns> */}
-      {/* <S.UserSort> */}
-      <Sort />
-      {/* </S.UserSort> */}
-      <S.PortfolioContainer>
-        {data.map((ele) => (
-          <Card key={ele} />
-        ))}
-      </S.PortfolioContainer>
+      {UserPortfolios && (
+        <>
+          <Sort />
+          <S.PortfolioContainer>
+            {UserPortfolios.map((ele) => (
+              <Card
+                key={ele.portfolioId}
+                portfolioId={ele.portfolioId}
+                description={ele.description}
+                title={ele.title}
+                views={ele.views}
+              />
+            ))}
+          </S.PortfolioContainer>
+        </>
+      )}
     </>
   );
 };

@@ -5,13 +5,13 @@ import { useParams } from 'react-router-dom';
 
 function User() {
   // TODO : 해당 유저 데이터의 id값으로 정보, 포트폴리오, 코멘트 모두 가져오기
-  const { id } = useParams() as { id: string };
+  const { id:userId } = useParams() as { id: string };
 
   return (
     <S.User>
-      <UserInfo id={id} />
+      <UserInfo userId={Number(userId)} />
       <S.WebPortfolioContainer>
-        <Portfolio />
+        <Portfolio userId={Number(userId)} />
       </S.WebPortfolioContainer>
     </S.User>
   );

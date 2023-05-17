@@ -2,7 +2,7 @@
   "users": {
     "userId": 1,
     "email": "test1@gmail.com",
-    "name": "사용자 수정",
+    "name": "사용자 수정1",
     "profileImg": "https://images.unsplash.com/photo-1488161628813-04466f872be2?crop=entropy&cs=srgb&fm=jpg&ixid=Mnw3MjAxN3wwfDF8c2VhcmNofDl8fHBlb3BsZXxlbnwwfHx8fDE2ODMwODA2MDQ&ixlib=rb-4.0.3&q=85&q=85&fmt=jpg&crop=entropy&cs=tinysrgb&w=450",
     "gitLink": "https://github.com/test1",
     "blogLink": "https://blog.com/test123123",
@@ -14,44 +14,46 @@
     "updatedAt": "2023-05-08T14:21:15.3735807",
     "auth": true
   },
-  "portfoloi": {
+  "portfolio": {
     "data": [
       {
-        "id": 3,
-        "title": "title1",
-        "gitLink": "https://github.com/codestates-seb/seb43_main_001.git",
-        "distributionLink": "http://localhost:8080",
-        "description": "description",
-        "content": "content",
-        "views": 3,
-        "createdAt": "2023-05-08T14:29:05.0657432",
-        "updatedAt": "2023-05-08T14:29:05.0657432"
+        "portfolioId": 1,
+        "title": "1제목",
+        "gitLink": "https://github.com/test1",
+        "distributionLink": "https://distribution.com/test1",
+        "description": "소개글",
+        "content": "내용",
+        "views": 23,
+        "createdAt": [2023, 5, 12, 4, 56, 42, 234246000],
+        "updatedAt": [2023, 5, 12, 4, 56, 42, 234246000]
       },
       {
-        "id": 2,
-        "title": "title2",
-        "gitLink": "https://github.com/codestates-seb/seb43_main_001.git",
-        "distributionLink": "http://localhost:8080",
-        "description": "description",
-        "content": "content",
-        "views": 2,
-        "createdAt": "2023-05-08T14:29:05.0657432",
-        "updatedAt": "2023-05-08T14:29:05.0657432"
-      },
-      {
-        "id": 1,
-        "title": "title3",
-        "gitLink": "https://github.com/codestates-seb/seb43_main_001.git",
-        "distributionLink": "http://localhost:8080",
-        "description": "description",
-        "content": "content",
+        "portfolioId": 2,
+        "title": "1제목",
+        "gitLink": "https://github.com/test1",
+        "distributionLink": "https://distribution.com/test1",
+        "description": "소개글",
+        "content": "내용",
         "views": 1,
-        "createdAt": "2023-05-08T14:29:05.0657432",
-        "updatedAt": "2023-05-08T14:29:05.0657432"
+        "createdAt": [2023, 5, 12, 4, 56, 42, 982757000],
+        "updatedAt": [2023, 5, 12, 4, 56, 42, 982757000]
+      },
+      {
+        "portfolioId": 3,
+        "title": "1제목",
+        "gitLink": "https://github.com/test1",
+        "distributionLink": "https://distribution.com/test1",
+        "description": "소개글",
+        "content": "내용",
+        "views": 0,
+        "createdAt": [2023, 5, 12, 4, 56, 43, 737735000],
+        "updatedAt": [2023, 5, 12, 4, 56, 43, 737735000]
       }
     ],
     "pageInfo": {
-      "totalElements": 0,
+      "page": 1,
+      "size": 15,
+      "totalElements": 3,
       "totalPages": 1
     }
   },
@@ -62,16 +64,7 @@
         "userId": 1,
         "writerName": "name",
         "writerId": 3,
-        "content": "1번 댓글",
-        "createdAt": "2023-05-08T14:21:15.83477",
-        "updatedAt": "2023-05-08T14:21:15.83477"
-      },
-      {
-        "userCommentId": 3,
-        "writerName": "name",
-        "userId": 1,
-        "writerId": 4,
-        "content": "1번 댓글",
+        "content": "1번 댓글dfdfd",
         "createdAt": "2023-05-08T14:21:15.83477",
         "updatedAt": "2023-05-08T14:21:15.83477"
       }
@@ -105,8 +98,7 @@
     "pageInfo": {
       "totalElements": 2,
       "totalPages": 1
-    },
-    "content": "1번 유저 댓글 수정"
+    }
   },
   "toPortfolio": {
     "data": [
@@ -124,7 +116,7 @@
         "userId": 1,
         "writerName": "name",
         "portfolioId": 2,
-        "content": "1번 포트폴리오 댓글",
+        "content": "2번 포트폴리오 댓글",
         "createdAt": "2023-05-08T14:20:57.3121778",
         "updatedAt": "2023-05-08T14:20:57.3121778"
       }

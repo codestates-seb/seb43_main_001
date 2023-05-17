@@ -1,11 +1,11 @@
 import * as S from './CommentContainer.style';
 // import { user } from './mock';
 import CommentItem from './CommentItem';
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import axios from 'axios';
-import { useMutation } from '@tanstack/react-query';
+import { ChangeEvent, useState } from 'react';
+import { useGetUserComments } from '../../hooks/useGetUserComment';
+import { useGetCommentsToPortfolio } from '../../hooks/useGetCommentsToPortfolio';
+import { useGetCommentsToUser } from '../../hooks/useGetCommentsToUser';
 
-const url = 'http://localhost:3001';
 export type Comment = {
   userId: number;
   writerId: number;
@@ -18,13 +18,14 @@ export type Comment = {
   portfolioId?: number;
 };
 
-const CommentContainer = () => {
+type CommentProps = {
+  userId: number;
+};
+
+const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
   const [selectComment, setSelectComment] = useState(true);
   const [category, setCategory] = useState(true);
   const [content, setContent] = useState('');
-  const [comment, setComment] = useState<Comment[]>();
-  const [toUser, setToUser] = useState<Comment[]>();
-  const [toPortfolio, setToPortfolio] = useState<Comment[]>();
 
   const addHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -34,22 +35,13 @@ const CommentContainer = () => {
   const contentChangeHandler = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
   };
-  const getData = async () => {
-    await axios.get(`${url}/comment`).then((res) => {
-      setComment(res.data.data);
-    });
-    await axios.get(`${url}/toUser`).then((res) => {
-      setToUser(res.data.data);
-    });
-    await axios.get(`${url}/toPortfolio`).then((res) => {
-      setToPortfolio(res.data.data);
-    });
-  };
 
-  useEffect(() => {
-    getData();
-  }, []);
+  // ! : 실제 테스트에서는 0 대신 id값 넣을 것
+  const { UserComments } = useGetUserComments(userId);
+  const { CommentsToPortfolio } = useGetCommentsToPortfolio(userId);
+  const { CommentsToUser } = useGetCommentsToUser(userId);
 
+  // ? : 유저 댓글과 포트폴리오 댓글이 남아있는 문제 < ?????
   return (
     <S.CommentContainer>
       <S.SelectBtn>
@@ -63,11 +55,18 @@ const CommentContainer = () => {
       {selectComment ? (
         <>
           <S.Comments>
-            {comment && (
+            {UserComments && (
               <>
-                {comment.map((ele) => (
-                  <CommentItem key={ele.userCommentId} data={ele} path='comment' />
-                ))}
+                {UserComments.length > 0 ? (
+                  <>
+                    {UserComments.map((ele) => (
+                      <CommentItem key={ele.userCommentId} data={ele} path='comment' />
+                    ))}
+                  </>
+                ) : (
+                  <>
+                  <p></p></>
+                )}
               </>
             )}
           </S.Comments>
@@ -93,15 +92,17 @@ const CommentContainer = () => {
           </S.CategoryBtns>
           {category ? (
             <S.Comments>
-              {toUser?.map((ele) => (
-                <CommentItem key={ele.userCommentId} data={ele} path='toUser' />
-              ))}
+              {CommentsToUser &&
+                CommentsToUser?.map((ele) => (
+                  <CommentItem key={ele.userCommentId} data={ele} path='toUser' />
+                ))}
             </S.Comments>
           ) : (
             <S.Comments>
-              {toPortfolio?.map((ele) => (
-                <CommentItem key={ele.portfolioCommentId} data={ele} path='toPortfolio' />
-              ))}
+              {CommentsToPortfolio &&
+                CommentsToPortfolio?.map((ele) => (
+                  <CommentItem key={ele.portfolioCommentId} data={ele} path='toPortfolio' />
+                ))}
             </S.Comments>
           )}
         </>

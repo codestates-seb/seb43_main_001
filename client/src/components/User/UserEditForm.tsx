@@ -1,7 +1,8 @@
 import { useDispatch } from 'react-redux';
 import * as S from './UserEditForm.style';
-import { setBlog, setAbout, setJobStatus } from '../../store/slice/userInfoSlice';
+import { setBlog, setAbout, setJobStatus } from '../../store/slice/editUserProfileSlice';
 import { useState } from 'react';
+// import axios from 'axios';
 
 type EditFormProps = {
   about: string;
@@ -25,6 +26,10 @@ const UserEditForm: React.FC<EditFormProps> = ({ about, blogLink, jobStatus }) =
   const jobStatusHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const target = e.currentTarget.value;
     dispatch(setJobStatus(target));
+  };
+  const deleteHandler = async () => {
+    // await axios.delete(`${process.env.REACT_APP_API_URL}/user/id`);
+    // 메인 화면으로 이동 로직 필요
   };
   return (
     <S.EditForm>
@@ -56,7 +61,9 @@ const UserEditForm: React.FC<EditFormProps> = ({ about, blogLink, jobStatus }) =
           value={userBlogLink}
         />
       </label>
-      <button type='button'>회원 탈퇴</button>
+      <button type='button' onClick={deleteHandler}>
+        회원 탈퇴
+      </button>
     </S.EditForm>
   );
 };

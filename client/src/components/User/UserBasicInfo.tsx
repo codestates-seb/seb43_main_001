@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux';
 import { YellowBtn } from '../common/Button.style';
 // import { user } from './mock';
 import * as S from './UserBasicInfo.style';
-import { setImg, setName } from '../../store/slice/userInfoSlice';
+import { setImg, setName } from '../../store/slice/editUserProfileSlice';
 import { useState } from 'react';
 
 type UserBasicInfoProps = {
@@ -32,8 +32,8 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
     };
     reader.readAsDataURL(files);
 
-    // ? : axios를 통해서 전달하는 부분이 files여야 하는지 photo(url)이어야 하는지?
-    dispatch(setImg(files));
+    // ! : axios를 통해서 전달하는 부분은 file
+    dispatch(setImg({ ...files }));
   };
   const nameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value;
