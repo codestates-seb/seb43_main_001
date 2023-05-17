@@ -58,7 +58,8 @@ public class UserCommentMapper {
                 userComment.getWriter().getProfileImg(),
                 userComment.getContent(),
                 userComment.getCreatedAt(),
-                userComment.getUpdatedAt()
+                userComment.getUpdatedAt(),
+                userComment.getUser().isAuth()
         );
         return response;
     }

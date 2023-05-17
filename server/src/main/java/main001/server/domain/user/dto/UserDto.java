@@ -25,7 +25,7 @@ public class UserDto {
         private String profileImg;
         private String gitLink;
         private String blogLink;
-        private String skills;
+        private List<String> skills;
         private JobStatus jobStatus;
         private String about;
     }
@@ -40,7 +40,7 @@ public class UserDto {
         private String profileImg;
         private String gitLink;
         private String blogLink;
-        private String skills;
+        private List<String> skills;
         private JobStatus jobStatus;
         private String about;
     }
@@ -66,9 +66,9 @@ public class UserDto {
         private String email;
         private String name;
         private UserStatus userStatus;
-        private boolean isAuth;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
+        private boolean isAuth;
     }
 
     @Getter
@@ -87,9 +87,9 @@ public class UserDto {
         private Grade grade;
         private JobStatus jobStatus;
         private String about;
-        private boolean isAuth;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
+        private boolean isAuth;
     }
 
     @Getter

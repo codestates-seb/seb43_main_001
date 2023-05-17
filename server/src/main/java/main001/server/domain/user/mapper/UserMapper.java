@@ -53,9 +53,9 @@ public interface UserMapper {
                 .grade( user.getGrade())
                 .jobStatus( user.getJobStatus())
                 .about( user.getAbout())
-                .isAuth(user.isAuth())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
+                .isAuth(user.isAuth())
                 .build();
 
     }

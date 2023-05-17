@@ -49,7 +49,7 @@ public class PortfolioController {
 
         Portfolio portfolio = mapper.portfolioPostDtoToPortfolio(postDto);
 
-        Portfolio response = portfolioService.createPortfolio(portfolio, representativeImg, images, files);
+        Portfolio response = portfolioService.createPortfolio(portfolio, postDto.getSkills(), representativeImg,images, files);
 
 
         portfolioService.addSkills(portfolio,postDto.getSkills());
@@ -75,9 +75,8 @@ public class PortfolioController {
 //        List<String> deleteList = patchDto.getDelete();
 
 
-        Portfolio response = portfolioService.updatePortfolio(portfolio, portfolioId, representativeImg, images, files);
+        Portfolio response = portfolioService.updatePortfolio(portfolio, portfolioId, patchDto.getSkills(),representativeImg, images, files);
 
-        portfolioService.addSkills(response, patchDto.getSkills());
 
         return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response)), HttpStatus.OK);
     }

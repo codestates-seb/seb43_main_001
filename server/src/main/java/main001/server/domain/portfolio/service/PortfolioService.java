@@ -12,6 +12,8 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.CollectionUtils;
 import com.amazonaws.util.IOUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +49,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
@@ -63,6 +66,7 @@ import java.util.List;
 public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
     private final UserRepository userRepository;
+    private final Gson gson;
     private final S3Service s3Service;
     private final RepresentativeImageRepository representativeImageRepository;
     private final ImageAttachmentRepository imageAttachmentRepository;
@@ -70,7 +74,8 @@ public class PortfolioService {
     private final UserService userService;
     private final SkillService skillService;
     private final static String VIEWCOOKIENAME = "alreadyViewCookie";
-    public Portfolio createPortfolio(Portfolio portfolio, MultipartFile representativeImg,List<MultipartFile> images, List<MultipartFile> files) throws IOException{
+
+    public Portfolio createPortfolio(Portfolio portfolio, List<String> skills, MultipartFile representativeImg,List<MultipartFile> images, List<MultipartFile> files) throws IOException{
         User user = portfolio.getUser();
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
@@ -121,10 +126,14 @@ public class PortfolioService {
             }
         }
 
-        return portfolioRepository.save(portfolio);
+        Portfolio saved = portfolioRepository.save(portfolio);
+
+        addSkills(saved, skills);
+
+        return saved;
     }
 
-    public Portfolio updatePortfolio(Portfolio portfolio, Long portfolioId,MultipartFile representativeImg, List<MultipartFile> images, List<MultipartFile> files) throws IOException{
+    public Portfolio updatePortfolio(Portfolio portfolio, Long portfolioId, List<String> skills, MultipartFile representativeImg, List<MultipartFile> images, List<MultipartFile> files) throws IOException{
         Portfolio findPortfolio = findVerifiedPortfolio(portfolio.getPortfolioId());
         User user = portfolio.getUser();
         Optional<User> verifiedUser = userRepository.findById(user.getUserId());
@@ -151,8 +160,10 @@ public class PortfolioService {
         if (files != null && !files.isEmpty()) {
             updateFile(portfolioId, files);
         }
+        Portfolio saved = portfolioRepository.save(findPortfolio);
+        addSkills(saved, skills);
 
-        return portfolioRepository.save(findPortfolio);
+        return saved;
     }
 
     public Portfolio findPortfolio(long portfolioId) {
@@ -191,7 +202,8 @@ public class PortfolioService {
 
     public Portfolio findVerifiedPortfolio(long portfolioId) {
         Optional<Portfolio> optionalPortfolio = portfolioRepository.findById(portfolioId);
-        Portfolio findPortfolio = optionalPortfolio.orElseThrow(EntityNotFoundException::new);
+        Portfolio findPortfolio = optionalPortfolio.orElseThrow(
+                () -> new BusinessLogicException(ExceptionCode.PORTFOLIO_NOT_FOUND));
         return findPortfolio;
     }
 
@@ -328,13 +340,16 @@ public class PortfolioService {
         return (int) now.until(tommorow, ChronoUnit.SECONDS);
     }
 
-    public void addSkills(Portfolio portfolio, String skills) {
-        portfolio.getSkills().forEach(PortfolioSkill::deletePortfolioSkill);
+    public void addSkills(Portfolio portfolio, List<String> skills) {
+        for(int i = portfolio.getSkills().size()-1; i>=0; i--) {
+            portfolio.deleteSkill(portfolio.getSkills().get(i));
+        }
 
-        portfolio.getSkills().clear();
+        if(skills==null) {
+            throw new BusinessLogicException(ExceptionCode.SKILL_NOT_EXIST);
+        }
 
-        Arrays.asList(skills.split(","))
-                .stream()
+        skills.stream()
                 .map(name -> {
                     return PortfolioSkill.createPortfolioSkill(
                             skillService.findByName(name.toUpperCase()));

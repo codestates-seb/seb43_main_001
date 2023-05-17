@@ -37,9 +37,7 @@ public class UserController {
     public ResponseEntity join(@Valid @RequestBody UserDto.Post requestBody) {
         User user = mapper.userPostToUser(requestBody);
 
-        User createdUser = userService.createUser(user);
-
-        userService.addSkills(createdUser, requestBody.getSkills());
+        User createdUser = userService.createUser(user, requestBody.getSkills());
 
         URI location = UriCreator.createUri(USER_DEFAULT_URL, createdUser.getUserId());
 
@@ -77,6 +75,7 @@ public class UserController {
                 new SingleResponseDto<>(mapper.userToUserProfileResponse(user)), HttpStatus.OK
         );
     }
+
     @GetMapping("/{user-id}/portfolio")
     public ResponseEntity getUserPortfolios(@PathVariable("user-id") @Positive long userId,
                                             @Positive @RequestParam(value = "page", defaultValue = "1") int page,
@@ -98,9 +97,7 @@ public class UserController {
             @Valid @RequestBody UserDto.Patch requestBody) {
         requestBody.setUserId(userId);
 
-        User user = userService.updateUser(mapper.userPatchToUser(requestBody));
-
-        userService.addSkills(user, requestBody.getSkills());
+        User user = userService.updateUser(mapper.userPatchToUser(requestBody), requestBody.getSkills());
 
         return new ResponseEntity<>(
                 new SingleResponseDto<>(mapper.userToUserProfileResponse(user)), HttpStatus.OK);

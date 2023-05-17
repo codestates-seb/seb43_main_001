@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import main001.server.domain.portfoliocomment.dto.PortfolioCommentDto;
 import main001.server.domain.portfoliocomment.service.PortfolioCommentService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +20,9 @@ public class PortfolioCommentController {
     private final PortfolioCommentService portfolioCommentService;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public PortfolioCommentDto.Response postUserComment(@RequestBody @Valid PortfolioCommentDto.Post postDto) {
-        PortfolioCommentDto.Response response = portfolioCommentService.createPortfolioComment(postDto);
-        return response;
+    public ResponseEntity postUserComment(@RequestBody @Valid PortfolioCommentDto.Post postDto) {
+        portfolioCommentService.createPortfolioComment(postDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 

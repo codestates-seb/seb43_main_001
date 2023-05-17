@@ -54,6 +54,7 @@ public interface PortfolioMapper {
                 .views(portfolio.getViews())
                 .createdAt(portfolio.getCreatedAt())
                 .updatedAt(portfolio.getUpdatedAt())
+                .isAuth(portfolio.getUser().isAuth())
                 .build();
 
         return response;

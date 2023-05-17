@@ -1,5 +1,7 @@
 package main001.server.domain.user.service;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import lombok.RequiredArgsConstructor;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.skill.entity.UserSkill;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -54,6 +57,31 @@ public class UserService {
         return savedUser;
     }
 
+
+    public User createUser(User user, List<String> skills) {
+        verifyExistEmail(user.getEmail());
+
+//        /**
+//         * 암호화된 비밀번호 설정
+//         */
+//        String encryptedPassword = passwordEncoder.encode(user.getPassword());
+//        user.setPassword(encryptedPassword);
+//
+
+        /**
+         * 초기 권한 부여 설정
+         */
+        List<String> roles = authorityUtils.createRoles(user.getEmail());
+        user.setRoles(roles);
+        user.setAuth(true);
+
+        User savedUser = userRepository.save(user);
+
+        addSkills(user,skills);
+
+        return savedUser;
+    }
+
     public User findUser(long userId) {
         return findVerifiedUser(userId);
     }
@@ -78,7 +106,7 @@ public class UserService {
      * 유저 정보 수정 기능 : 수정 가능한 정보 등 논의 필요
      */
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public User updateUser(User user) {
+    public User updateUser(User user, List<String> skills) {
         User findUser = findVerifiedUser(user.getUserId());
 
         Optional.ofNullable(user.getName()).ifPresent(name -> findUser.setName(name));
@@ -88,7 +116,11 @@ public class UserService {
         Optional.ofNullable(user.getJobStatus()).ifPresent(jobStatus -> findUser.setJobStatus(jobStatus));
         Optional.ofNullable(user.getAbout()).ifPresent(about -> findUser.setAbout(about));
 
-        return userRepository.save(findUser);
+        User saved = userRepository.save(findUser);
+
+        addSkills(saved, skills);
+
+        return saved;
     }
 
     /**
@@ -107,8 +139,8 @@ public class UserService {
     }
 
     public User findVerifiedUser(long userId) {
-        Optional<User> otionalUser = userRepository.findById(userId);
-        User findUser = otionalUser.orElseThrow(() ->
+        Optional<User> optionalUser = userRepository.findById(userId);
+        User findUser = optionalUser.orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
         return findUser;
     }
@@ -135,18 +167,19 @@ public class UserService {
         return userRepository.save(findUser);
     }
 
-    public void addSkills(User user,String skills) {
-        List<String> strings = Arrays.asList(skills.split(","));
+    public void addSkills(User user,List<String> skills) {
+        for(int i = user.getSkills().size()-1; i>=0; i--) {
+            user.deleteSkill(user.getSkills().get(i));
+        }
 
-        user.getSkills()
-                .forEach(UserSkill::deleteUserSkill);
+        if(skills==null) {
+            throw new BusinessLogicException(ExceptionCode.SKILL_NOT_EXIST);
+        }
 
-        user.getSkills().clear();
-
-        strings.stream()
+        skills.stream()
                 .map(name -> {
                     UserSkill userSkill = UserSkill.createUserSkill(
-                            skillService.findByName(name.toUpperCase())
+                            skillService.findByName(name)
                     );
                     return userSkill;
                 })
