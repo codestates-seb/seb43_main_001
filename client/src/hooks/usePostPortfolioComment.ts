@@ -24,6 +24,7 @@ export const usePostPortfolioComment = () => {
     // 위 타입을 지정해줘야 함!
     mutationFn: postPortfolioComment,
     onSuccess: () => {
+      console.log('일단 호출');
       // * setData로 특정 id에 해당 하는 데이터 사전 처리도 가능할듯!
       queryClient.invalidateQueries(['comment']);
     },
@@ -32,9 +33,12 @@ export const usePostPortfolioComment = () => {
       console.log(error);
     },
   });
-  // 이래서 ref로 처리를 하는 것인가?(고민해본 결과 그냥 useState를 사용하는 것이 좋을 수도)
   const postCommentAction = (portfolioId: number, content: string) => {
-    postComment({ userId, portfolioId, content });
+    if (userId === undefined) {
+      alert('로그인 하세요!');
+    } else {
+      postComment({ userId, portfolioId, content });
+    }
   };
   return { postCommentAction };
 };
