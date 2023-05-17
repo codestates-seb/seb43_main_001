@@ -17,13 +17,17 @@ import { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../hooks/reduxHook';
 import { logout } from '../../store/slice/loginSlice';
 
+// util
+import { getUserIdFromAccessToken } from '../../utils/getUserIdFromAccessToken';
+
 // *: header 컴포넌트
 function Header() {
   const { routeTo } = useRouter();
 
   const isLogin = useAppSelector((state) => state.login.isLogin);
+  const token = useAppSelector((state) => state.login.accessToken);
   const dispatch = useAppDispatch();
-
+  const userId = getUserIdFromAccessToken(isLogin, token);
   const handleLogoClick = () => {
     routeTo('/');
   };
@@ -38,6 +42,10 @@ function Header() {
 
   const [openNav, setOpenNav] = useState<boolean>(false);
 
+  const handleUserOnClick = () => {
+    routeTo(`/User/${userId}`);
+  };
+
   const imgPath =
     'https://images.unsplash.com/photo-1488161628813-04466f872be2?crop=entropy&cs=srgb&fm=jpg&ixid=Mnw3MjAxN3wwfDF8c2VhcmNofDl8fHBlb3BsZXxlbnwwfHx8fDE2ODMwODA2MDQ&ixlib=rb-4.0.3&q=85&q=85&fmt=jpg&crop=entropy&cs=tinysrgb&w=450';
 
@@ -47,7 +55,7 @@ function Header() {
       {openNav && <NavLink setOpenNav={setOpenNav} />}
       <S.ButtonContainer>
         <Toggle />
-        {isLogin ? <S.UserImg src={imgPath} /> : null}
+        {isLogin ? <S.UserImg src={imgPath} onClick={handleUserOnClick} /> : null}
         <YellowBtn
           onClick={isLogin ? handleLogoutClick : handleLoginClick}
           className='header-login'

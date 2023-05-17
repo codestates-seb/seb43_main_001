@@ -34,7 +34,7 @@ const routerData: RouterElement[] = [
   },
   {
     id: 1,
-    path: '/Detail/:porfolioId',
+    path: '/Detail/:portfolioId',
     label: 'Detail',
     element: <Detail />,
     withAuth: false,

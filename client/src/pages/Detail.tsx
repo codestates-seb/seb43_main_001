@@ -8,59 +8,48 @@ import ProjectContent from '../components/Detail/ProjectContent';
 import Comment from '../components/Detail/Comment';
 import LikeBtn from '../components/Detail/LikeBtn';
 
-// axios
-import axios from 'axios';
+// custom Hooks
+import { useGetPortfolio } from '../hooks/useGetPortfolio';
 
-// react hook
-import { useEffect, useState } from 'react';
+// react-router-dom
+import { useParams } from 'react-router-dom';
 
-type portfolios = {
-  portfolioId: number;
-  userId: number;
-  name: string;
-  title: string;
-  gitLink: string;
-  distributionLink: string;
-  description: string;
-  content: string;
-  views: number;
-  createdAt: number[];
-  updatedAt: number[];
-};
+// common component
+import Loading from '../components/common/Loading';
 
 function Detail() {
-  // 타입 추가를 해야 한다?
-  const [dummyData, setDummyData] = useState<portfolios | never>();
-  // axios처리를 진행해야 겠다
+  const { portfolioId } = useParams();
+  const { getPortfolioLoading, PortfolioInfo } = useGetPortfolio(Number(portfolioId));
 
-  useEffect(() => {
-    // 여기에서 axios 처리를 해야 겠다.
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/portfolios/1`)
-      .then((res) => {
-        console.log('res', res);
-        setDummyData(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
-  const { name, content, description, distributionLink, gitLink, title, views } = dummyData || {};
-
+  if (getPortfolioLoading) {
+    return (
+      <S.LoadingContainer>
+        <S.LoadingComponent />
+      </S.LoadingContainer>
+    );
+  }
   return (
     <S.Container>
-      <LikeBtn />
-      <DetailTitle
-        title={title}
-        name={name}
-        gitLink={gitLink}
-        distributionLink={distributionLink}
-      />
-      <ProjectImg />
-      <Description />
-      <ProjectContent />
-      <Comment />
+      {PortfolioInfo && (
+        <>
+          <LikeBtn />
+          <DetailTitle
+            userId={PortfolioInfo.userId}
+            title={PortfolioInfo.title}
+            name={PortfolioInfo.name}
+            gitLink={PortfolioInfo.gitLink}
+            distributionLink={PortfolioInfo.distributionLink}
+            skills={PortfolioInfo.skills}
+          />
+          <ProjectImg
+            representativeImgUrl={PortfolioInfo.representativeImgUrl}
+            views={PortfolioInfo.views}
+          />
+          <Description description={PortfolioInfo.description} />
+          <ProjectContent content={PortfolioInfo.content} />
+          <Comment />
+        </>
+      )}
     </S.Container>
   );
 }

@@ -1,46 +1,39 @@
 // react-query
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-// types
-import { PatchPortfolioComment } from '../types';
+// api
+import { PortfolioCommentAPI } from '../api/client';
 
-// react hook
-import { useState } from 'react';
+const { patchPortfolioComment } = PortfolioCommentAPI;
 
-// axios
-import axios from 'axios';
-
-type usePatchPortfolioCommentProps = {
-  portfoliocommentId: string;
-  PatchData: PatchPortfolioComment;
+type usePatchPortfolioCommentParams = {
+  userId: number;
+  portfolioCommentId: number;
+  portfolioId: number;
 };
 
 export const usePatchPortfolioComment = ({
-  portfoliocommentId,
-  PatchData,
-}: usePatchPortfolioCommentProps) => {
-  const [patchLoading, setPatchLoading] = useState<boolean>(false);
-
-  // !: API 파일로 이동해야 함
-  const PatchCommentData = async (portfoliocommentId: string) => {
-    return await axios.patch(
-      `${process.env.REACT_APP_API_URL}/api/portfoliocomments/${portfoliocommentId}`,
-      PatchData,
-    );
-  };
-
+  portfolioCommentId,
+  userId,
+  portfolioId,
+}: usePatchPortfolioCommentParams) => {
   const queryClient = useQueryClient();
 
-  const { mutate, isLoading } = useMutation({
-    mutationFn: PatchCommentData,
+  const { mutate: PatchComment } = useMutation({
+    mutationFn: patchPortfolioComment,
     onSuccess: () => {
       // setqueryDAta[comment,protido.id];
-      queryClient.invalidateQueries(['comment']);
+      // !: 옵션 추가 및 다른 것으로 수정해야 함!
+      queryClient.invalidateQueries(['comment', portfolioId], { exact: true });
     },
     onError: (error) => {
       console.log(error);
     },
   });
+  const patchCommentAction = (content: string) => {
+    // !:Auth만 추가되면 굳이 분기처리를 안 해도 될듯!
+    PatchComment({ portfolioCommentId, userId, portfolioId, content });
+  };
 
-  return { mutate };
+  return { patchCommentAction };
 };

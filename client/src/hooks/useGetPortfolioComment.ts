@@ -15,7 +15,7 @@ export const useGetPortfolioComment = (portfolioId: number) => {
     isError: PortfoliocommentError,
     data: PortfolioCommentData,
   } = useQuery<GetPortfolioCommentById[], Error>({
-    queryKey: ['comment'],
+    queryKey: ['comment', portfolioId],
     queryFn: () => getPortfolioComment(portfolioId),
   });
   return { PortfoliocommentLoading, PortfoliocommentError, PortfolioCommentData };

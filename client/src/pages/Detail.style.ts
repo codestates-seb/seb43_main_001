@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-
+import { StyledLoading } from '../components/common/Loading.style';
 // constants
 import { MAX_SIZE } from '../constants/index';
 
@@ -21,4 +21,17 @@ export const Container = styled.main`
   @media ${(props) => props.theme.breakpoints.DESKTOPMIN} {
     max-width: ${content};
   }
+`;
+
+export const LoadingContainer = styled.main`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin-top: 10rem;
+`;
+
+export const LoadingComponent = styled(StyledLoading)`
+  width: 130px;
+  height: 130px;
 `;

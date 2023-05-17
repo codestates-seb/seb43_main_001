@@ -41,6 +41,9 @@ export const EditArea = styled.textarea`
 
 const CommonIconStyle = css`
   font-size: 1.3rem;
+  &:hover {
+    color: red;
+  }
 `;
 
 export const DelBtn = styled(RxCross2)`

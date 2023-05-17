@@ -20,19 +20,16 @@ import { useParams } from 'react-router-dom';
 function Comment() {
   const [content, setContent] = useState<string>('');
 
-  const { porfolioId } = useParams();
+  const { portfolioId } = useParams();
 
-  // !: portfolioId를 넣어야 한다. id 값은 무조건 존재할 수 밖에 없음?
   const { PortfoliocommentLoading, PortfolioCommentData } = useGetPortfolioComment(
-    Number(porfolioId!),
+    Number(portfolioId!),
   );
-
-  // !: 태민님의 답변에 따라 수정을 해야 함!
-  const { postCommentAction } = usePostPortfolioComment();
+  const { postCommentAction } = usePostPortfolioComment(Number(portfolioId));
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    postCommentAction(Number(porfolioId), content);
+    postCommentAction(Number(portfolioId), content);
     setContent('');
   };
 
@@ -43,44 +40,51 @@ function Comment() {
   // !: data가 없을 때 어떻게 표시되는지 꼭 확인해야 한다.
   return (
     <S.Container>
-      {PortfoliocommentLoading ? (
-        <Loading />
-      ) : (
-        <S.CommentWrapper>
+      <S.CommentWrapper>
+        {PortfoliocommentLoading ? (
+          <Loading />
+        ) : (
           <S.CommentShow>
             {(PortfolioCommentData ?? []).map(
-              ({
-                userId,
-                content,
-                createdAt,
-                userName,
-                portfolioCommentId,
-                portfolioId,
-              }: GetPortfolioCommentById) => {
+              (
+                {
+                  userId,
+                  content,
+                  createdAt,
+                  userName,
+                  portfolioCommentId,
+                  portfolioId,
+                  auth,
+                  userProfileImg,
+                }: GetPortfolioCommentById,
+                index,
+              ) => {
                 return (
                   <CommentItem
-                    key={userId}
+                    key={index}
                     userId={userId}
                     content={content}
                     createdAt={createdAt}
                     userName={userName}
                     portfolioCommentId={portfolioCommentId}
                     portfolioId={portfolioId}
+                    auth={auth}
+                    userProfileImg={userProfileImg}
                   />
                 );
               },
             )}
           </S.CommentShow>
-          <S.CommentForm onSubmit={handleSubmit}>
-            <S.CommentArea
-              placeholder='Enter your comment here'
-              value={content}
-              onChange={handleCommentChange}
-            />
-            <S.YellowBtnCustom>COMMENT</S.YellowBtnCustom>
-          </S.CommentForm>
-        </S.CommentWrapper>
-      )}
+        )}
+        <S.CommentForm onSubmit={handleSubmit}>
+          <S.CommentArea
+            placeholder='Enter your comment here'
+            value={content}
+            onChange={handleCommentChange}
+          />
+          <S.YellowBtnCustom>COMMENT</S.YellowBtnCustom>
+        </S.CommentForm>
+      </S.CommentWrapper>
     </S.Container>
   );
 }

@@ -59,6 +59,7 @@ export const userImg = styled.div`
   border: 1px solid blue;
   border-radius: 50%;
   margin-left: 1rem;
+  cursor: pointer;
 `;
 
 // downer section
