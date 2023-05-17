@@ -75,9 +75,10 @@ public class UserService {
         user.setRoles(roles);
         user.setAuth(true);
 
+        User savedUser = userRepository.save(user);
+
         addSkills(user,skills);
 
-        User savedUser = userRepository.save(user);
         return savedUser;
     }
 
@@ -115,9 +116,11 @@ public class UserService {
         Optional.ofNullable(user.getJobStatus()).ifPresent(jobStatus -> findUser.setJobStatus(jobStatus));
         Optional.ofNullable(user.getAbout()).ifPresent(about -> findUser.setAbout(about));
 
-        addSkills(user, skills);
+        User saved = userRepository.save(findUser);
 
-        return userRepository.save(findUser);
+        addSkills(saved, skills);
+
+        return saved;
     }
 
     /**
@@ -165,10 +168,13 @@ public class UserService {
     }
 
     public void addSkills(User user,List<String> skills) {
-        user.getSkills()
-                .forEach(UserSkill::deleteUserSkill);
+        for(int i = user.getSkills().size()-1; i>=0; i--) {
+            user.deleteSkill(user.getSkills().get(i));
+        }
 
-        user.getSkills().clear();
+        if(skills==null) {
+            throw new BusinessLogicException(ExceptionCode.SKILL_NOT_EXIST);
+        }
 
         skills.stream()
                 .map(name -> {

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import main001.server.domain.usercomment.dto.UserCommentDto;
 import main001.server.domain.usercomment.service.UserCommentService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +20,9 @@ public class UserCommentController {
     private final UserCommentService userCommentService;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserCommentDto.Response postUserComment(@RequestBody @Valid UserCommentDto.Post postDto) {
-        UserCommentDto.Response response = userCommentService.createUserComment(postDto);
-        return response;
+    public ResponseEntity postUserComment(@RequestBody @Valid UserCommentDto.Post postDto) {
+        userCommentService.createUserComment(postDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PatchMapping("/{userComment_id}")

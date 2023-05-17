@@ -112,9 +112,11 @@ public class PortfolioService {
             }
         }
 
-        addSkills(portfolio, skills);
+        Portfolio saved = portfolioRepository.save(portfolio);
 
-        return portfolioRepository.save(portfolio);
+        addSkills(saved, skills);
+
+        return saved;
     }
 
     public Portfolio updatePortfolio(Portfolio portfolio, List<String> skills) {
@@ -133,9 +135,11 @@ public class PortfolioService {
         Optional.ofNullable(portfolio.getContent())
                 .ifPresent(content -> findPortfolio.setContent(content));
 
-        addSkills(portfolio, skills);
+        Portfolio saved = portfolioRepository.save(findPortfolio);
 
-        return portfolioRepository.save(findPortfolio);
+        addSkills(saved, skills);
+
+        return saved;
     }
 
     public Portfolio findPortfolio(long portfolioId) {
@@ -174,7 +178,8 @@ public class PortfolioService {
 
     public Portfolio findVerifiedPortfolio(long portfolioId) {
         Optional<Portfolio> optionalPortfolio = portfolioRepository.findById(portfolioId);
-        Portfolio findPortfolio = optionalPortfolio.orElseThrow(EntityNotFoundException::new);
+        Portfolio findPortfolio = optionalPortfolio.orElseThrow(
+                () -> new BusinessLogicException(ExceptionCode.PORTFOLIO_NOT_FOUND));
         return findPortfolio;
     }
 
@@ -280,14 +285,18 @@ public class PortfolioService {
     }
 
     public void addSkills(Portfolio portfolio, List<String> skills) {
-        portfolio.getSkills().forEach(PortfolioSkill::deletePortfolioSkill);
+        for(int i = portfolio.getSkills().size()-1; i>=0; i--) {
+            portfolio.deleteSkill(portfolio.getSkills().get(i));
+        }
 
-        portfolio.getSkills().clear();
+        if(skills==null) {
+            throw new BusinessLogicException(ExceptionCode.SKILL_NOT_EXIST);
+        }
 
         skills.stream()
                 .map(name -> {
                     return PortfolioSkill.createPortfolioSkill(
-                            skillService.findByName(name));
+                            skillService.findByName(name.toUpperCase()));
                 })
                 .forEach(portfolio::addSkill);
     }
