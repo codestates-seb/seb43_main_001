@@ -19,7 +19,7 @@ function LoginContainer() {
   const GoogleLoginHandler = () => {
     // 로그인 시도
     window.location.assign(
-      'http://ec2-43-201-157-191.ap-northeast-2.compute.amazonaws.com:8080/login/oauth2/code/%7BregistrationId%7D',
+      'http://ec2-43-201-157-191.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/google',
     );
   };
 
