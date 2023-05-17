@@ -25,17 +25,19 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        var oAuth2User = (OAuth2User) authentication.getAuthorities();
-        String oauthId = String.valueOf(oAuth2User.getAttributes().get("credential"));
+        var oAuth2User = (OAuth2User) authentication.getPrincipal();
+        String oauthId = String.valueOf(oAuth2User.getAttributes().get("id"));
         String email = String.valueOf(oAuth2User.getAttributes().get("email"));
         String name = String.valueOf(oAuth2User.getAttributes().get("name"));
         String profileImg = String.valueOf(oAuth2User.getAttributes().get("profileImg"));
 
-        if (userService.findExistOAuth2User(oauthId).isAuth()) {
+        System.out.println(oAuth2User.getAttributes());
+
+        if (userService.isExistOAuth2User(oauthId)) {
             User user = userService.findExistOAuth2User(oauthId);
             redirect(request, response, user);
         } else if (email.equals("null") || email.isEmpty()) {
-            User savedUser = saveUser(email, name, profileImg);
+            User savedUser = saveUser(email, oauthId, name, profileImg);
             long userId = savedUser.getUserId();
             String addemail = UriComponentsBuilder
                     .newInstance()
@@ -48,12 +50,12 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
                     .toUri().toString();
             getRedirectStrategy().sendRedirect(request, response, addemail);
         } else {
-            User savedUser = saveUser(email, name, profileImg);
+            User savedUser = saveUser(email, oauthId, name, profileImg);
             redirect(request, response, savedUser);
         }
     }
-    private User saveUser(String email, String name, String profileImg) {
-        User user = new User(email, name, profileImg);
+    private User saveUser(String email, String oauthId, String name, String profileImg) {
+        User user = new User(email, oauthId, name, profileImg);
         user.setRoles(authorityUtils.createRoles(email));
         user.setAuth(true);
         userService.createUser(user);
