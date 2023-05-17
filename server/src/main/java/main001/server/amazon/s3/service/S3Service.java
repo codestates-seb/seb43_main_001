@@ -99,8 +99,4 @@ public class S3Service {
             return false;
         }
     }
-
-
-
-
 }
