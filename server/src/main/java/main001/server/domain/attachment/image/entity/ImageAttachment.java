@@ -1,7 +1,5 @@
 package main001.server.domain.attachment.image.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +29,4 @@ public class ImageAttachment extends BaseTimeEntity {
         this.imgUrl = imgUrl;
     }
 
-//    public void setPortfolio(Portfolio portfolio) {
-//        this.portfolio = portfolio;
-//    }
 }

@@ -86,7 +86,7 @@ public class PortfolioController {
     public ResponseEntity getPortfolio(@PathVariable("portfolio-id") Long portfolioId,
                                         HttpServletRequest request,
                                         HttpServletResponse response) {
-        portfolioService.updateView(portfolioId, request, response);
+        portfolioService.countView(portfolioId, request, response);
         Portfolio portfolio = portfolioService.findPortfolio(portfolioId);
         return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(portfolio)), HttpStatus.OK);
     }

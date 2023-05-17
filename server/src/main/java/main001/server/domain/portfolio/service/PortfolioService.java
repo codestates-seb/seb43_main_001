@@ -195,30 +195,12 @@ public class PortfolioService {
         return findPortfolio;
     }
 
-//    public void updateRepresentativeImage(Long portfolioId, MultipartFile representativeImg) throws IOException{
-//        Portfolio portfolio = findPortfolio(portfolioId);
-//        RepresentativeAttachment currentImageAttachment  = portfolio.getRepresentativeAttachment();
-//
-//        if(representativeImg != null) {
-//            String representativeImgUrl = s3Service.uploadFile(representativeImg, "images");
-//            RepresentativeAttachment representativeAttachment = new RepresentativeAttachment(representativeImgUrl);
-//            representativeAttachment.setPortfolio(portfolio);
-//
-//            if (currentImageAttachment != null) {
-//                s3Service.deleteFile(currentImageAttachment.getRepresentativeImgUrl());
-//                representativeImageRepository.delete(currentImageAttachment);
-//            }
-//            portfolio.setRepresentativeAttachment(representativeAttachment);
-//
-//            representativeImageRepository.save(representativeAttachment);
-//        }
-//    }
 
     public void updateRepresentativeImage(Long portfolioId, MultipartFile representativeImg) throws IOException {
         Portfolio portfolio = findPortfolio(portfolioId);
         RepresentativeAttachment currentImageAttachment = portfolio.getRepresentativeAttachment();
 
-        // Delete existing representative image attachment
+        // 현재 첨부된 대표 이미지 파일을 삭제
         if (currentImageAttachment != null) {
             // Delete existing image from S3
             s3Service.deleteFile(currentImageAttachment.getRepresentativeImgUrl());
@@ -227,7 +209,7 @@ public class PortfolioService {
             representativeImageRepository.delete(currentImageAttachment);
         }
 
-        // Add new representative image attachment
+        // 새로운 대표 이미지 파일 첨부
         if (representativeImg != null) {
             String imgUrl = s3Service.uploadFile(representativeImg, "images");
             RepresentativeAttachment newImageAttachment = new RepresentativeAttachment(imgUrl);
@@ -243,21 +225,20 @@ public class PortfolioService {
         Portfolio portfolio = findPortfolio(portfolioId);
         List<ImageAttachment> currentImageAttachments = portfolio.getImageAttachments();
 
-        // Delete existing image attachments
+        // 기존 이미지 파일 첨부를 삭제
         if (!CollectionUtils.isNullOrEmpty(currentImageAttachments)) {
-            // Delete existing image attachments
             Iterator<ImageAttachment> iterator = currentImageAttachments.iterator();
             while (iterator.hasNext()) {
                 ImageAttachment imageAttachment = iterator.next();
-                // Delete existing image from S3
+                // s3에서 이미지 파일 삭제
                 s3Service.deleteFile(imageAttachment.getImgUrl());
-                // Remove the existing image attachment from the portfolio
+                // 포트폴리오에서 이미지 첨부 파일 삭제
                 iterator.remove();
                 imageAttachmentRepository.delete(imageAttachment);
             }
         }
 
-        // Add new image attachments
+        // 새로운 이미지 파일을 첨부
         if (!CollectionUtils.isNullOrEmpty(images)) {
             for (MultipartFile image : images) {
                 String imgUrl = s3Service.uploadFile(image, "images");
@@ -275,21 +256,20 @@ public class PortfolioService {
         Portfolio portfolio = findPortfolio(portfolioId);
         List<FileAttachment> currentFileAttachments = portfolio.getFileAttachments();
 
-        // Delete existing image attachments
+        // 기존 첨부 파일을 삭제
         if (!CollectionUtils.isNullOrEmpty(currentFileAttachments)) {
-            // Delete existing image attachments
             Iterator<FileAttachment> iterator = currentFileAttachments.iterator();
             while (iterator.hasNext()) {
                 FileAttachment fileAttachment = iterator.next();
-                // Delete existing image from S3
+                // s3에서 파일 삭제
                 s3Service.deleteFile(fileAttachment.getFileUrl());
-                // Remove the existing image attachment from the portfolio
+                // 포트폴리오에서 첨부 파일 삭제
                 iterator.remove();
                 fileAttachmentRepository.delete(fileAttachment);
             }
         }
 
-        // Add new image attachments
+        // 새로운 첨부 파일을 첨부
         if (!CollectionUtils.isNullOrEmpty(files)) {
             for (MultipartFile file : files) {
                 String fileUrl = s3Service.uploadFile(file, "files");
@@ -302,39 +282,8 @@ public class PortfolioService {
         }
     }
 
-    public void deleteImage(Long imageAttachmentId) {
-        ImageAttachment imageAttachmentToDelete = imageAttachmentRepository.findById(imageAttachmentId)
-                .orElseThrow(() -> new NotFoundException("Image attachment not found."));
-        Portfolio portfolio = imageAttachmentToDelete.getPortfolio();
-        // Delete the image file from S3 bucket
-        s3Service.deleteFile(imageAttachmentToDelete.getImgUrl());
-        // Remove the image attachment from the Portfolio's image attachment list,
-        // and delete the ImageAttachment from the repository
-        List<ImageAttachment> imageAttachments = portfolio.getImageAttachments();
-        imageAttachments.remove(imageAttachmentToDelete);
-        portfolio.setImageAttachments(imageAttachments);
-        imageAttachmentRepository.delete(imageAttachmentToDelete);
-    }
-
-
-    public void deleteImage(List<String> urlList) {
-        for (String url : urlList) {
-            String originalFileName = url.split("amazonaws.com/")[1];
-            s3Service.removeS3File(originalFileName);
-            imageAttachmentRepository.delete(imageAttachmentRepository.findByImgUrl(url));
-        }
-    }
-
-    public void deleteFile(List<String> urlList) {
-        for (String url : urlList) {
-            String originalFileName = url.split("amazonaws.com/")[1];
-            s3Service.removeS3File(originalFileName);
-            fileAttachmentRepository.delete(fileAttachmentRepository.findByFileUrl(url));
-        }
-    }
-
     @Transactional
-    public int updateView(Long portfolioId, HttpServletRequest request, HttpServletResponse response) {
+    public int countView(Long portfolioId, HttpServletRequest request, HttpServletResponse response) {
 
         Cookie[] cookies = request.getCookies();
         boolean checkCookie = false;
