@@ -90,7 +90,4 @@ public class S3Service {
                 new DeleteObjectRequest(bucketName, fileName);
         s3Client.deleteObject(deleteObjectRequest);
     }
-
-
-
 }

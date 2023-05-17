@@ -49,7 +49,6 @@ public class PortfolioController {
 
         Portfolio response = portfolioService.createPortfolio(portfolio, images, files);
 
-
         portfolioService.addSkills(portfolio,postDto.getSkills());
 
         URI location =

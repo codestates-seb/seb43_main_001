@@ -6,7 +6,6 @@ import main001.server.domain.skill.repository.SkillRepository;
 import main001.server.domain.skill.response.SkillResponseList;
 import main001.server.exception.BusinessLogicException;
 import main001.server.exception.ExceptionCode;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +20,7 @@ public class SkillService {
     private final SkillRepository skillRepository;
 
     public SkillResponseList findSkillsByName(String name) {
-        Sort sort = Sort.by("name").ascending();
-
-        name = name.toUpperCase();
-
-        List<String> skillNames = skillRepository.findSkillsByName(name, sort);
+        List<String> skillNames = skillRepository.findSkillsByName(name);
 
         if(skillNames.size()==0) {
             throw new BusinessLogicException(ExceptionCode.SKILL_NOT_FOUND);
@@ -35,7 +30,7 @@ public class SkillService {
     }
 
     public Skill findByName(String name) {
-        Optional<Skill> byName = skillRepository.findByName(name);
+        Optional<Skill> byName = skillRepository.findSkillByNameIgnoreCase(name);
 
         return byName.orElseThrow(
                 () -> new BusinessLogicException(ExceptionCode.SKILL_NOT_FOUND)
