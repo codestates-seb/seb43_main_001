@@ -104,6 +104,13 @@ public class PortfolioController {
         return new ResponseEntity<>(new MultiResponseDto<>(mapper.portfolioToPortfolioResponseDtos(portfolios), pagePortfolios), HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity searchPortfolios(
+            @RequestParam String searchParam,
+            @RequestParam(defaultValue = "createdAt") String sortCriteria) {
+        return null;
+    }
+
     @DeleteMapping("/{portfolio-id}")
     public ResponseEntity deletePortfolio(@PathVariable("portfolio-id") long portfolioId) {
         portfolioService.deletePortfolio(portfolioId);

@@ -77,7 +77,7 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
 
-        addSkills(user,skills);
+//        addSkills(user,skills);
 
         return savedUser;
     }
@@ -118,7 +118,7 @@ public class UserService {
 
         User saved = userRepository.save(findUser);
 
-        addSkills(saved, skills);
+//        addSkills(saved, skills);
 
         return saved;
     }
@@ -167,22 +167,22 @@ public class UserService {
         return userRepository.save(findUser);
     }
 
-    public void addSkills(User user,List<String> skills) {
-        for(int i = user.getSkills().size()-1; i>=0; i--) {
-            user.deleteSkill(user.getSkills().get(i));
-        }
-
-        if(skills==null) {
-            throw new BusinessLogicException(ExceptionCode.SKILL_NOT_EXIST);
-        }
-
-        skills.stream()
-                .map(name -> {
-                    UserSkill userSkill = UserSkill.createUserSkill(
-                            skillService.findByName(name)
-                    );
-                    return userSkill;
-                })
-                .forEach(user::addSkill);
-    }
+//    public void addSkills(User user,List<String> skills) {
+//        for(int i = user.getSkills().size()-1; i>=0; i--) {
+//            user.deleteSkill(user.getSkills().get(i));
+//        }
+//
+//        if(skills==null) {
+//            throw new BusinessLogicException(ExceptionCode.SKILL_NOT_EXIST);
+//        }
+//
+//        skills.stream()
+//                .map(name -> {
+//                    UserSkill userSkill = UserSkill.createUserSkill(
+//                            skillService.findByName(name)
+//                    );
+//                    return userSkill;
+//                })
+//                .forEach(user::addSkill);
+//    }
 }
