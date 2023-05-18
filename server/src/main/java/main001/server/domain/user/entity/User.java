@@ -36,16 +36,16 @@ public class User extends BaseTimeEntity {
     @Column(length = 100)
     private String password;
 
-    @Column(length = 20)
+    @Column(unique = true, length = 20)
     private String name;
 
     @Column
     private String profileImg;
 
-    @Column(length = 50)
+    @Column(length = 500)
     private String gitLink;
 
-    @Column(length = 60)
+    @Column(length = 500)
     private String blogLink;
 
     @Enumerated(value = EnumType.STRING)
@@ -55,17 +55,17 @@ public class User extends BaseTimeEntity {
     @Enumerated(value = EnumType.STRING)
     private JobStatus jobStatus;
 
-    @Column(length = 500)
+    @Column(length = 5000)
     private String about;
 
+    private boolean auth = false;
+
     @Enumerated(value = EnumType.STRING)
-    @Column(length = 20, nullable = false)
+    @Column(nullable = false)
     private UserStatus userStatus = UserStatus.USER_ACTIVE;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>(); // ROLE_USER<DEFAULT>, ADMIN
-
-    private boolean auth = false;
 
 //    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<UserSkill> skills = new ArrayList<>();

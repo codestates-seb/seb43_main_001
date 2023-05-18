@@ -147,68 +147,6 @@ public class UserController {
     }
 
     @Operation(
-            summary = "유저가 작성한 포트폴리오 조회",
-            description = "유저가 작성한 포트폴리오를 전부 조회하는 API\n" +
-                    "모든 파라미터는 기본값이 설정되어 있어서 따로 설정해주지 않아도 됨.\n" +
-                    "기본값은 page = 1 , size = 15, order = desc, sort = createdAt",
-            parameters = {
-                    @Parameter(
-                            name = "유저 id",
-                            description = "유저의 고유한 식별 번호",
-                            in = ParameterIn.PATH,
-                            required = true),
-                    @Parameter(
-                            name = "page",
-                            description = "조회 할 페이지",
-                            in = ParameterIn.QUERY
-                    ),
-                    @Parameter(
-                            name = "size",
-                            description = "한번에 조회 할 포트폴리오의 개수",
-                            in = ParameterIn.QUERY
-                    ),
-                    @Parameter(
-                            name = "order",
-                            description = "조회할 리스트의 정렬 방법, other value = asc",
-                            in = ParameterIn.QUERY
-                    ),
-                    @Parameter(
-                            name = "sort",
-                            description = "조회할 리스트의 정렬 기준",
-                            in = ParameterIn.QUERY
-                    )
-            },
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "정상적으로 조회 성공",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = MultiResponseDto.class,
-                                            type = "MultiResponseDto<UserDto.UserPortfolioResponse>"))
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "회원 정보를 찾을 수 없습니다."),
-            }
-
-    )
-    @GetMapping("/{user-id}/portfolio")
-    public ResponseEntity getUserPortfolios(@PathVariable("user-id") @Positive long userId,
-                                            @Positive @RequestParam(value = "page", defaultValue = "1") int page,
-                                            @Positive @RequestParam(value = "size", defaultValue = "15") int size,
-                                            @RequestParam(value = "order", defaultValue = "desc") String order,
-                                            @RequestParam(value = "sort", defaultValue = "createdAt") String sort) {
-        Sort.Direction direction = order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-                Page<Portfolio> pageUserPortfolios = userService.findPortfolioByUser(userId, page - 1, size, direction, sort);
-
-        List<Portfolio> userPortfolios = pageUserPortfolios.getContent();
-        return new ResponseEntity<>(
-                new MultiResponseDto<>(mapper.userPortfolioToUserResponses(userPortfolios), pageUserPortfolios), HttpStatus.OK
-        );
-    }
-
-    @Operation(
             summary = "유저 상세 정보",
             parameters = {
                     @Parameter(
