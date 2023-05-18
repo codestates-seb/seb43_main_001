@@ -25,13 +25,13 @@ function EditPortfolio() {
   const userId = getUserIdFromAccessToken(isLogin, accessToken);
 
   // UserInfo 받아오기
-  const { UserInfo, getUserInfoLoading } = useGetUserProfile(Number(userId));
+  const { UserProfile, getUserProfileLoading } = useGetUserProfile(Number(userId));
 
   return (
     <S.EditPortfolioContainer>
-      {(getPortfolioLoading || getUserInfoLoading) && <Loading />}
-      {PortfolioInfo && UserInfo && (
-        <PortfolioContainer isEdit={true} PortfolioInfo={PortfolioInfo} UserInfo={UserInfo} />
+      {(getPortfolioLoading || getUserProfileLoading) && <Loading />}
+      {PortfolioInfo && UserProfile && (
+        <PortfolioContainer isEdit={true} PortfolioInfo={PortfolioInfo} UserProfile={UserProfile} />
       )}
     </S.EditPortfolioContainer>
   );
