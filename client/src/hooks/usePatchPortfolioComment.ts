@@ -24,7 +24,7 @@ export const usePatchPortfolioComment = ({
     onSuccess: () => {
       // setqueryDAta[comment,protido.id];
       // !: 옵션 추가 및 다른 것으로 수정해야 함!
-      queryClient.invalidateQueries(['comment']);
+      queryClient.invalidateQueries(['comment', portfolioId], { exact: true });
     },
     onError: (error) => {
       console.log(error);

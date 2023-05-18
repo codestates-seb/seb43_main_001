@@ -73,9 +73,10 @@ export type GetPortfolio = {
   imgUrl: string;
   fileUrl: string;
   views: number;
-  skills?: string[];
+  skills: string[];
   updatedAt: string;
   createdAt: string;
+  representativeImgUrl: string | null;
 };
 
 // Portfolio Comment
@@ -102,4 +103,9 @@ export type GetPortfolioCommentById = {
   content: string;
   createdAt: string[];
   updatedAt: string[];
+  auth: boolean;
+};
+
+export type DeletePortfolioComment = {
+  portfolioCommentId: number;
 };

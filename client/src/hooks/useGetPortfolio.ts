@@ -23,6 +23,7 @@ export const useGetPortfolio = (portfolioId: number) => {
       // Error이면 에러 페이지로 보내버린다???
       console.log('error', error);
     },
+    retry: 2,
   });
 
   return { getPortfolioLoading, getPortfolioError, PortfolioInfo, ErrorInfo };
