@@ -67,17 +67,6 @@ public class UserService {
     }
 
     /**
-     * User별 Portfolio 조회 기능
-     */
-    public Page<Portfolio> findPortfolioByUser(long userId, int page, int size, Sort.Direction direction, String sort) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sort));
-        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
-        List<Portfolio> portfolios = user.getPortfolios();
-
-        return new PageImpl<>(portfolios, pageable, portfolios.size());
-    }
-
-    /**
      * 유저 정보 수정 기능 : 수정 가능한 정보 등 논의 필요
      */
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)

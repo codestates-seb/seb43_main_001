@@ -1,20 +1,6 @@
 package main001.server.domain.portfolio.service;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.kms.model.NotFoundException;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.CollectionUtils;
-import com.amazonaws.util.IOUtils;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import main001.server.amazon.s3.service.S3Service;
@@ -24,19 +10,14 @@ import main001.server.domain.attachment.image.entity.ImageAttachment;
 import main001.server.domain.attachment.image.entity.RepresentativeAttachment;
 import main001.server.domain.attachment.image.repository.ImageAttachmentRepository;
 import main001.server.domain.attachment.image.repository.RepresentativeImageRepository;
-import main001.server.domain.portfolio.dto.PortfolioDto;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.repository.PortfolioRepository;
 import main001.server.domain.skill.entity.PortfolioSkill;
 import main001.server.domain.skill.service.SkillService;
 import main001.server.domain.user.entity.User;
 import main001.server.domain.user.repository.UserRepository;
-import main001.server.domain.user.service.UserService;
 import main001.server.exception.BusinessLogicException;
 import main001.server.exception.ExceptionCode;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -44,19 +25,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -67,12 +43,10 @@ import java.util.List;
 public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
     private final UserRepository userRepository;
-    private final Gson gson;
     private final S3Service s3Service;
     private final RepresentativeImageRepository representativeImageRepository;
     private final ImageAttachmentRepository imageAttachmentRepository;
     private final FileAttachmentRepository fileAttachmentRepository;
-    private final UserService userService;
     private final SkillService skillService;
     private final static String VIEWCOOKIENAME = "alreadyViewCookie";
 
@@ -341,6 +315,36 @@ public class PortfolioService {
         return (int) now.until(tommorow, ChronoUnit.SECONDS);
     }
 
+    public Page<Portfolio> getPortfoliosByUser(Long userId, String sortBy, int page, int size) {
+        PageRequest pageable = getPageRequest(page, size, sortBy);
+
+        Page<Portfolio> response = portfolioRepository.findByUserUserId(userId, pageable);
+
+        if(response.getTotalElements()==0) {
+            throw new BusinessLogicException(ExceptionCode.PORTFOLIO_NOT_SEARCHED);
+        }
+        return response;
+    }
+
+    public Page<Portfolio> searchPortfolios(int page, int size, String category, String sortBy, String value) {
+        PageRequest pageable = getPageRequest(page, size, sortBy);
+
+        Page<Portfolio> response;
+
+        if(category.equals("userName")) {
+            response = portfolioRepository.findByUserName(value, pageable);
+        } else if (category.equals("title")) {
+            response = portfolioRepository.findByTitle(value, pageable);
+        } else {
+            throw new BusinessLogicException(ExceptionCode.SEARCH_CONDITION_MISMATCH);
+        }
+
+        if(response.getTotalElements()==0) {
+            throw new BusinessLogicException(ExceptionCode.PORTFOLIO_NOT_SEARCHED);
+        }
+        return response;
+    }
+
     public void addSkills(Portfolio portfolio, List<String> skills) {
         for(int i = portfolio.getSkills().size()-1; i>=0; i--) {
             portfolio.deleteSkill(portfolio.getSkills().get(i));
@@ -358,31 +362,20 @@ public class PortfolioService {
                 .forEach(portfolio::addSkill);
     }
 
-
-    public Page<Portfolio> searchPortfolios(int page, int size, String category, String sortCriteria, String value) {
-        PageRequest pageable = PageRequest.of(page,size);
-        Page<Portfolio> response;
-        if(sortCriteria.equals("createdAt")) {
-            pageable = PageRequest.of(page,size,Sort.by("createdAt").descending());
-        } else if (sortCriteria.equals("views")) {
-            pageable = PageRequest.of(page,size,Sort.by("views").descending());
-        } else if (sortCriteria.equals("likes")) {
-            pageable = PageRequest.of(page,size,Sort.by("likes").descending());
+    /**
+     * 검색 조건 페이지화 메소드
+     */
+    private PageRequest getPageRequest(int page, int size, String sortBy) {
+        PageRequest pageable;
+        if(sortBy.equals("createdAt")) {
+            pageable = PageRequest.of(page, size,Sort.by("createdAt").descending());
+        } else if (sortBy.equals("views")) {
+            pageable = PageRequest.of(page, size,Sort.by("views").descending());
+        } else if (sortBy.equals("likes")) {
+            pageable = PageRequest.of(page, size,Sort.by("likes").descending());
         } else {
             throw new BusinessLogicException(ExceptionCode.SEARCH_CONDITION_MISMATCH);
         }
-
-        if(category.equals("userName")) {
-            response = portfolioRepository.findByUserName(value, pageable);
-        } else if (category.equals("title")) {
-            response = portfolioRepository.findByTitle(value, pageable);
-        } else {
-            throw new BusinessLogicException(ExceptionCode.SEARCH_CONDITION_MISMATCH);
-        }
-
-        if(response.getTotalElements()==0) {
-            throw new BusinessLogicException(ExceptionCode.PORTFOLIO_NOT_SEARCHED);
-        }
-        return response;
+        return pageable;
     }
 }
