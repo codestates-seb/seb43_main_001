@@ -22,7 +22,13 @@ public enum ExceptionCode {
 
     // skill 관련
     SKILL_NOT_FOUND(404,"조회된 기술이 없습니다."),
-    SKILL_NOT_EXIST(400, "등록할 기술이 없습니다.");
+    SKILL_NOT_EXIST(400, "등록할 기술이 없습니다."),
+
+    // security 관련
+    // ACCESS_NOT_MATCH(403, "접속 정보가 일치하지 않습니다."); // 개발 후 해당 코드로 아래 코드 교체
+    USER_IP_NOT_MATCH(403, "접속 IP정보가 상이합니다."),
+    REFRESH_TOKEN_NOT_MATCH(403, "RefreshToken이 일치하지 않습니다."),
+    REFRESH_TOKEN_EXPIRED(403, "RefreshToken이 만료되었습니다.");
 
     @Getter
     private int status;

@@ -2,9 +2,8 @@ package main001.server.security.handler;
 
 import lombok.RequiredArgsConstructor;
 import main001.server.domain.user.entity.User;
-import main001.server.domain.user.repository.UserRepository;
 import main001.server.domain.user.service.UserService;
-import main001.server.security.jwt.JwtTokenizer;
+import main001.server.security.service.SecurityService;
 import main001.server.security.utils.CustomAuthorityUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -13,35 +12,33 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RequiredArgsConstructor
 public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils authorityUtils;
+    private final SecurityService securityService;
     private final UserService userService;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         var oAuth2User = (OAuth2User) authentication.getPrincipal();
+        String oauthId = String.valueOf(oAuth2User.getAttributes().get("id"));
         String email = String.valueOf(oAuth2User.getAttributes().get("email"));
         String name = String.valueOf(oAuth2User.getAttributes().get("name"));
         String profileImg = String.valueOf(oAuth2User.getAttributes().get("profileImg"));
-        List<String> authorities = authorityUtils.createRoles(email);
 
-        if (userService.isExistEmail(email)) {
-            redirect(request, response, email, authorities);
+        System.out.println(oAuth2User.getAttributes());
+
+        if (userService.isExistOAuth2User(oauthId)) {
+            User user = userService.findExistOAuth2User(oauthId);
+            redirect(request, response, user);
         } else if (email.equals("null") || email.isEmpty()) {
-            saveUser(email, name, profileImg);
-            Long userId = userService.getUserId(email);
+            User savedUser = saveUser(email, oauthId, name, profileImg);
+            long userId = savedUser.getUserId();
             String addemail = UriComponentsBuilder
                     .newInstance()
                     .scheme("http")
@@ -53,50 +50,26 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
                     .toUri().toString();
             getRedirectStrategy().sendRedirect(request, response, addemail);
         } else {
-        saveUser(email, name, profileImg);
-        redirect(request, response, email, authorities);
+            User savedUser = saveUser(email, oauthId, name, profileImg);
+            redirect(request, response, savedUser);
         }
     }
-    private void saveUser(String email, String name, String profileImg) {
-        User user = new User(email, name, profileImg);
+    private User saveUser(String email, String oauthId, String name, String profileImg) {
+        User user = new User(email, oauthId, name, profileImg);
         user.setRoles(authorityUtils.createRoles(email));
         user.setAuth(true);
         userService.createUser(user);
+
+        return user;
     }
 
-    private void redirect(HttpServletRequest request, HttpServletResponse response, String username, List<String> authorities) throws IOException {
-        String accessToken = delegateAccessToken(username, authorities);
-        String refreshToken = delegateRefreshToken(username);
+    private void redirect(HttpServletRequest request, HttpServletResponse response, User user) throws IOException {
+        String accessToken = securityService.delegateAccessToken(user);
+        String refreshToken = securityService.delegateRefreshToken(request, user);
 
         String uri = createURI(accessToken, refreshToken).toString();
         getRedirectStrategy().sendRedirect(request,response,uri);
     }
-
-    private String delegateAccessToken(String username, List<String> authorities) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("username", username);
-        claims.put("roles", authorities);
-
-        String subject = username;
-        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
-
-        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
-
-        String accessToken = jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
-
-        return accessToken;
-    }
-
-    private String delegateRefreshToken(String username) {
-        String subject = username;
-        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
-        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
-
-        String refreshToken = jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
-
-        return refreshToken;
-    }
-
     private URI createURI(String accessToken, String refreshToken) {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("access_token", accessToken);

@@ -14,8 +14,8 @@ spring:
     multipart:
       location: c:\\portfolio
       enabled: true
-      max-file-size: 1MB # 파일 하나의 최대사이즈 설정
-      max-request-size: 10MB #여러 파일 업로드 시 전체 합의 크기 설정
+      max-file-size: 10MB # 파일 하나의 최대사이즈 설정
+      max-request-size: 100MB #여러 파일 업로드 시 전체 합의 크기 설정
   security:
     oauth2:
       client:

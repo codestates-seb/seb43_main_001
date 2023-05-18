@@ -30,11 +30,14 @@ public class User extends BaseTimeEntity {
     @Column(length = 50, unique = true)
     private String email;
 
-    @Column(length = 20)
-    private String name;
+    @Column(length = 50, unique = true)
+    private String oauthId;
 
     @Column(length = 100)
     private String password;
+
+    @Column(length = 20)
+    private String name;
 
     @Column
     private String profileImg;
@@ -87,8 +90,9 @@ public class User extends BaseTimeEntity {
         this.about = about;
     }
 
-    public User(String email, String name, String profileImg) {
+    public User(String email, String oauthId, String name, String profileImg) {
         this.email = email;
+        this.oauthId = oauthId;
         this.name = name;
         this.profileImg = profileImg;
     }
