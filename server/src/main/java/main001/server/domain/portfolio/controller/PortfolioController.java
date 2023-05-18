@@ -20,6 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.IOException;
 import java.net.URI;
@@ -104,14 +105,22 @@ public class PortfolioController {
         return new ResponseEntity<>(new MultiResponseDto<>(mapper.portfolioToPortfolioResponseDtos(portfolios), pagePortfolios), HttpStatus.OK);
     }
 
-//    @GetMapping("/search")
-//    public ResponseEntity searchPortfolios(
-//            @RequestParam String searchParam,
-//            @RequestParam(defaultValue = "createdAt") String sortCriteria,
-//            @RequestParam(defaultValue = "1") @Positive int page,
-//            @RequestParam(defaultValue = "15") @Positive int size) {
-//        portfolioService.searchPortfolios(page-1,size,searchParam,sortCriteria);
-//    }
+    @GetMapping("/search")
+    public ResponseEntity searchPortfolios(
+            @RequestParam @NotNull String value,
+            @RequestParam(defaultValue = "userName") String category,
+            @RequestParam(defaultValue = "createdAt") String sort,
+            @RequestParam(defaultValue = "1") @Positive int page,
+            @RequestParam(defaultValue = "15") @Positive int size) {
+
+        Page<Portfolio> portfoliosPage =
+                portfolioService.searchPortfolios(page - 1, size, category, sort, value);
+
+        List<Portfolio> content = portfoliosPage.getContent();
+
+        return new ResponseEntity<>(
+                new MultiResponseDto<>(mapper.portfolioToPortfolioResponseDtos(content),portfoliosPage),HttpStatus.OK);
+    }
 
     @DeleteMapping("/{portfolio-id}")
     public ResponseEntity deletePortfolio(@PathVariable("portfolio-id") long portfolioId) {

@@ -30,13 +30,16 @@ public class Portfolio extends BaseTimeEntity {
     @Column(length = 500, nullable = false)
     private String title;
 
-    @Column
+    @Column(length = 500)
     private String gitLink;
-    @Column
+
+    @Column(length = 500)
     private String distributionLink;
 
-    @Column(nullable = false)
+    @Column(length = 500, nullable = false)
     private String description; // 프로젝트 소개글
+
+    @Column(length = 5000, nullable = false)
     private String content; //프로젝트 설명
 
     @OneToOne(mappedBy = "portfolio", cascade = CascadeType.ALL)
