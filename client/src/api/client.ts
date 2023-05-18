@@ -14,6 +14,7 @@ import {
   GetUserProfile,
   GetUserComment,
   PatchUserProfile,
+  DeletePortfolioComment,
 } from '../types/index';
 
 // redux
@@ -41,9 +42,9 @@ tokenClient.interceptors.request.use((config) => {
   }
   // REFRESH_URL 기준으로 분류 처리를
   if (config.url === REFRESH_URL) {
-    config.headers.Authorization = `${accessToken}`;
-  } else {
     config.headers.Authorization = `${refreshToken}`;
+  } else {
+    config.headers.Authorization = `${accessToken}`;
   }
   return config;
 });
@@ -59,7 +60,7 @@ tokenClient.interceptors.response.use(
     // !로그인을 안 했을 때의 401은 그냥 reject(Promise)를 반환해라!
 
     // Login 상태가 아닐 때는 그냥 error을 반환하는 형식
-    if (isLogin && error.response.status === 401) {
+    if (!isLogin && error.response.status === 401) {
       return Promise.reject(error);
     }
 
@@ -108,10 +109,10 @@ export const userAPI = {};
 
 export const PortfolioAPI = {
   getPortfolio: async (portfolioId: number): Promise<GetPortfolio> => {
-    const PortfolioData = await axios.get(
+    const PortfolioData = await tokenClient.get(
       `${process.env.REACT_APP_API_URL}/portfolios/${portfolioId}`,
     );
-    return PortfolioData.data;
+    return PortfolioData.data.data;
   },
 };
 
@@ -143,6 +144,11 @@ export const PortfolioCommentAPI = {
         portfolioId,
         content,
       },
+    );
+  },
+  deletePortfolioComment: async ({ portfolioCommentId }: DeletePortfolioComment) => {
+    return await tokenClient.delete(
+      `${process.env.REACT_APP_API_URL}/api/portfoliocomments/${portfolioCommentId}`,
     );
   },
 };
@@ -184,7 +190,7 @@ export const UserProfileAPI = {
 export const UserPortfolioAPI = {
   getUserPortfolio: async (userId: number): Promise<GetUserPortfolio[]> => {
     // ! : 실제 작동할 때는 위 api 링크 사용
-    const userPortfoliosData = await axios.get(
+    const userPortfoliosData = await tokenClient.get(
       `${process.env.REACT_APP_API_URL}/users/${userId}/portfolio?page=1&size=15&order=asc&sort=createdAt`,
       // `${process.env.REACT_APP_API_URL}/portfolio`,
     );

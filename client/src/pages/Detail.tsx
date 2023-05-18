@@ -19,56 +19,37 @@ import Loading from '../components/common/Loading';
 
 function Detail() {
   const { portfolioId } = useParams();
+  const { getPortfolioLoading, PortfolioInfo } = useGetPortfolio(Number(portfolioId));
 
-  const { getPortfolioLoading, getPortfolioError, PortfolioInfo, ErrorInfo } = useGetPortfolio(
-    Number(portfolioId),
-  );
-
-  // if (getPortfolioLoading) {
-  //   return (
-  //     <S.Container>
-  //       <Loading />
-  //     </S.Container>
-  //   );
-  // }
-  // // 에러 처리를  다시 고민 해보자 (굳이 없어도 될듯)
-  // if (getPortfolioError) {
-  //   console.log('error 발생', ErrorInfo);
-  //   return (
-  //     <S.Container>
-  //       <Loading />
-  //     </S.Container>
-  //   );
-  // }
-
+  if (getPortfolioLoading) {
+    return (
+      <S.LoadingContainer>
+        <S.LoadingComponent />
+      </S.LoadingContainer>
+    );
+  }
   return (
     <S.Container>
-      {/* {PortfolioInfo && (
+      {PortfolioInfo && (
         <>
           <LikeBtn />
           <DetailTitle
-          // title={PortfolioInfo.title}
-          // name={PortfolioInfo.name}
-          // gitLink={PortfolioInfo.gitLink}
-          // distributionLink={PortfolioInfo.distributionLink}
+            userId={PortfolioInfo.userId}
+            title={PortfolioInfo.title}
+            name={PortfolioInfo.name}
+            gitLink={PortfolioInfo.gitLink}
+            distributionLink={PortfolioInfo.distributionLink}
+            skills={PortfolioInfo.skills}
           />
-          <ProjectImg />
-          <Description />
-          <ProjectContent />
+          <ProjectImg
+            representativeImgUrl={PortfolioInfo.representativeImgUrl}
+            views={PortfolioInfo.views}
+          />
+          <Description description={PortfolioInfo.description} />
+          <ProjectContent content={PortfolioInfo.content} />
           <Comment />
         </>
-      )} */}
-      <LikeBtn />
-      <DetailTitle
-      // title={PortfolioInfo.title}
-      // name={PortfolioInfo.name}
-      // gitLink={PortfolioInfo.gitLink}
-      // distributionLink={PortfolioInfo.distributionLink}
-      />
-      <ProjectImg />
-      <Description />
-      <ProjectContent />
-      <Comment />
+      )}
     </S.Container>
   );
 }
