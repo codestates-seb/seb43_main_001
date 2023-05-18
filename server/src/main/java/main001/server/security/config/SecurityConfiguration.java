@@ -55,10 +55,11 @@ public class SecurityConfiguration {
                 .logout().logoutSuccessUrl("/")
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
-                        .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .antMatchers(HttpMethod.POST, "/users/login/**", "/users/signup/**").permitAll() // 로그인 및 회원 가입 모두 접근 가능
-                        .antMatchers(HttpMethod.GET, "/users/**").hasRole("USER")
-                        .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
+//                        .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+//                        .antMatchers(HttpMethod.POST, "/users/login/**", "/users/signup/**").permitAll() // 로그인 및 회원 가입 모두 접근 가능
+//                        .antMatchers(HttpMethod.GET, "/users/**").hasRole("USER")
+//                        .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
+                        .antMatchers(HttpMethod.GET, "/api/portfoliocomments/users").hasRole("USER")
                         .anyRequest().permitAll())
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(new OAuth2UserSuccessHandler(authorityUtils, securityService, userService)))

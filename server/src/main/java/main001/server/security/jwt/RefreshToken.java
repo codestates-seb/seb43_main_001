@@ -1,6 +1,7 @@
 package main001.server.security.jwt;
 
 import lombok.*;
+import main001.server.audit.BaseTimeEntity;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.Entity;
@@ -15,7 +16,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RefreshToken {
+public class RefreshToken extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
