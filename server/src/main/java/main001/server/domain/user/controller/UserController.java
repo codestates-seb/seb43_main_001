@@ -61,7 +61,7 @@ public class UserController {
     public ResponseEntity join(@Valid @RequestBody UserDto.Post requestBody) {
         User user = mapper.userPostToUser(requestBody);
 
-        User createdUser = userService.createUser(user, requestBody.getSkills());
+        User createdUser = userService.createUser(user);
 
         URI location = UriCreator.createUri(USER_DEFAULT_URL, createdUser.getUserId());
 
@@ -237,7 +237,7 @@ public class UserController {
             @Valid @RequestBody UserDto.Patch requestBody) {
         requestBody.setUserId(userId);
 
-        User user = userService.updateUser(mapper.userPatchToUser(requestBody), requestBody.getSkills());
+        User user = userService.updateUser(mapper.userPatchToUser(requestBody));
 
         return new ResponseEntity<>(
                 new SingleResponseDto<>(mapper.userToUserProfileResponse(user)), HttpStatus.OK);
