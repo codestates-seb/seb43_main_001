@@ -103,3 +103,42 @@ export const YellowTagCutsom = styled(S.Tags)`
     font-size: 1rem;
   }
 `;
+// edit part
+export const UserInfoEdit = styled.div`
+  display: flex;
+  justify-content: start;
+  @media ${(props) => props.theme.breakpoints.TABLETMIN} {
+    justify-content: end;
+    font-size: 1rem;
+  }
+`;
+
+export const EditBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const CommonStyleP = css`
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.6rem;
+  margin-right: 0.1rem;
+
+  @media ${(props) => props.theme.breakpoints.TABLETMIN} {
+    font-size: 1.1rem;
+  }
+`;
+
+export const Edit = styled.p`
+  ${CommonStyleP}
+  &:hover {
+    color: grey;
+  }
+`;
+export const Delete = styled.p`
+  ${CommonStyleP}
+  &:hover {
+    color: red;
+  }
+`;

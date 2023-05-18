@@ -53,6 +53,12 @@ function DetailTitle({ userId, name, title, gitLink, distributionLink, skills }:
           })}
         </S.Tags>
       </S.TitleDowner>
+      <S.UserInfoEdit>
+        <S.EditBox>
+          <S.Edit>수정</S.Edit>
+          <S.Delete>삭제</S.Delete>
+        </S.EditBox>
+      </S.UserInfoEdit>
     </S.DetailTitle>
   );
 }
