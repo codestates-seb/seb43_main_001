@@ -17,13 +17,13 @@ function NewPortfolio() {
   // userId 받아오기
   const userId = getUserIdFromAccessToken(isLogin, accessToken);
 
-  // UserInfo 받아오기
-  const { UserInfo, getUserInfoLoading } = useGetUserProfile(Number(userId));
+  //  UserProfile 받아오기
+  const { UserProfile, getUserProfileLoading } = useGetUserProfile(Number(userId));
 
   return (
     <S.NewPortfolioContainer>
-      {getUserInfoLoading && <Loading />}
-      {UserInfo && <PortfolioContainer isEdit={false} UserInfo={UserInfo} />}
+      {getUserProfileLoading && <Loading />}
+      {UserProfile && <PortfolioContainer isEdit={false} UserProfile={UserProfile} />}
     </S.NewPortfolioContainer>
   );
 }
