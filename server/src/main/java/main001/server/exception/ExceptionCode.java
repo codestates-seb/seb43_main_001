@@ -15,6 +15,8 @@ public enum ExceptionCode {
 
     // portfolio 관련
     PORTFOLIO_NOT_FOUND(404, "포트폴리오가 존재하지 않습니다."),
+    SEARCH_CONDITION_MISMATCH(400,"검색 조건이 잘못되었습니다."),
+    PORTFOLIO_NOT_SEARCHED(404, "조회된 포트폴리오가 없습니다"),
 
     // comment 관련
     COMMENT_NOT_FOUND(404,"댓글이 존재하지 않습니다."),

@@ -359,11 +359,30 @@ public class PortfolioService {
     }
 
 
-//    public List<PortfolioDto.Response> searchPortfolios(int page, int size, String searchParam, String sortCriteria) {
-//        if(sortCriteria.equals(""))
-//        PageRequest.of(page,size,);
-//
-//        portfolioRepository.findByUserName()
-//
-//    }
+    public Page<Portfolio> searchPortfolios(int page, int size, String category, String sortCriteria, String value) {
+        PageRequest pageable = PageRequest.of(page,size);
+        Page<Portfolio> response;
+        if(sortCriteria.equals("createdAt")) {
+            pageable = PageRequest.of(page,size,Sort.by("createdAt").descending());
+        } else if (sortCriteria.equals("views")) {
+            pageable = PageRequest.of(page,size,Sort.by("views").descending());
+        } else if (sortCriteria.equals("likes")) {
+            pageable = PageRequest.of(page,size,Sort.by("likes").descending());
+        } else {
+            throw new BusinessLogicException(ExceptionCode.SEARCH_CONDITION_MISMATCH);
+        }
+
+        if(category.equals("userName")) {
+            response = portfolioRepository.findByUserName(value, pageable);
+        } else if (category.equals("title")) {
+            response = portfolioRepository.findByTitle(value, pageable);
+        } else {
+            throw new BusinessLogicException(ExceptionCode.SEARCH_CONDITION_MISMATCH);
+        }
+
+        if(response.getTotalElements()==0) {
+            throw new BusinessLogicException(ExceptionCode.PORTFOLIO_NOT_SEARCHED);
+        }
+        return response;
+    }
 }
