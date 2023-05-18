@@ -148,6 +148,11 @@ public class UserService {
     /**
      * OAuth2.0 로그인시 기존 회원여부 확인시 사용
      */
+    public boolean isExistOAuth2User(String oauthId) {
+        Optional<User> optionalUser = userRepository.findByOauthId(oauthId);
+        return optionalUser.isPresent();
+    }
+
     public User findExistOAuth2User(String oauthId) {
         Optional<User> optionalUser = userRepository.findByOauthId(oauthId);
         User findUser = optionalUser.orElseThrow(() ->

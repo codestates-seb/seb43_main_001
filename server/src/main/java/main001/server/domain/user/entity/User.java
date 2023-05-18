@@ -90,8 +90,9 @@ public class User extends BaseTimeEntity {
         this.about = about;
     }
 
-    public User(String email, String name, String profileImg) {
+    public User(String email, String oauthId, String name, String profileImg) {
         this.email = email;
+        this.oauthId = oauthId;
         this.name = name;
         this.profileImg = profileImg;
     }
