@@ -67,8 +67,8 @@ public class User extends BaseTimeEntity {
 
     private boolean auth = false;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserSkill> skills = new ArrayList<>();
+//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<UserSkill> skills = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Portfolio> portfolios = new ArrayList<>();
@@ -97,13 +97,13 @@ public class User extends BaseTimeEntity {
         this.profileImg = profileImg;
     }
 
-    public void addSkill(UserSkill userSkill) {
-        skills.add(userSkill);
-        userSkill.setUser(this);
-    }
-
-    public void deleteSkill(UserSkill userSkill) {
-        skills.remove(userSkill);
-        userSkill.deleteUserSkill();
-    }
+//    public void addSkill(UserSkill userSkill) {
+//        skills.add(userSkill);
+//        userSkill.setUser(this);
+//    }
+//
+//    public void deleteSkill(UserSkill userSkill) {
+//        skills.remove(userSkill);
+//        userSkill.deleteUserSkill();
+//    }
 }

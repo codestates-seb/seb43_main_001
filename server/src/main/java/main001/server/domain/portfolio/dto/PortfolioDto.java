@@ -1,6 +1,7 @@
 package main001.server.domain.portfolio.dto;
 
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ public class PortfolioDto {
         private String description;
 
         @NotBlank(message = "설명을 작성해주세요.")
+        @Length
         private String content;
 
         private List<String> skills;

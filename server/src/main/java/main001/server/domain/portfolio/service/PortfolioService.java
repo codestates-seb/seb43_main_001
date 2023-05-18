@@ -24,6 +24,7 @@ import main001.server.domain.attachment.image.entity.ImageAttachment;
 import main001.server.domain.attachment.image.entity.RepresentativeAttachment;
 import main001.server.domain.attachment.image.repository.ImageAttachmentRepository;
 import main001.server.domain.attachment.image.repository.RepresentativeImageRepository;
+import main001.server.domain.portfolio.dto.PortfolioDto;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.repository.PortfolioRepository;
 import main001.server.domain.skill.entity.PortfolioSkill;
@@ -358,4 +359,11 @@ public class PortfolioService {
     }
 
 
+//    public List<PortfolioDto.Response> searchPortfolios(int page, int size, String searchParam, String sortCriteria) {
+//        if(sortCriteria.equals(""))
+//        PageRequest.of(page,size,);
+//
+//        portfolioRepository.findByUserName()
+//
+//    }
 }

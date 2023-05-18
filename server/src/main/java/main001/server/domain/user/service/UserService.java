@@ -57,31 +57,6 @@ public class UserService {
         return savedUser;
     }
 
-
-    public User createUser(User user, List<String> skills) {
-        verifyExistEmail(user.getEmail());
-
-//        /**
-//         * 암호화된 비밀번호 설정
-//         */
-//        String encryptedPassword = passwordEncoder.encode(user.getPassword());
-//        user.setPassword(encryptedPassword);
-//
-
-        /**
-         * 초기 권한 부여 설정
-         */
-        List<String> roles = authorityUtils.createRoles(user.getEmail());
-        user.setRoles(roles);
-        user.setAuth(true);
-
-        User savedUser = userRepository.save(user);
-
-        addSkills(user,skills);
-
-        return savedUser;
-    }
-
     public User findUser(long userId) {
         return findVerifiedUser(userId);
     }
@@ -106,7 +81,7 @@ public class UserService {
      * 유저 정보 수정 기능 : 수정 가능한 정보 등 논의 필요
      */
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public User updateUser(User user, List<String> skills) {
+    public User updateUser(User user) {
         User findUser = findVerifiedUser(user.getUserId());
 
         Optional.ofNullable(user.getName()).ifPresent(name -> findUser.setName(name));
@@ -118,7 +93,7 @@ public class UserService {
 
         User saved = userRepository.save(findUser);
 
-        addSkills(saved, skills);
+//        addSkills(saved, skills);
 
         return saved;
     }
@@ -175,22 +150,22 @@ public class UserService {
         return userRepository.save(findUser);
     }
 
-    public void addSkills(User user,List<String> skills) {
-        for(int i = user.getSkills().size()-1; i>=0; i--) {
-            user.deleteSkill(user.getSkills().get(i));
-        }
-
-        if(skills==null) {
-            throw new BusinessLogicException(ExceptionCode.SKILL_NOT_EXIST);
-        }
-
-        skills.stream()
-                .map(name -> {
-                    UserSkill userSkill = UserSkill.createUserSkill(
-                            skillService.findByName(name)
-                    );
-                    return userSkill;
-                })
-                .forEach(user::addSkill);
-    }
+//    public void addSkills(User user,List<String> skills) {
+//        for(int i = user.getSkills().size()-1; i>=0; i--) {
+//            user.deleteSkill(user.getSkills().get(i));
+//        }
+//
+//        if(skills==null) {
+//            throw new BusinessLogicException(ExceptionCode.SKILL_NOT_EXIST);
+//        }
+//
+//        skills.stream()
+//                .map(name -> {
+//                    UserSkill userSkill = UserSkill.createUserSkill(
+//                            skillService.findByName(name)
+//                    );
+//                    return userSkill;
+//                })
+//                .forEach(user::addSkill);
+//    }
 }
