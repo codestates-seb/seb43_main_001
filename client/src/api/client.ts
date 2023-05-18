@@ -15,6 +15,8 @@ import {
   GetUserComment,
   PatchUserProfile,
   DeletePortfolioComment,
+  PostPortfolio,
+  PatchPortfolio,
 } from '../types/index';
 
 const REFRESH_URL = ''; // refresh URL을 새롭게 추가를 해야 한다.
@@ -90,6 +92,52 @@ export const PortfolioAPI = {
       `${process.env.REACT_APP_API_URL}/portfolios/${portfolioId}`,
     );
     return PortfolioData.data.data;
+  },
+  postPortfolio: async (Portfolio: PostPortfolio): Promise<GetPortfolio> => {
+    const { postDto, representativeImg, images, files } = Portfolio;
+
+    // 폼 데이터 형식 사용
+    const formData = new FormData();
+
+    const Dto = new Blob([JSON.stringify(postDto)], {
+      type: 'application/json',
+    });
+
+    formData.append('postDto', Dto);
+    if (representativeImg) formData.append('representativeImg', representativeImg);
+    if (images) formData.append('images', images);
+    if (files) formData.append('files', files);
+
+    return await tokenClient.post(`${process.env.REACT_APP_API_URL}/portfolios`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+  patchPortfolio: async (Portfolio: PatchPortfolio): Promise<GetPortfolio> => {
+    const { portfolioId, postDto, representativeImg, images, files } = Portfolio;
+
+    // 폼 데이터 형식 사용
+    const formData = new FormData();
+
+    const Dto = new Blob([JSON.stringify(postDto)], {
+      type: 'application/json',
+    });
+
+    formData.append('patchDto', Dto);
+    if (representativeImg) formData.append('representativeImg', representativeImg);
+    if (images) formData.append('images', images);
+    if (files) formData.append('files', files);
+
+    return await tokenClient.patch(
+      `${process.env.REACT_APP_API_URL}/portfolios/${portfolioId}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      },
+    );
   },
 };
 

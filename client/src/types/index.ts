@@ -50,15 +50,30 @@ export type PatchUserProfile = {
 };
 
 // Portfolio
-export type PostPortfolio = {
+
+export type postDto = {
   userId: number;
   title: string;
-  img: File;
   gitLink: string;
   distributionLink: string;
   description: string;
-  tags: string[];
   content: string;
+  skills: string[];
+};
+
+export type PostPortfolio = {
+  postDto: postDto;
+  representativeImg: File | null;
+  images?: File;
+  files?: File;
+};
+
+export type PatchPortfolio = {
+  portfolioId: number;
+  postDto: postDto;
+  representativeImg: File | null;
+  images?: File;
+  files?: File;
 };
 
 export type GetPortfolio = {
