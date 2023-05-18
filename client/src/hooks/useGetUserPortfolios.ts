@@ -10,7 +10,7 @@ export const useGetUserPortfolios = (userId: number) => {
     isError: getUserPortfoliosError,
     data: UserPortfolios,
   } = useQuery<GetUserPortfolio[], Error>({
-    queryKey: ['userPortfolios'],
+    queryKey: ['userPortfolios', userId],
     queryFn: () => getUserPortfolio(userId),
   });
   return { getUserPortfoliosLoading, getUserPortfoliosError, UserPortfolios };

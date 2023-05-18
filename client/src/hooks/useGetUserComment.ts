@@ -10,7 +10,7 @@ export const useGetUserComments = (userId: number) => {
     isError: getUserCommentError,
     data: UserComments,
   } = useQuery<GetUserComment[], Error>({
-    queryKey: ['userComments'],
+    queryKey: ['userComments', userId],
     queryFn: () => getUserComments(userId),
   });
   return { getUserCommentLoading, getUserCommentError, UserComments };
