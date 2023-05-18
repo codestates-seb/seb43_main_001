@@ -12,6 +12,7 @@ import main001.server.exception.BusinessLogicException;
 import main001.server.exception.ExceptionCode;
 import main001.server.security.utils.CustomAuthorityUtils;
 import org.springframework.data.domain.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -31,7 +32,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final SkillService skillService;
-
 //    private final PasswordEncoder passwordEncoder; // Security 적용 후 사용
 //
     private final CustomAuthorityUtils authorityUtils;  // Security 적용 후 사용
@@ -123,8 +123,16 @@ public class UserService {
     /**
      * OAuth2.0 로그인시 기존 회원여부 확인시 사용
      */
-    public boolean isExistEmail(String email) {
-        return userRepository.findByEmail(email).isPresent();
+    public boolean isExistOAuth2User(String oauthId) {
+        Optional<User> optionalUser = userRepository.findByOauthId(oauthId);
+        return optionalUser.isPresent();
+    }
+
+    public User findExistOAuth2User(String oauthId) {
+        Optional<User> optionalUser = userRepository.findByOauthId(oauthId);
+        User findUser = optionalUser.orElseThrow(() ->
+                new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+        return findUser;
     }
 
     public Long getUserId(String email) {

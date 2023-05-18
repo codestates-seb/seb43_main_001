@@ -15,4 +15,7 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
 
     @Query("SELECT DISTINCT p FROM Portfolio p JOIN p.skills ps JOIN ps.skill s WHERE s.name = :name")
     Page<Portfolio> findBySkillName(@Param("name") String name, Pageable pageable);
+
+//    @Query("select distinct p from portfolio p join p.user u where u.name = :userName%")
+//    Page<Portfolio> findByUserName(@Param("userName") String name,Pageable pageable);
 }
