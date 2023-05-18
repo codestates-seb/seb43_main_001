@@ -75,6 +75,14 @@ export const UserName = styled.p`
 export const GitBtn = styled.button`
   margin-bottom: 3px;
 `;
+export const EditGit = styled.label`
+  input {
+    border: 1px solid;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+`;
+
 export const Buttons = styled.div`
   display: flex;
   flex-direction: column;

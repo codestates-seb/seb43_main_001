@@ -8,16 +8,22 @@ const { getUserProfile } = UserProfileAPI;
 export const useGetUserProfile = (userId: number) => {
   const navigate = useNavigate();
   const {
-    isLoading: getUserInfoLoading,
-    isError: getUserInfoError,
-    data: UserInfo,
+    isLoading: getUserProfileLoading,
+    isError: getUserProfileError,
+    data: UserProfile,
   } = useQuery<GetUserProfile, Error>({
-    queryKey: ['userInfo'],
+    queryKey: ['UserProfile', userId],
     queryFn: () => getUserProfile(userId),
     onError: () => {
       console.error('해당하는 유저를 찾을 수 없습니다.');
       navigate('/*');
     },
+    retry: (failureCount, error) => {
+      if (error.message === 'Request failed with status code 404') {
+        return false;
+      }
+      return failureCount < 5;
+    },
   });
-  return { getUserInfoLoading, getUserInfoError, UserInfo };
+  return { getUserProfileLoading, getUserProfileError, UserProfile };
 };

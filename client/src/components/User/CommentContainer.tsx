@@ -5,18 +5,7 @@ import { ChangeEvent, useState } from 'react';
 import { useGetUserComments } from '../../hooks/useGetUserComment';
 import { useGetCommentsToPortfolio } from '../../hooks/useGetCommentsToPortfolio';
 import { useGetCommentsToUser } from '../../hooks/useGetCommentsToUser';
-
-export type Comment = {
-  userId: number;
-  writerId: number;
-  writerName: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  userCommentId?: number;
-  portfolioCommentId?: number;
-  portfolioId?: number;
-};
+import { usePostUserComment } from '../../hooks/usePostUserComment';
 
 type CommentProps = {
   userId: number;
@@ -26,11 +15,13 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
   const [selectComment, setSelectComment] = useState(true);
   const [category, setCategory] = useState(true);
   const [content, setContent] = useState('');
+  const { handlerPostUserComment } = usePostUserComment(userId);
 
   const addHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // TODO : 데이터 전송
-    // await axios.post(`${url}/comment`, {});
+    handlerPostUserComment(userId, content);
+    setContent('');
   };
   const contentChangeHandler = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
@@ -42,6 +33,7 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
   const { CommentsToUser } = useGetCommentsToUser(userId);
 
   // ? : 유저 댓글과 포트폴리오 댓글이 남아있는 문제 < ?????
+
   return (
     <S.CommentContainer>
       <S.SelectBtn>
@@ -60,12 +52,13 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
                 {UserComments.length > 0 ? (
                   <>
                     {UserComments.map((ele) => (
-                      <CommentItem key={ele.userCommentId} data={ele} path='comment' />
+                      <CommentItem key={ele.userCommentId} data={ele} path='usercomments' />
                     ))}
                   </>
                 ) : (
                   <>
-                  <p></p></>
+                    <p></p>
+                  </>
                 )}
               </>
             )}
@@ -94,14 +87,14 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
             <S.Comments>
               {CommentsToUser &&
                 CommentsToUser?.map((ele) => (
-                  <CommentItem key={ele.userCommentId} data={ele} path='toUser' />
+                  <CommentItem key={ele.userCommentId} data={ele} path='usercomments' />
                 ))}
             </S.Comments>
           ) : (
             <S.Comments>
               {CommentsToPortfolio &&
                 CommentsToPortfolio?.map((ele) => (
-                  <CommentItem key={ele.portfolioCommentId} data={ele} path='toPortfolio' />
+                  <CommentItem key={ele.portfolioCommentId} data={ele} path='portfoliocomments' />
                 ))}
             </S.Comments>
           )}

@@ -10,7 +10,7 @@ export const useGetCommentsToPortfolio = (userId: number) => {
     isError: getCommentsToPortfolioError,
     data: CommentsToPortfolio,
   } = useQuery<GetUserComment[], Error>({
-    queryKey: ['commentsToPortfolio'],
+    queryKey: ['commentsToPortfolio', userId],
     queryFn: () => getCommentsToPortfolio(userId),
   });
   return { getCommentsToPortfolioLoading, getCommentsToPortfolioError, CommentsToPortfolio };
