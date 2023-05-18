@@ -37,8 +37,6 @@ tokenClient.interceptors.request.use((config) => {
   // * :요청 헤더가 있으면 기존의 것을 반환하고 없으면 아래 처럼 새롭게 지정해준다.
   // !login 상태가 아니면 그냥 일반 헤더 반환
   // !login 상태면 아래와 같이 그냥 진행
-  console.log(config.headers);
-
   if (!config.headers || !isLogin) {
     return config;
   }
