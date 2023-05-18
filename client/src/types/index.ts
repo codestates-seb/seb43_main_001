@@ -27,26 +27,54 @@ export type GetUserPortfolio = {
 };
 
 export type GetUserComment = {
+  // 댓글 공통
   userId: number;
-  writerId: number;
-  writerName: string;
   content: string;
   createdAt: string;
   updatedAt: string;
+  auth: boolean;
+
+  // 유저 댓글
+  writerProfileImg?: string;
+  writerId?: number;
+  writerName?: string;
   userCommentId?: number;
+
+  // 포트폴리오 댓글
+  userName?: string;
+  userProfileImg?: string;
   portfolioCommentId?: number;
   portfolioId?: number;
+};
+
+export type PostUserComment = {
+  userId: number;
+  writerId: number;
+  content: string;
 };
 
 export type PatchUserProfile = {
   userId: number;
   name: string;
-  // 타입이 File이어야하는거 아닌지 문의하기
-  profileImg: string;
+  profileImg: File | null;
   gitLink: string;
   blogLink: string;
   jobStatus: string;
   about: string;
+};
+
+export type PatchUserComment = {
+  userId: number;
+  content: string;
+  path: string;
+
+  pathId:number;
+  commentId:number;
+};
+
+export type DeleteUserComment = {
+  commentId: number;
+  path: string;
 };
 
 // Portfolio
