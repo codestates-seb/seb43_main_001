@@ -116,6 +116,7 @@ export const UserInfoEdit = styled.div`
 export const EditBox = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-right: 1rem;
 `;
 
 const CommonStyleP = css`

@@ -40,7 +40,11 @@ function CommentItem({
     portfolioCommentId,
     portfolioId,
   });
-  const { handleOnClickDeleteBtn } = useDeleteProtfolioComment(portfolioId, portfolioCommentId);
+  const { handleOnClickDeleteBtn } = useDeleteProtfolioComment(
+    userId,
+    portfolioId,
+    portfolioCommentId,
+  );
 
   const handleComfirm = () => {
     patchCommentAction(editInput);
