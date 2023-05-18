@@ -47,6 +47,8 @@ function Home() {
 
       if (accessToken && refreshToken) {
         dispatch(login({ accessToken, refreshToken }));
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
       }
     }
   }, [isLogin, dispatch]);

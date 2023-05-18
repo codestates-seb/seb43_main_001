@@ -17,34 +17,25 @@ import {
   DeletePortfolioComment,
 } from '../types/index';
 
-// redux
-import { loginState, access, refresh, setAccessToken } from '../store/slice/loginSlice';
-import store from '../store';
-
-// ? 변수 선언 말고 바로 넣는 게 보안상 더 좋으려나?
-
 const REFRESH_URL = ''; // refresh URL을 새롭게 추가를 해야 한다.
-// ! nontoken은 제외
-const noneTokenClient = axios.create({ baseURL: process.env.REACT_APP_API_URL });
 const tokenClient = axios.create({ baseURL: process.env.REACT_APP_API_URL });
 // *: 요청하는 상태에 따라서 무조건 토큰을 담아서 보낸다.
 
-const isLogin = loginState(store.getState());
-const accessToken = access(store.getState());
-const refreshToken = refresh(store.getState());
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
 
 tokenClient.interceptors.request.use((config) => {
   // * :요청 헤더가 있으면 기존의 것을 반환하고 없으면 아래 처럼 새롭게 지정해준다.
   // !login 상태가 아니면 그냥 일반 헤더 반환
   // !login 상태면 아래와 같이 그냥 진행
-  if (!config.headers || !isLogin) {
+  if (!config.headers || !accessToken) {
     return config;
   }
   // REFRESH_URL 기준으로 분류 처리를
   if (config.url === REFRESH_URL) {
-    config.headers.Authorization = `${refreshToken}`;
+    config.headers.Authorization = `Bearer ${refreshToken}`;
   } else {
-    config.headers.Authorization = `${accessToken}`;
+    config.headers.Authorization = `Bearer ${accessToken}`;
   }
   return config;
 });
@@ -60,7 +51,7 @@ tokenClient.interceptors.response.use(
     // !로그인을 안 했을 때의 401은 그냥 reject(Promise)를 반환해라!
 
     // Login 상태가 아닐 때는 그냥 error을 반환하는 형식
-    if (!isLogin && error.response.status === 401) {
+    if (!accessToken && error.response.status === 401) {
       return Promise.reject(error);
     }
 
@@ -73,10 +64,10 @@ tokenClient.interceptors.response.use(
         const { accessToken } = await getNewAccessToken();
 
         // 새롭게 발급 받은 accessToken을 로컬 스토리지에 저장하기
-        store.dispatch(setAccessToken(accessToken));
-
+        localStorage.setItem('accessToken', accessToken);
+        const newAccessToken = localStorage.getItem('accessToken');
         // *:새롭게 받은 accessToken을 다시 기존의 요청 헤더 권한에 부여
-        originalRequest.headers.authorization = `${accessToken}`;
+        originalRequest.headers.authorization = `Bearer ${newAccessToken}`;
 
         // 실패했던 원래 요청에 대해 다시 요청을 보낸다.
         return await axios(originalRequest);
@@ -88,20 +79,6 @@ tokenClient.interceptors.response.use(
       }
     }
     return Promise.reject(error);
-  },
-);
-
-// *: token을 사용하지 않는 response 설정
-noneTokenClient.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    const errorResponse = {
-      ...error.response.data,
-    };
-
-    return Promise.reject(errorResponse);
   },
 );
 
@@ -238,4 +215,4 @@ export const UserCommentsAPI = {
 
 export const UserCommentAPI = {};
 
-export { tokenClient, noneTokenClient };
+export { tokenClient };
