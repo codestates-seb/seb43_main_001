@@ -13,6 +13,8 @@
     "@types/node": "^16.18.25",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.1",
+    "@xeger/quill-image-actions": "^0.7.1",
+    "@xeger/quill-image-formats": "^0.7.1",
     "axios": "^1.4.0",
     "highlight.js": "^11.8.0",
     "quill-image-resize-module-ts": "^3.0.3",

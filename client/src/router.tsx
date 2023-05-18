@@ -69,7 +69,7 @@ const routerData: RouterElement[] = [
   },
   {
     id: 6,
-    path: '/EditPortfolio/:id',
+    path: '/EditPortfolio/:portfolioId',
     label: 'EditPortfolio',
     element: <EditPortfolio />,
     withAuth: true,
