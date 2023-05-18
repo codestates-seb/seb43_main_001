@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import * as S from './UserDetailInfo.style';
-import { User } from './UserInfo';
 
 type DetailInfoProps = {
   about: string;

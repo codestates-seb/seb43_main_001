@@ -1,9 +1,10 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { YellowBtn } from '../common/Button.style';
 // import { user } from './mock';
 import * as S from './UserBasicInfo.style';
-import { setImg, setName } from '../../store/slice/editUserProfileSlice';
+import { setGit, setImg, setName } from '../../store/slice/editUserProfileSlice';
 import { useState } from 'react';
+import { RootState } from '../../store';
 
 type UserBasicInfoProps = {
   onEdit: boolean;
@@ -19,9 +20,16 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
   gitLink,
   auth,
 }) => {
+  const dispatch = useDispatch();
+  const userEditInfo = useSelector((state: RootState) => {
+    return state.editUserProfile;
+  });
+  const { gitLink: editGitLink } = userEditInfo;
   const [photo, setPhoto] = useState<string>(profileImg);
   const [userName, setUserName] = useState<string>(name);
-  const dispatch = useDispatch();
+  // ! : input에 null값을 넣지 않기 위해 editSlice의 정보 사용,(서버에서 처리해주면 기존값 사용해도 괜찮음)
+  const [userGit, setUserGit] = useState<string>(editGitLink);
+
   const fileUploadHanlder = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.currentTarget;
     const files = (target.files as FileList)[0];
@@ -31,15 +39,20 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
       setPhoto(reader.result as string);
     };
     reader.readAsDataURL(files);
-
-    // ! : axios를 통해서 전달하는 부분은 file
     dispatch(setImg({ ...files }));
   };
-  const nameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.currentTarget.value;
-    setUserName(value);
-    dispatch(setName(value));
+
+  const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = e.currentTarget;
+    if (name === 'name') {
+      setUserName(value);
+      dispatch(setName(value));
+    } else {
+      setUserGit(value);
+      dispatch(setGit(value));
+    }
   };
+
   return (
     <S.BasicInfo>
       {onEdit ? (
@@ -60,22 +73,29 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
         {onEdit ? (
           <S.EditName>
             Name
-            <input onChange={nameHandler} value={userName} />
+            <input onChange={inputChangeHandler} value={userName} name='name' />
           </S.EditName>
         ) : (
           <S.UserName>{name}</S.UserName>
         )}
-        <S.GitBtn>
-          <a href={gitLink} target='_blank' rel='noreferrer'>
+        {onEdit ? (
+          <S.EditGit>
             <S.GithubIcon />
-            <span>Github</span>
-          </a>
-        </S.GitBtn>
+            <input value={userGit} onChange={inputChangeHandler} name='git' />
+          </S.EditGit>
+        ) : (
+          <S.GitBtn>
+            <a href={gitLink} target='_blank' rel='noreferrer'>
+              <S.GithubIcon />
+              <span>Github</span>
+            </a>
+          </S.GitBtn>
+        )}
         <div>
           <S.FollowrIcon />
-          {/* <span>{follower}</span> */}
-          {/* <S.ViewIcon /> */}
-          {/* <span>{view}</span> */}
+          <span>123</span>
+          <S.ViewIcon />
+          <span>321</span>
         </div>
       </div>
       <S.Buttons>{!auth && <YellowBtn>Follow</YellowBtn>}</S.Buttons>

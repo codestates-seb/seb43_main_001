@@ -7,6 +7,7 @@ type UserInfo = {
   profileImg: File | null;
   about: string;
   jobStatus: string;
+  gitLink: string;
   blogLink: string;
 };
 
@@ -15,6 +16,7 @@ const initialState: UserInfo = {
   profileImg: null,
   about: '',
   jobStatus: '',
+  gitLink: '',
   blogLink: '',
 };
 
@@ -29,17 +31,29 @@ const EditUserProfileSlice = createSlice({
       state.profileImg = action.payload;
     },
     setAbout: (state, action) => {
-      state.about = action.payload;
+      if (action.payload) {
+        state.about = action.payload;
+      } else {
+        state.about = '';
+      }
     },
     setJobStatus: (state, action) => {
-      state.jobStatus = action.payload;
+      if (action.payload) {
+        state.jobStatus = action.payload;
+      } else {
+        state.jobStatus = 'JOB_SEEKING';
+      }
+    },
+    setGit: (state, action) => {
+      action.payload ? (state.gitLink = action.payload) : (state.gitLink = '');
     },
     setBlog: (state, action) => {
-      state.blogLink = action.payload;
+      action.payload ? (state.blogLink = action.payload) : (state.blogLink = '');
     },
   },
 });
 
-export const { setName, setImg, setAbout, setJobStatus, setBlog } = EditUserProfileSlice.actions;
+export const { setName, setImg, setAbout, setJobStatus, setGit, setBlog } =
+  EditUserProfileSlice.actions;
 
 export default EditUserProfileSlice.reducer;

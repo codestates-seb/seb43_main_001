@@ -1,18 +1,27 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as S from './UserEditForm.style';
 import { setBlog, setAbout, setJobStatus } from '../../store/slice/editUserProfileSlice';
 import { useState } from 'react';
-// import axios from 'axios';
+import { RootState } from '../../store';
+import { useDeleteUserProfile } from '../../hooks/useDeleteUserProfile';
+import { useRouter } from '../../hooks/useRouter';
+import { logout } from '../../store/slice/loginSlice';
 
-type EditFormProps = {
-  about: string;
-  blogLink: string;
-  jobStatus: string;
+type UserEdit = {
+  userId: number;
 };
-const UserEditForm: React.FC<EditFormProps> = ({ about, blogLink, jobStatus }) => {
+const UserEditForm: React.FC<UserEdit> = ({ userId }) => {
+  const userEditInfo = useSelector((state: RootState) => {
+    return state.editUserProfile;
+  });
+  const { about, blogLink, jobStatus } = userEditInfo;
+
   const dispatch = useDispatch();
   const [userAbout, setUserAbout] = useState(about);
   const [userBlogLink, setBlogLink] = useState(blogLink);
+  const { handlerDeleteUserProfile } = useDeleteUserProfile();
+  const { routeTo } = useRouter();
+
   const aboutHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const target = e.currentTarget.value;
     setUserAbout(target);
@@ -28,8 +37,10 @@ const UserEditForm: React.FC<EditFormProps> = ({ about, blogLink, jobStatus }) =
     dispatch(setJobStatus(target));
   };
   const deleteHandler = async () => {
-    // await axios.delete(`${process.env.REACT_APP_API_URL}/user/id`);
-    // 메인 화면으로 이동 로직 필요
+    // ! : 회원 탈퇴를 하는게 확실한지 확인창 띄우기(한번에 삭제까지 실행되지 않도록 해야 할 것 같음)
+    handlerDeleteUserProfile(userId);
+    dispatch(logout(null));
+    routeTo('/');
   };
   return (
     <S.EditForm>
