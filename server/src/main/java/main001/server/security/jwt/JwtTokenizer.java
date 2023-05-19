@@ -1,12 +1,13 @@
 package main001.server.security.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
+import main001.server.config.EnvConfig;
+import main001.server.exception.BusinessLogicException;
+import main001.server.exception.ExceptionCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -139,4 +140,21 @@ public class JwtTokenizer {
         return true;
     }
 
+    private Claims parseToken(String token) {
+        String key = EnvConfig.getSecretKey();
+        String jws = token.replace("Bearer ", "");
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key.getBytes())
+                    .build()
+                    .parseClaimsJws(jws)
+                    .getBody();
+        } catch (JwtException e) {
+            throw new BusinessLogicException(ExceptionCode.TOKEN_NOT_AVAILABLE);
+        }
+    }
+
+    public Long getUserId(String token) {
+        return parseToken(token).get("userId", Long.class);
+    }
 }

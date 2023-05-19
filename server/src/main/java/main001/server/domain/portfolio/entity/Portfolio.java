@@ -40,7 +40,11 @@ public class Portfolio extends BaseTimeEntity {
     @Column(length = Integer.MAX_VALUE)
     private String content; //프로젝트 설명
 
-    private int likes;
+    @Column(columnDefinition = "integer default 0", nullable = false)
+    private int countLikes;
+
+    @Column(columnDefinition = "integer default 0", nullable = false)
+    private int views;
 
     @OneToOne(mappedBy = "portfolio", cascade = CascadeType.ALL)
     private RepresentativeAttachment representativeAttachment;
@@ -48,11 +52,8 @@ public class Portfolio extends BaseTimeEntity {
     @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
     private List<ImageAttachment> imageAttachments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "portfolio", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<PortfolioLikes> portfolioLikes = new ArrayList<>();
-
-    @Column(columnDefinition = "integer default 0", nullable = false)
-    private int views;
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")

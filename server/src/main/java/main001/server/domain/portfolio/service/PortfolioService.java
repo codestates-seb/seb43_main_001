@@ -1,6 +1,5 @@
 package main001.server.domain.portfolio.service;
 
-import com.amazonaws.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import main001.server.amazon.s3.service.S3Service;
@@ -26,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
@@ -273,4 +271,13 @@ public class PortfolioService {
         }
         return pageable;
     }
+
+    public void updateLikes(Long portfolioId, int number) {
+        Portfolio verifiedPortfolio = findVerifiedPortfolio(portfolioId);
+
+        verifiedPortfolio.setCountLikes(verifiedPortfolio.getCountLikes()+number);
+
+        portfolioRepository.save(verifiedPortfolio);
+    }
+
 }
