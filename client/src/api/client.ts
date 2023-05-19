@@ -8,6 +8,7 @@ import { getNewAccessToken } from '../utils/getAccessToken';
 import {
   GetPortfolioCommentById,
   GetPortfolio,
+  GetPortfolioPage,
   PostPortfolioComment,
   PatchPortfolioComment,
   GetUserPortfolio,
@@ -141,6 +142,24 @@ export const PortfolioAPI = {
         },
       },
     );
+  },
+  getAllPortfolio: async (page: number, size: string, sort: string): Promise<GetPortfolioPage> => {
+    const allPortfolio = await tokenClient.get(
+      `/portfolios?page=${page}&size=${size}&sort=${sort}`,
+    );
+    return { ...allPortfolio.data, currentPage: page };
+  },
+  getSearchPortfolio: async (
+    value: string,
+    page: number,
+    size: string,
+    category: string,
+    sort: string,
+  ): Promise<GetPortfolioPage> => {
+    const allSearchPortfolio = await tokenClient.get(
+      `/search?value=${value}&page=${page}&size=${size}&category=${category}&sortBy=${sort}`,
+    );
+    return { ...allSearchPortfolio.data, currentPage: page };
   },
 };
 

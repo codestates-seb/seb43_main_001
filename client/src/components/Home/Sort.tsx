@@ -1,24 +1,25 @@
 import { useState } from 'react';
 import * as S from './Sort.style';
+import { SortOption } from '../../types/index';
 
 type SortProps = {
-  setOrderName?: (orderName: string) => void;
+  setSortOption?: (sortOption: SortOption) => void;
 };
 
-function Sort({ setOrderName }: SortProps) {
+function Sort({ setSortOption }: SortProps) {
   const [selectedButton, setSelectedButton] = useState('최신순');
 
   // TODO: API 명세서 받으면 수정하기
-  const getOrderName = (buttonName: string) => {
+  const getSortOption = (buttonName: string) => {
     switch (buttonName) {
       case '최신순':
-        return 'latest';
+        return 'createdAt';
       case '추천순':
-        return 'recommend';
+        return 'recommend'; // ! 구현중
       case '조회순':
         return 'views';
       default:
-        return 'latest';
+        return 'createdAt';
     }
   };
 
@@ -26,9 +27,9 @@ function Sort({ setOrderName }: SortProps) {
     const buttonName = e.currentTarget.innerText;
     setSelectedButton(buttonName);
 
-    const orderType = getOrderName(buttonName);
-    if (setOrderName) {
-      setOrderName(orderType);
+    const sortType = getSortOption(buttonName);
+    if (setSortOption) {
+      setSortOption(sortType);
     }
   };
 

@@ -8,6 +8,7 @@ export const Container = styled.div`
 export const ContentWrapper = styled.section`
   padding: 0 15px 40px 15px;
   margin: 0 auto;
+  text-align: center;
 
   @media ${({ theme }) => theme.breakpoints.TABLETMIN} {
     padding: 0 40px 40px 40px;
@@ -22,7 +23,6 @@ export const ContentWrapper = styled.section`
 export const CardWrapper = styled.div`
   display: grid;
   gap: 20px;
-  justify-items: center;
   grid-template-columns: repeat(1, 1fr);
 
   @media ${({ theme }) => theme.breakpoints.TABLETMIN} {
