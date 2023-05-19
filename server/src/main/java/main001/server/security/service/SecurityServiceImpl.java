@@ -130,6 +130,10 @@ public class SecurityServiceImpl implements SecurityService{
         return clientIp;
     }
 
+    public void deleteRefreshToken(Long userId) {
+        refreshTokenRepository.deleteByUserId(userId);
+    }
+
 //    public void verifyToken(long userId) {
 //        String clientIp = getClientIp(request);
 //        String userIp = refreshTokenRepository.findById(userId).get().getUserIp();

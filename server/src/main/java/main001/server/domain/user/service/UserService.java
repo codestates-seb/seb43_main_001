@@ -9,6 +9,8 @@ import main001.server.domain.user.entity.User;
 import main001.server.domain.user.repository.UserRepository;
 import main001.server.exception.BusinessLogicException;
 import main001.server.exception.ExceptionCode;
+import main001.server.security.service.SecurityService;
+import main001.server.security.service.SecurityServiceImpl;
 import main001.server.security.utils.CustomAuthorityUtils;
 import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +39,8 @@ public class UserService {
     private final ProfileImgRepository profileImgRepository;
 
     private final S3Service s3Service;
+
+    private final SecurityService securityService;
 
     public User createUser(User user) {
         verifyExistEmail(user.getEmail());
@@ -94,6 +98,8 @@ public class UserService {
     public void deleteUser(long userId) {
         User findUser = findVerifiedUser(userId);
 
+        securityService.deleteRefreshToken(userId);
+
         userRepository.delete(findUser);
     }
 
@@ -146,9 +152,7 @@ public class UserService {
     public User updateEmail(User user) {
         User findUser = findVerifiedUser(user.getUserId());
 
-        Optional.ofNullable(user.getEmail()).ifPresent(email -> findUser.setEmail(email));
         Optional.ofNullable(user.getName()).ifPresent(name -> findUser.setName(name));
-        Optional.ofNullable(user.getProfileImg()).ifPresent(profileImg -> findUser.setProfileImg(profileImg));
 
         return userRepository.save(findUser);
     }

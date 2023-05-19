@@ -9,5 +9,6 @@ public interface SecurityService {
     String delegateRefreshToken(HttpServletRequest request, User user);
     String reissueAccessToken(Long userId);
     String reissueRefreshToken(Long userId);
+    void deleteRefreshToken(Long userId);
 
 }
