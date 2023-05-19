@@ -3,6 +3,8 @@ package main001.server.domain.portfolio.dto;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
+import javax.persistence.Column;
+import javax.persistence.Lob;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,7 +26,8 @@ public class PortfolioDto {
         private String description;
 
         @NotBlank(message = "설명을 작성해주세요.")
-        @Length
+        @Lob
+        @Column(length = 55000)
         private String content;
 
         private List<String> skills;
@@ -48,6 +51,9 @@ public class PortfolioDto {
         @NotBlank(message = "소개글을 작성해주세요.")
         private String description;
 
+
+        @Lob
+        @Column(length = 55000)
         @NotBlank(message = "설명을 작성해주세요.")
         private String content;
 
@@ -76,8 +82,10 @@ public class PortfolioDto {
         private String distributionLink;
         private String description;
         private String content;
+        private String representativeImgUrl;
+        private List<String> imgUrl;
         private List<String> skills;
-        private int views;
+        private int viewCount;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
         private boolean isAuth;

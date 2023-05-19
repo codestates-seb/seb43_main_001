@@ -50,11 +50,12 @@ public class PortfolioController {
     }
 
     @PostMapping
-    public ResponseEntity postPortfolio(@Valid @RequestBody PortfolioDto.Post postDto) throws IOException {
-
+    public ResponseEntity postPortfolio(@Valid@RequestPart PortfolioDto.Post postDto,
+                                        @RequestPart(value = "representativeImg", required = false) MultipartFile representativeImg,
+                                        @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
         Portfolio portfolio = mapper.portfolioPostDtoToPortfolio(postDto);
 
-        Portfolio response = portfolioService.createPortfolio(portfolio, postDto.getSkills());
+        Portfolio response = portfolioService.createPortfolio(portfolio, postDto.getSkills(), representativeImg, images);
 
 
         portfolioService.addSkills(portfolio,postDto.getSkills());
@@ -68,43 +69,27 @@ public class PortfolioController {
         return ResponseEntity.created(location).build();
     }
 
-    @PostMapping("/{portfolio-id}/representativeImg-upload")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity uploadRepresentativeImg(@PathVariable("portfolio-id") long portfolioId,
-                                    @RequestPart(value = "representativeImages", required = false) MultipartFile image) throws IOException {
-        Portfolio portfolio = portfolioService.findVerifiedPortfolio(portfolioId);
-        String imgUrl = portfolioService.uploadRepresentativeImage(portfolioId, image);
-        return ResponseEntity.ok(imgUrl);
-    }
-
-    @PostMapping("/{portfolio-id}/img-upload")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity uploadImg(@PathVariable("portfolio-id") long portfolioId,
-                                    @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
-        Portfolio portfolio = portfolioService.findVerifiedPortfolio(portfolioId);
-        List<String> imgUrl = portfolioService.uploadImage(portfolioId, images);
-        return ResponseEntity.ok(imgUrl);
-    }
-
-
     @PatchMapping("/{portfolio-id}")
     public ResponseEntity patchPortfolio(@PathVariable("portfolio-id") long portfolioId,
-                                         @RequestBody PortfolioDto.Patch patchDto) throws IOException{
+                                         @RequestPart PortfolioDto.Patch patchDto,
+                                         @RequestPart(value = "representativeImg", required = false) MultipartFile representativeImg,
+                                         @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
         patchDto.setPortfolioId(portfolioId);
         Portfolio portfolio = mapper.portfolioPatchDtoToPortfolio(patchDto);
 
 
-        Portfolio response = portfolioService.updatePortfolio(portfolio, patchDto.getSkills());
-
+        Portfolio response = portfolioService.updatePortfolio(portfolio, portfolioId, patchDto.getSkills(),representativeImg, images);
 
         return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response)), HttpStatus.OK);
     }
 
+    @PatchMapping("/{portfolio-id}/views")
+    public void increasePostViews(@PathVariable("portfolio-id") long portfolioId) {
+        portfolioService.increaseViewCount(portfolioId);
+    }
+
     @GetMapping("/{portfolio-id}")
-    public ResponseEntity getPortfolio(@PathVariable("portfolio-id") Long portfolioId,
-                                        HttpServletRequest request,
-                                        HttpServletResponse response) {
-        portfolioService.countView(portfolioId, request, response);
+    public ResponseEntity getPortfolio(@PathVariable("portfolio-id") Long portfolioId) {
         Portfolio portfolio = portfolioService.findPortfolio(portfolioId);
         return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(portfolio)), HttpStatus.OK);
     }
