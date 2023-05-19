@@ -32,7 +32,8 @@ const markPageViewedInSession = (portfolioId: number): void => {
   sessionStorage.setItem(`page-${portfolioId}`, 'true');
 };
 
-const useIncreasePageView = (portfolioId: number) => {
+// ! 여기에선 죄회를 안 했을 때 바로 올리는 것도 나와 있는데, 이렇게 해도 되고, 아니면 반환된 isViewed를 기반으로 post를 보내도 될듯!
+export const useIncreasePageView = (portfolioId: number) => {
   const [isViewed, setIsViewed] = useState<boolean>(false);
   useEffect(() => {
     // 해당 페이지에 대한 조회 여부 확인
