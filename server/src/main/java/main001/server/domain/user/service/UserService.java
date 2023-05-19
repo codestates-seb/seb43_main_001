@@ -1,10 +1,6 @@
 package main001.server.domain.user.service;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import lombok.RequiredArgsConstructor;
-import main001.server.domain.portfolio.entity.Portfolio;
-import main001.server.domain.skill.entity.UserSkill;
 import main001.server.domain.skill.service.SkillService;
 import main001.server.domain.user.entity.User;
 import main001.server.domain.user.repository.UserRepository;
@@ -12,18 +8,13 @@ import main001.server.exception.BusinessLogicException;
 import main001.server.exception.ExceptionCode;
 import main001.server.security.utils.CustomAuthorityUtils;
 import org.springframework.data.domain.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

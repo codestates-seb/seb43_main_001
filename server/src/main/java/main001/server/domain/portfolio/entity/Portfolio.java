@@ -1,7 +1,5 @@
 package main001.server.domain.portfolio.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,10 +7,10 @@ import main001.server.audit.BaseTimeEntity;
 import main001.server.domain.attachment.file.entity.FileAttachment;
 import main001.server.domain.attachment.image.entity.ImageAttachment;
 import main001.server.domain.attachment.image.entity.RepresentativeAttachment;
+import main001.server.domain.likes.entity.PortfolioLikes;
 import main001.server.domain.portfoliocomment.entity.PortfolioComment;
 import main001.server.domain.skill.entity.PortfolioSkill;
 import main001.server.domain.user.entity.User;
-import org.springframework.security.core.parameters.P;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -42,6 +40,8 @@ public class Portfolio extends BaseTimeEntity {
     @Column(length = 5000, nullable = false)
     private String content; //프로젝트 설명
 
+    private int likes;
+
     @OneToOne(mappedBy = "portfolio", cascade = CascadeType.ALL)
     private RepresentativeAttachment representativeAttachment;
 
@@ -51,6 +51,8 @@ public class Portfolio extends BaseTimeEntity {
     @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
     private List<FileAttachment> fileAttachments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<PortfolioLikes> portfolioLikes = new ArrayList<>();
 
     @Column(columnDefinition = "integer default 0", nullable = false)
     private int views;
