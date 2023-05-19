@@ -15,16 +15,7 @@ public class likesController {
 
     private final LikesService likesService;
 
-    @GetMapping("{portfolio-id}")
-    public ResponseEntity<Boolean> checkLikes(
-            @PathVariable("portfolio-id") @Positive Long portfolioId,
-            @RequestParam @Positive Long userId) {
-        boolean response = likesService.isLikes(userId, portfolioId);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @PostMapping("{portfolio-id}")
-    public ResponseEntity<Void> like(@PathVariable Long portfolioId)
+//    @PostMapping("{portfolio-id}")
+//    public ResponseEntity<Void> like(@PathVariable Long portfolioId
 
 }

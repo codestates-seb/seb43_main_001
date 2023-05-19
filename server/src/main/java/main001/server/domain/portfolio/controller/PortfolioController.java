@@ -112,7 +112,7 @@ public class PortfolioController {
         return new ResponseEntity<>(new MultiResponseDto<>(mapper.portfolioToPortfolioResponseDtos(portfolios), pagePortfolios), HttpStatus.OK);
     }
 
-    @GetMapping("/{user-id}/portfolios")
+    @GetMapping("/users/{user-id}")
     public ResponseEntity getPortfoliosByUser(
             @PathVariable("user-id") Long userId,
             @RequestParam(defaultValue = "createdAt") String sortBy,

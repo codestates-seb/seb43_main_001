@@ -37,6 +37,8 @@ public class UserDto {
     @NoArgsConstructor
     public static class Patch {
         private long userId;
+
+        @NotBlank(message = "이름을 입력해주세요.")
         private String name;
         private String profileImg;
         private String gitLink;
@@ -52,9 +54,8 @@ public class UserDto {
     @NoArgsConstructor
     public static class PatchEmail {
         private long userId;
+        @Email(message = "올바른 이메일 양식이 아닙니다.")
         private String email;
-        private String name;
-        private String profileImg;
     }
 
     @Getter

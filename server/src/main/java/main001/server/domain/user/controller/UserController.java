@@ -1,5 +1,7 @@
 package main001.server.domain.user.controller;
 
+import com.nimbusds.oauth2.sdk.ErrorResponse;
+import io.jsonwebtoken.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -7,10 +9,13 @@ import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import main001.server.domain.portfolio.entity.Portfolio;
+import main001.server.domain.utils.AuthValidator;
+import main001.server.domain.utils.OAuth2UserValidator;
+import main001.server.exception.BusinessLogicException;
+import main001.server.exception.ExceptionCode;
 import main001.server.response.MultiResponseDto;
 import main001.server.response.SingleResponseDto;
 import main001.server.domain.user.dto.UserDto;
@@ -18,18 +23,28 @@ import main001.server.domain.user.entity.User;
 import main001.server.domain.user.mapper.UserMapper;
 import main001.server.domain.user.service.UserService;
 import main001.server.domain.user.utils.UriCreator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static org.aspectj.runtime.internal.Conversions.intValue;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,6 +56,10 @@ public class UserController {
     private final static String USER_DEFAULT_URL = "/users";
     private final UserService userService;
     private final UserMapper mapper;
+
+    @Getter
+    @Value("${jwt.secret-key}")
+    private String secretKey;
 
     @Operation(
             summary = "회원 정보를 입력하고 회원 가입",
@@ -68,12 +87,6 @@ public class UserController {
         return ResponseEntity.created(location).build();
     }
 
-    @Operation(hidden = true)
-    @GetMapping("/login") // 로그인 폼을 요청하는 메서드
-    public String loginForm() {
-        return "login";
-    }
-
     @Operation(
             summary = "user-id로 회원 기본 정보 조회",
             parameters = {
@@ -98,10 +111,22 @@ public class UserController {
             }
     )
     @GetMapping("/{user-id}")
-    public ResponseEntity getUser(@PathVariable("user-id") @Positive long userId) {
-        User user = userService.findUser(userId);
-        return new ResponseEntity<>(
-                new SingleResponseDto<>(mapper.userToUserResponse(user)), HttpStatus.OK);
+    public ResponseEntity getUser(@PathVariable("user-id") @Positive long userId, HttpServletRequest request) {
+
+        User findUser = userService.findUser(userId);
+
+        if (userService.isExistOAuth2User(findUser.getOauthId())) {
+            boolean isAuth = OAuth2UserValidator.isAuth(userId, request);
+            findUser.setAuth(isAuth);
+        } else {
+            boolean isAuth = AuthValidator.isAuth(userId);
+            findUser.setAuth(isAuth);
+        }
+
+        UserDto.Response response = mapper.userToUserResponse(findUser);
+        Optional.of(findUser.isAuth()).ifPresent(isAuth -> response.setAuth(isAuth));
+
+        return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.OK);
     }
 
     @Operation(hidden = true)
@@ -110,6 +135,7 @@ public class UserController {
                                    @Positive @RequestParam(value = "size",defaultValue = "15") int size) {
         Page<User> pageUsers = userService.findUsers(page - 1, size);
         List<User> users = pageUsers.getContent();
+
         return new ResponseEntity<>(
                 new MultiResponseDto<>(mapper.usersToUserResponses(users), pageUsers), HttpStatus.OK
         );
@@ -141,8 +167,15 @@ public class UserController {
     @GetMapping("/{user-id}/profile")
     public ResponseEntity getUserProfile(@PathVariable("user-id") @Positive long userId) {
         User user = userService.findUser(userId);
+        String principal = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println("principal =" + principal);
+
+        boolean isAuth = AuthValidator.isAuth(userId);
+
+        UserDto.UserProfileResponse response = mapper.userToUserProfileResponse(user);
+        response.setAuth(isAuth);
         return new ResponseEntity<>(
-                new SingleResponseDto<>(mapper.userToUserProfileResponse(user)), HttpStatus.OK
+                new SingleResponseDto<>(response), HttpStatus.OK
         );
     }
 
@@ -180,6 +213,18 @@ public class UserController {
         return new ResponseEntity<>(
                 new SingleResponseDto<>(mapper.userToUserProfileResponse(user)), HttpStatus.OK);
     }
+
+    @PostMapping("/{user-id}/profile-img-upload")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity uploadProfileImg(@PathVariable("user-id") @Positive long userId,
+                                           @RequestPart(value = "profileImg", required = true)MultipartFile profileImg) throws IOException {
+        User user = userService.findVerifiedUser(userId);
+        String profileImgUrl = userService.uploadProfileImg(profileImg, userId);
+
+        return ResponseEntity.ok(profileImgUrl);
+    }
+
+
 
     @Operation(
             summary = "회원 탈퇴",

@@ -16,13 +16,11 @@ public class PortfolioLikes {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long likesId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Portfolio portfolio;
-
-    private boolean likes = false;
 
     public void setUser(User user) {
         this.user = user;

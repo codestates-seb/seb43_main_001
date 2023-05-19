@@ -14,18 +14,19 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Table(name = "skills")
-public class Skill {
+public class Skill extends BaseTimeEntity {
 
     @Id
-    private String skillId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long skillId;
 
     @Column(unique = true)
     @NotBlank
     @Setter
     private String name;
 
-//    @Column(nullable = false, columnDefinition = "integer default 0")
-//    private int counting;
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    private int counting;
 
 //    @OneToMany(mappedBy = "skill", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<UserSkill> userSkills = new ArrayList<>();
@@ -37,11 +38,11 @@ public class Skill {
         this.name = name;
     }
 
-//    public void increaseCounting() {
-//        this.counting++;
-//    }
-//
-//    public void decreaseCounting() {
-//        this.counting--;
-//    }
+    public void increaseCounting() {
+        this.counting++;
+    }
+
+    public void decreaseCounting() {
+        this.counting--;
+    }
 }

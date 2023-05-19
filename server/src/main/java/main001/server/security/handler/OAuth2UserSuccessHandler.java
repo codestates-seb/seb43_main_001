@@ -6,6 +6,8 @@ import main001.server.domain.user.service.UserService;
 import main001.server.security.service.SecurityService;
 import main001.server.security.utils.CustomAuthorityUtils;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.util.LinkedMultiValueMap;
@@ -26,12 +28,16 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         var oAuth2User = (OAuth2User) authentication.getPrincipal();
+        String registrationId = ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId();
         String oauthId = String.valueOf(oAuth2User.getAttributes().get("id"));
         String email = String.valueOf(oAuth2User.getAttributes().get("email"));
         String name = String.valueOf(oAuth2User.getAttributes().get("name"));
-        String profileImg = String.valueOf(oAuth2User.getAttributes().get("profileImg"));
+        String profileImg = String.valueOf(oAuth2User.getAttributes().get("avatar_url"));
 
-        System.out.println(oAuth2User.getAttributes());
+        if (registrationId.equals("google")) {
+            oauthId = String.valueOf(oAuth2User.getAttributes().get("sub"));
+            profileImg = String.valueOf(oAuth2User.getAttributes().get("picture"));
+        }
 
         if (userService.isExistOAuth2User(oauthId)) {
             User user = userService.findExistOAuth2User(oauthId);
