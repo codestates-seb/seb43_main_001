@@ -1,6 +1,5 @@
 package main001.server.domain.portfolio.mapper;
 
-import main001.server.domain.attachment.file.entity.FileAttachment;
 import main001.server.domain.attachment.image.entity.ImageAttachment;
 import main001.server.domain.portfolio.dto.PortfolioDto;
 import main001.server.domain.portfolio.entity.Portfolio;
@@ -22,16 +21,6 @@ public interface PortfolioMapper {
     Portfolio portfolioPatchDtoToPortfolio(PortfolioDto.Patch patchDto);
 
     default PortfolioDto.Response portfolioToPortfolioResponseDto(Portfolio portfolio) {
-        List<String> imgUrl = new ArrayList<>();
-        for(ImageAttachment imageAttachment : portfolio.getImageAttachments()) {
-            imgUrl.add(imageAttachment.getImgUrl());
-        }
-
-        List<String> fileUrl = new ArrayList<>();
-        for(FileAttachment fileAttachment : portfolio.getFileAttachments()) {
-            fileUrl.add(fileAttachment.getFileUrl());
-        }
-
         if ( portfolio == null ) {
             return null;
         }
@@ -45,9 +34,6 @@ public interface PortfolioMapper {
                 .distributionLink(portfolio.getDistributionLink())
                 .description(portfolio.getDescription())
                 .content(portfolio.getContent())
-                .representativeImgUrl(portfolio.getRepresentativeAttachment() == null ? null : portfolio.getRepresentativeAttachment().getRepresentativeImgUrl())
-                .imgUrl(imgUrl)
-                .fileUrl(fileUrl)
                 .skills(portfolio.getSkills().stream()
                         .map(portfolioSkill -> portfolioSkill.getSkill().getName())
                         .collect(Collectors.toList()))
