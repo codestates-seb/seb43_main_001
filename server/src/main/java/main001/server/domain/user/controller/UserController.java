@@ -167,13 +167,8 @@ public class UserController {
     @GetMapping("/{user-id}/profile")
     public ResponseEntity getUserProfile(@PathVariable("user-id") @Positive long userId) {
         User user = userService.findUser(userId);
-        String principal = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println("principal =" + principal);
-
-        boolean isAuth = AuthValidator.isAuth(userId);
 
         UserDto.UserProfileResponse response = mapper.userToUserProfileResponse(user);
-        response.setAuth(isAuth);
         return new ResponseEntity<>(
                 new SingleResponseDto<>(response), HttpStatus.OK
         );
@@ -215,16 +210,12 @@ public class UserController {
     }
 
     @PostMapping("/{user-id}/profile-img-upload")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity uploadProfileImg(@PathVariable("user-id") @Positive long userId,
-                                           @RequestPart(value = "profileImg", required = true)MultipartFile profileImg) throws IOException {
-        User user = userService.findVerifiedUser(userId);
+                                           @RequestPart(value = "profileImg")MultipartFile profileImg) throws IOException {
         String profileImgUrl = userService.uploadProfileImg(profileImg, userId);
 
         return ResponseEntity.ok(profileImgUrl);
     }
-
-
 
     @Operation(
             summary = "회원 탈퇴",

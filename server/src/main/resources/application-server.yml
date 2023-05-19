@@ -40,6 +40,7 @@ spring:
               - email
               - profile
 
+# AWS 설정
 cloud:
   aws:
     credentials:

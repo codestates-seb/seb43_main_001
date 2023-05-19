@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import main001.server.audit.BaseTimeEntity;
-import main001.server.domain.attachment.file.entity.FileAttachment;
 import main001.server.domain.attachment.image.entity.ImageAttachment;
 import main001.server.domain.attachment.image.entity.RepresentativeAttachment;
 import main001.server.domain.likes.entity.PortfolioLikes;
@@ -37,7 +36,8 @@ public class Portfolio extends BaseTimeEntity {
     @Column(length = 500, nullable = false)
     private String description; // 프로젝트 소개글
 
-    @Column(length = 5000, nullable = false)
+    @Lob
+    @Column(length = Integer.MAX_VALUE)
     private String content; //프로젝트 설명
 
     private int likes;
@@ -47,9 +47,6 @@ public class Portfolio extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
     private List<ImageAttachment> imageAttachments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
-    private List<FileAttachment> fileAttachments = new ArrayList<>();
 
     @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<PortfolioLikes> portfolioLikes = new ArrayList<>();
