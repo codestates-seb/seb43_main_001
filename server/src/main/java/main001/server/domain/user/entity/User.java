@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import main001.server.audit.BaseTimeEntity;
+import main001.server.domain.attachment.image.entity.ProfileImgAttachment;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfoliocomment.entity.PortfolioComment;
 import main001.server.domain.skill.entity.UserSkill;
@@ -78,6 +79,9 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PortfolioComment> portfolioComments = new ArrayList<>();
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private ProfileImgAttachment profileImgAttachment = new ProfileImgAttachment();
 
     public User(Long userId, String email, String name, String profileImg, String gitLink, String blogLink, JobStatus jobStatus, String about) {
         this.userId = userId;
