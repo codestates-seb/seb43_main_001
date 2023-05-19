@@ -70,6 +70,7 @@ public class PortfolioDto {
         private long portfolioId;
         private long userId;
         private String name;
+        private String userProfileImg;
         private String title;
         private String gitLink;
         private String distributionLink;

@@ -1,14 +1,13 @@
 package main001.server.domain.user.entity;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import main001.server.audit.BaseTimeEntity;
+import main001.server.domain.likes.entity.PortfolioLikes;
 import main001.server.domain.attachment.image.entity.ProfileImgAttachment;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfoliocomment.entity.PortfolioComment;
-import main001.server.domain.skill.entity.UserSkill;
 import main001.server.domain.user.enums.Grade;
 import main001.server.domain.user.enums.JobStatus;
 import main001.server.domain.user.enums.UserStatus;
@@ -79,6 +78,9 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PortfolioComment> portfolioComments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PortfolioLikes> likes = new ArrayList<>();
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private ProfileImgAttachment profileImgAttachment = new ProfileImgAttachment();

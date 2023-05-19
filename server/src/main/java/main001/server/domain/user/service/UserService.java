@@ -13,7 +13,6 @@ import main001.server.security.service.SecurityService;
 import main001.server.security.service.SecurityServiceImpl;
 import main001.server.security.utils.CustomAuthorityUtils;
 import org.springframework.data.domain.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
