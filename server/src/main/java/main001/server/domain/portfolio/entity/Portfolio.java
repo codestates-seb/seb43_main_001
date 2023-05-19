@@ -52,7 +52,7 @@ public class Portfolio extends BaseTimeEntity {
     private List<PortfolioLikes> portfolioLikes = new ArrayList<>();
 
     @Column(columnDefinition = "integer default 0", nullable = false)
-    private int views;
+    private int viewCount;
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")
@@ -87,5 +87,9 @@ public class Portfolio extends BaseTimeEntity {
     public void deleteSkill(PortfolioSkill portfolioSkill) {
         skills.remove(portfolioSkill);
         portfolioSkill.deletePortfolioSkill();
+    }
+
+    public void updateViewCount() {
+        this.viewCount++;
     }
 }

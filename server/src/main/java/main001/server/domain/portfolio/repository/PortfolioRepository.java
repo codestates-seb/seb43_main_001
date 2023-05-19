@@ -9,9 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
-    @Modifying
-    @Query("update Portfolio p set p.views = p.views + 1 where p.portfolioId = :id")
-    int updateView(Long id);
 
     Page<Portfolio> findByUserUserId(Long userId, Pageable pageable);
 

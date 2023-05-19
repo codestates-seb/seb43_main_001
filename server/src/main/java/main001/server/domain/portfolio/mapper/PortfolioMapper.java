@@ -21,6 +21,11 @@ public interface PortfolioMapper {
     Portfolio portfolioPatchDtoToPortfolio(PortfolioDto.Patch patchDto);
 
     default PortfolioDto.Response portfolioToPortfolioResponseDto(Portfolio portfolio) {
+        List<String> imgUrl = new ArrayList<>();
+        for(ImageAttachment imageAttachment : portfolio.getImageAttachments()) {
+            imgUrl.add(imageAttachment.getImgUrl());
+        }
+
         if ( portfolio == null ) {
             return null;
         }
@@ -34,10 +39,12 @@ public interface PortfolioMapper {
                 .distributionLink(portfolio.getDistributionLink())
                 .description(portfolio.getDescription())
                 .content(portfolio.getContent())
+                .representativeImgUrl(portfolio.getRepresentativeAttachment() == null ? null : portfolio.getRepresentativeAttachment().getRepresentativeImgUrl())
+                .imgUrl(imgUrl)
                 .skills(portfolio.getSkills().stream()
                         .map(portfolioSkill -> portfolioSkill.getSkill().getName())
                         .collect(Collectors.toList()))
-                .views(portfolio.getViews())
+                .viewCount(portfolio.getViewCount())
                 .createdAt(portfolio.getCreatedAt())
                 .updatedAt(portfolio.getUpdatedAt())
                 .isAuth(portfolio.getUser().isAuth())
