@@ -94,6 +94,7 @@ public class UserService {
     /**
      * 유저 탈퇴 기능 : 구현관련 논의 필요
      */
+   @Transactional()
     public void deleteUser(long userId) {
         User findUser = findVerifiedUser(userId);
 
@@ -151,7 +152,7 @@ public class UserService {
     public User updateEmail(User user) {
         User findUser = findVerifiedUser(user.getUserId());
 
-        Optional.ofNullable(user.getName()).ifPresent(name -> findUser.setName(name));
+        Optional.ofNullable(user.getEmail()).ifPresent(email -> findUser.setEmail(email));
 
         return userRepository.save(findUser);
     }
