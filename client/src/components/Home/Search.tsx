@@ -2,19 +2,27 @@ import { useState } from 'react';
 import axios from 'axios';
 import * as S from './Search.style';
 
-function Search() {
-  const [value, setValue] = useState('');
+type SearchProps = {
+  setValue: (value: string) => void;
+  setCategory: (option: string) => void;
+  handleSearch: () => void;
+};
+
+function Search({ setValue, setCategory, handleSearch }: SearchProps) {
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.value);
     setValue(e.target.value);
   };
 
+  const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(e.target.value);
+    setCategory(e.target.value);
+  };
+
+  // * 일치하는 검색어 없으면 404 에러 뜸
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      axios
-        .get('http://localhost:8000/data')
-        .then((res) => console.log(res.data))
-        .catch((err) => console.log(err));
+      // handleSearch();
     }
   };
 
@@ -35,9 +43,9 @@ function Search() {
           <li>프로젝트</li>
           <li>기술스택</li>
         </S.NavList>
-        <S.Select name='search' id='search' onChange={(e) => console.dir(e.target.value)}>
-          <option value='writer'>작성자</option>
-          <option value='project'>프로젝트</option>
+        <S.Select name='search' id='search' onChange={handleSelect}>
+          <option value='userName'>작성자</option>
+          <option value='title'>프로젝트</option>
           <option value='tech-stack'>기술스택</option>
         </S.Select>
         <S.ArrowDownIcon />

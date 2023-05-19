@@ -39,6 +39,7 @@ export const Content = styled.div`
   justify-content: space-between;
   height: calc(100% - 196px);
   padding: 35px 40px;
+  text-align: left;
 `;
 
 export const CardContentWrapper = styled.div`
