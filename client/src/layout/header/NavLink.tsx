@@ -25,6 +25,8 @@ const NavLink = ({ setOpenNav }: NavLinkProps) => {
 
   const handleLogoutClick = () => {
     dispatch(logout(null));
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
   };
 
   return (
