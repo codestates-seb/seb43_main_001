@@ -30,7 +30,8 @@ public enum ExceptionCode {
     // ACCESS_NOT_MATCH(403, "접속 정보가 일치하지 않습니다."); // 개발 후 해당 코드로 아래 코드 교체
     USER_IP_NOT_MATCH(403, "접속 IP정보가 상이합니다."),
     REFRESH_TOKEN_NOT_MATCH(403, "RefreshToken이 일치하지 않습니다."),
-    REFRESH_TOKEN_EXPIRED(403, "RefreshToken이 만료되었습니다.");
+    REFRESH_TOKEN_EXPIRED(403, "RefreshToken이 만료되었습니다."),
+    TOKEN_NOT_AVAILABLE(401, "사용이 불가능한 토큰입니다.");
 
     @Getter
     private int status;
