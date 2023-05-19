@@ -26,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
@@ -340,4 +339,13 @@ public class PortfolioService {
         }
         return pageable;
     }
+
+    public void updateLikes(Long portfolioId, int number) {
+        Portfolio verifiedPortfolio = findVerifiedPortfolio(portfolioId);
+
+        verifiedPortfolio.setCountLikes(verifiedPortfolio.getCountLikes()+number);
+
+        portfolioRepository.save(verifiedPortfolio);
+    }
+
 }

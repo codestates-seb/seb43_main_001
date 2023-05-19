@@ -26,6 +26,10 @@ public enum ExceptionCode {
     SKILL_NOT_FOUND(404,"조회된 기술이 없습니다."),
     SKILL_NOT_EXIST(400, "등록할 기술이 없습니다."),
 
+    // likes 관련
+    LIKES_EXIST(400, "이미 좋아요를 누른 게시물입니다."),
+    LIKES_NOT_EXIST(400, "좋아요를 누르지 않은 게시물입니다."),
+
     // security 관련
     // ACCESS_NOT_MATCH(403, "접속 정보가 일치하지 않습니다."); // 개발 후 해당 코드로 아래 코드 교체
     USER_IP_NOT_MATCH(403, "접속 IP정보가 상이합니다."),

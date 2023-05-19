@@ -45,6 +45,7 @@ public interface PortfolioMapper {
                         .map(portfolioSkill -> portfolioSkill.getSkill().getName())
                         .collect(Collectors.toList()))
                 .viewCount(portfolio.getViewCount())
+                .countLikes(portfolio.getCountLikes())
                 .createdAt(portfolio.getCreatedAt())
                 .updatedAt(portfolio.getUpdatedAt())
                 .isAuth(portfolio.getUser().isAuth())

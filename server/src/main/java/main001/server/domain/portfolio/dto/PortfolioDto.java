@@ -85,9 +85,11 @@ public class PortfolioDto {
         private String representativeImgUrl;
         private List<String> imgUrl;
         private List<String> skills;
+        private int countLikes;
         private int viewCount;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
         private boolean isAuth;
+        private boolean isLikes;
     }
 }
