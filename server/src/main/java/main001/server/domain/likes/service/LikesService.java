@@ -12,17 +12,17 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class LikesService {
-
-    private final LikesRepository likesRepository;
-
-    public boolean isLikes(Long userId, Long portfolioId) {
-        Optional<PortfolioLikes> optionalPortfolioLikes =
-                likesRepository.findByUserUserIdAndPortfolioPortfolioId(userId, portfolioId);
-
-        if(optionalPortfolioLikes.isPresent())  {
-            return true;
-        }
-
-        else return false;
-    }
+//
+//    private final LikesRepository likesRepository;
+//
+//    public boolean isLikes(Long userId, Long portfolioId) {
+//        Optional<PortfolioLikes> optionalPortfolioLikes =
+////                likesRepository.findBy(userId, portfolioId);
+//
+////        if(optionalPortfolioLikes.isPresent())  {
+//            return true;
+//        }
+//
+////        else return false;
+//    }
 }
