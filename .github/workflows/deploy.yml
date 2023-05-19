@@ -23,8 +23,8 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.OFFICAL_DEPLOY }}
         with:
           source-directory: 'output'
-          destination-github-username: [rickyshu]
-          destination-repository-name: [seb43_main_001]
+          destination-github-username: rickyshu
+          destination-repository-name: seb43_main_001
           user-email: ${{ secrets.OFFICAL_ACCOUNT_EMAIL }}
           commit-message: ${{ github.event.commits[0].message }}
           target-branch: main
