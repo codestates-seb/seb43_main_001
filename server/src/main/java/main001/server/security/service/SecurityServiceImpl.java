@@ -48,8 +48,12 @@ public class SecurityServiceImpl implements SecurityService{
 
         String refreshToken = jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
 
+        if(refreshTokenRepository.findByUserId(user.getUserId()) != null) {
+            refreshTokenRepository.deleteByUserId(user.getUserId());
+        }
+
         RefreshToken token = new RefreshToken();
-        token.setUserId(user.getUserId());
+        token.setUser(user);
         token.setRefreshToken(refreshToken);
         token.setUserIp(getClientIp(request));
         refreshTokenRepository.save(token);

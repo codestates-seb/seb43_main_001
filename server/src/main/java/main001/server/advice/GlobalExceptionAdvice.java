@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -71,6 +72,18 @@ public class GlobalExceptionAdvice {
 
         final ErrorResponse response = ErrorResponse.of(HttpStatus.BAD_REQUEST,
                 e.getMessage());
+
+        return response;
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleMissingRequestHeaderException(MissingRequestHeaderException e) {
+
+        String headerName = e.getHeaderName();
+
+        final ErrorResponse response =
+                ErrorResponse.of(HttpStatus.BAD_REQUEST, headerName,"요청에 필요한 헤더를 찾을 수 없습니다");
 
         return response;
     }

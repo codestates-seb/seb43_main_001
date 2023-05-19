@@ -44,7 +44,7 @@ public class Portfolio extends BaseTimeEntity {
     private int countLikes;
 
     @Column(columnDefinition = "integer default 0", nullable = false)
-    private int views;
+    private int viewCount;
 
     @OneToOne(mappedBy = "portfolio", cascade = CascadeType.ALL)
     private RepresentativeAttachment representativeAttachment;
@@ -88,5 +88,9 @@ public class Portfolio extends BaseTimeEntity {
     public void deleteSkill(PortfolioSkill portfolioSkill) {
         skills.remove(portfolioSkill);
         portfolioSkill.deletePortfolioSkill();
+    }
+
+    public void updateViewCount() {
+        this.viewCount++;
     }
 }

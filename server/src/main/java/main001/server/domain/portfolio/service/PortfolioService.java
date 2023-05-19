@@ -1,5 +1,6 @@
 package main001.server.domain.portfolio.service;
 
+import com.amazonaws.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import main001.server.amazon.s3.service.S3Service;
@@ -46,7 +47,7 @@ public class PortfolioService {
     private final SkillService skillService;
     private final static String VIEWCOOKIENAME = "alreadyViewCookie";
 
-    public Portfolio createPortfolio(Portfolio portfolio, List<String> skills) throws IOException{
+    public Portfolio createPortfolio(Portfolio portfolio, List<String> skills, MultipartFile representativeImg, List<MultipartFile> images) throws IOException{
         User user = portfolio.getUser();
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
@@ -63,6 +64,29 @@ public class PortfolioService {
         portfolio.setUser(verifiedUser.get());
 
 
+        if(representativeImg != null) {
+            String representativeImgUrl = s3Service.uploadFile(representativeImg, "images");
+            RepresentativeAttachment representativeAttachment = new RepresentativeAttachment(representativeImgUrl);
+            representativeAttachment.setPortfolio(portfolio);
+
+            portfolio.setRepresentativeAttachment(representativeAttachment);
+
+            representativeImageRepository.save(representativeAttachment);
+        }
+
+
+
+        if (!CollectionUtils.isNullOrEmpty(images)) {
+            for (MultipartFile image : images) {
+                String imgUrl = s3Service.uploadFile(image, "images");
+                ImageAttachment imageAttachment = new ImageAttachment(imgUrl);
+                imageAttachment.setPortfolio(portfolio);
+                portfolio.getImageAttachments().add(imageAttachment);
+                imageAttachmentRepository.save(imageAttachment);
+            }
+        }
+
+
         Portfolio saved = portfolioRepository.save(portfolio);
 
         addSkills(saved, skills);
@@ -70,7 +94,8 @@ public class PortfolioService {
         return saved;
     }
 
-    public Portfolio updatePortfolio(Portfolio portfolio, List<String> skills) {
+    public Portfolio updatePortfolio(Portfolio portfolio, Long portfolioId, List<String> skills,
+                                     MultipartFile representativeImg, List<MultipartFile> images) throws IOException{
         Portfolio findPortfolio = findVerifiedPortfolio(portfolio.getPortfolioId());
         User user = portfolio.getUser();
         Optional<User> verifiedUser = userRepository.findById(user.getUserId());
@@ -85,6 +110,14 @@ public class PortfolioService {
                 .ifPresent(gitLink -> findPortfolio.setGitLink(gitLink));
         Optional.ofNullable(portfolio.getContent())
                 .ifPresent(content -> findPortfolio.setContent(content));
+
+        if (representativeImg != null && !representativeImg.isEmpty()) {
+            updateRepresentativeImage(portfolioId, representativeImg);
+        }
+
+        if (images != null && !images.isEmpty()) {
+            updateImage(portfolioId, images);
+        }
 
         Portfolio saved = portfolioRepository.save(findPortfolio);
         addSkills(saved, skills);
@@ -110,7 +143,7 @@ public class PortfolioService {
 
 
     public Page<Portfolio> findAllOrderByViewsDesc(int page, int size) {
-        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "views")));
+        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "viewCount")));
     }
 
     public Page<Portfolio> findAllOrderByCreatedAtDesc(int page, int size) {
@@ -133,81 +166,116 @@ public class PortfolioService {
         return findPortfolio;
     }
 
-    public String uploadRepresentativeImage(Long portfolioId, MultipartFile image) throws IOException {
-        Portfolio findPortfolio = findVerifiedPortfolio(portfolioId);
 
-        String imgUrl = s3Service.uploadFile(image, "images");
-        RepresentativeAttachment representativeAttachment = new RepresentativeAttachment(imgUrl);
-        representativeAttachment.setPortfolio(findPortfolio);
+    public void updateRepresentativeImage(Long portfolioId, MultipartFile representativeImg) throws IOException {
+        Portfolio portfolio = findPortfolio(portfolioId);
+        RepresentativeAttachment currentImageAttachment = portfolio.getRepresentativeAttachment();
 
-        findPortfolio.setRepresentativeAttachment(representativeAttachment);
-        representativeImageRepository.save(representativeAttachment);
-
-        return imgUrl;
-    }
-
-    public List<String> uploadImage(Long portfolioId, List<MultipartFile> images) throws IOException {
-        Portfolio findPortfolio = findVerifiedPortfolio(portfolioId);
-
-        List<String> ImgUrls = new ArrayList<>();
-        for (MultipartFile image : images) {
-            String ImgUrl = s3Service.uploadFile(image, "images");
-            ImageAttachment imageAttachment = new ImageAttachment(ImgUrl);
-            imageAttachment.setPortfolio(findPortfolio);
-            findPortfolio.getImageAttachments().add(imageAttachment);
-            imageAttachmentRepository.save(imageAttachment);
-            ImgUrls.add(ImgUrl);
+        // 현재 첨부된 대표 이미지 파일을 삭제
+        if (currentImageAttachment != null) {
+            // Delete existing image from S3
+            s3Service.deleteFile(currentImageAttachment.getRepresentativeImgUrl());
+            // Remove the existing representative image attachment from the portfolio
+            portfolio.setRepresentativeAttachment(null);
+            representativeImageRepository.delete(currentImageAttachment);
         }
 
-        return ImgUrls;
+        // 새로운 대표 이미지 파일 첨부
+        if (representativeImg != null) {
+            String imgUrl = s3Service.uploadFile(representativeImg, "images");
+            RepresentativeAttachment newImageAttachment = new RepresentativeAttachment(imgUrl);
+            newImageAttachment.setPortfolio(portfolio);
+
+            portfolio.setRepresentativeAttachment(newImageAttachment);
+            representativeImageRepository.save(newImageAttachment);
+        }
     }
 
     @Transactional
-    public int countView(Long portfolioId, HttpServletRequest request, HttpServletResponse response) {
+    public void updateImage(Long portfolioId, List<MultipartFile> images) throws IOException {
+        Portfolio portfolio = findPortfolio(portfolioId);
+        List<ImageAttachment> currentImageAttachments = portfolio.getImageAttachments();
 
-        Cookie[] cookies = request.getCookies();
-        boolean checkCookie = false;
-        int result = 0;
-        if(cookies != null){
-            for (Cookie cookie : cookies)
-            {
-                // 이미 조회를 한 경우 체크
-                if (cookie.getName().equals(VIEWCOOKIENAME+portfolioId)) checkCookie = true;
-
+        // 기존 이미지 파일 첨부를 삭제
+        if (!CollectionUtils.isNullOrEmpty(currentImageAttachments)) {
+            Iterator<ImageAttachment> iterator = currentImageAttachments.iterator();
+            while (iterator.hasNext()) {
+                ImageAttachment imageAttachment = iterator.next();
+                // s3에서 이미지 파일 삭제
+                s3Service.deleteFile(imageAttachment.getImgUrl());
+                // 포트폴리오에서 이미지 첨부 파일 삭제
+                iterator.remove();
+                imageAttachmentRepository.delete(imageAttachment);
             }
-            if(!checkCookie){
-                Cookie newCookie = createCookieForForNotOverlap(portfolioId);
-                response.addCookie(newCookie);
-                result = portfolioRepository.updateView(portfolioId);
-            }
-        } else {
-            Cookie newCookie = createCookieForForNotOverlap(portfolioId);
-            response.addCookie(newCookie);
-            result = portfolioRepository.updateView(portfolioId);
         }
-        return result;
+
+        // 새로운 이미지 파일을 첨부
+        if (!CollectionUtils.isNullOrEmpty(images)) {
+            for (MultipartFile image : images) {
+                String imgUrl = s3Service.uploadFile(image, "images");
+                ImageAttachment newImageAttachment = new ImageAttachment(imgUrl);
+                newImageAttachment.setPortfolio(portfolio);
+
+                portfolio.getImageAttachments().add(newImageAttachment);
+                imageAttachmentRepository.save(newImageAttachment);
+            }
+        }
     }
+
+    @Transactional
+    public void increaseViewCount(Long portfolioId) {
+        Portfolio portfolio = findVerifiedPortfolio(portfolioId);
+        portfolio.updateViewCount();
+        portfolioRepository.save(portfolio);
+    }
+
+
+//    @Transactional
+//    public int countView(Long portfolioId, HttpServletRequest request, HttpServletResponse response) {
+//
+//        Cookie[] cookies = request.getCookies();
+//        boolean checkCookie = false;
+//        int result = 0;
+//        if(cookies != null){
+//            for (Cookie cookie : cookies)
+//            {
+//                // 이미 조회를 한 경우 체크
+//                if (cookie.getName().equals(VIEWCOOKIENAME+portfolioId)) checkCookie = true;
+//
+//            }
+//            if(!checkCookie){
+//                Cookie newCookie = createCookieForForNotOverlap(portfolioId);
+//                response.addCookie(newCookie);
+//                result = portfolioRepository.updateView(portfolioId);
+//            }
+//        } else {
+//            Cookie newCookie = createCookieForForNotOverlap(portfolioId);
+//            response.addCookie(newCookie);
+//            result = portfolioRepository.updateView(portfolioId);
+//        }
+//        return result;
+//    }
 
     /*
      * 조회수 중복 방지를 위한 쿠키 생성 메소드
      * @param cookie
      * @return
      * */
-    private Cookie createCookieForForNotOverlap(Long portfolioId) {
-        Cookie cookie = new Cookie(VIEWCOOKIENAME+portfolioId, String.valueOf(portfolioId));
-        cookie.setComment("조회수 중복 증가 방지 쿠키");	// 쿠키 용도 설명 기재
-        cookie.setMaxAge(getRemainSecondForTommorow()); 	// 하루를 준다.
-        cookie.setHttpOnly(true);				// 서버에서만 조작 가능
-        return cookie;
-    }
-
-    // 다음 날 정각까지 남은 시간(초)
-    private int getRemainSecondForTommorow() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime tommorow = LocalDateTime.now().plusDays(1L).truncatedTo(ChronoUnit.DAYS);
-        return (int) now.until(tommorow, ChronoUnit.SECONDS);
-    }
-
+//    private Cookie createCookieForForNotOverlap(Long portfolioId) {
+//        Cookie cookie = new Cookie(VIEWCOOKIENAME+portfolioId, String.valueOf(portfolioId));
+//        cookie.setComment("조회수 중복 증가 방지 쿠키");	// 쿠키 용도 설명 기재
+//        cookie.setMaxAge(getRemainSecondForTommorow()); 	// 하루를 준다.
+//        cookie.setHttpOnly(true);				// 서버에서만 조작 가능
+//        return cookie;
+//    }
+//
+//    // 다음 날 정각까지 남은 시간(초)
+//    private int getRemainSecondForTommorow() {
+//        LocalDateTime now = LocalDateTime.now();
+//        LocalDateTime tommorow = LocalDateTime.now().plusDays(1L).truncatedTo(ChronoUnit.DAYS);
+//        return (int) now.until(tommorow, ChronoUnit.SECONDS);
+//    }
+//
     public Page<Portfolio> getPortfoliosByUser(Long userId, String sortBy, int page, int size) {
         PageRequest pageable = getPageRequest(page, size, sortBy);
 
