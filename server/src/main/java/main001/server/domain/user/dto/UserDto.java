@@ -26,7 +26,7 @@ public class UserDto {
         private String profileImg;
         private String gitLink;
         private String blogLink;
-        private List<String> skills;
+//        private List<String> skills;
         private JobStatus jobStatus;
         private String about;
     }
@@ -41,7 +41,7 @@ public class UserDto {
         private String profileImg;
         private String gitLink;
         private String blogLink;
-        private List<String> skills;
+//        private List<String> skills;
         private JobStatus jobStatus;
         private String about;
     }
@@ -84,7 +84,7 @@ public class UserDto {
         private String profileImg;
         private String gitLink;
         private String blogLink;
-        private List<String> skills;
+//        private List<String> skills;
         private Grade grade;
         private JobStatus jobStatus;
         private String about;

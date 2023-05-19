@@ -1,10 +1,9 @@
 package main001.server.domain.user.service;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import lombok.RequiredArgsConstructor;
-import main001.server.domain.portfolio.entity.Portfolio;
-import main001.server.domain.skill.entity.UserSkill;
+import main001.server.amazon.s3.service.S3Service;
+import main001.server.domain.attachment.image.entity.ProfileImgAttachment;
+import main001.server.domain.attachment.image.repository.ProfileImgRepository;
 import main001.server.domain.skill.service.SkillService;
 import main001.server.domain.user.entity.User;
 import main001.server.domain.user.repository.UserRepository;
@@ -17,13 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,9 +29,14 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final SkillService skillService;
+
 //    private final PasswordEncoder passwordEncoder; // Security 적용 후 사용
 //
-    private final CustomAuthorityUtils authorityUtils;  // Security 적용 후 사용
+    private final CustomAuthorityUtils authorityUtils;
+
+    private final ProfileImgRepository profileImgRepository;
+
+    private final S3Service s3Service;
 
     public User createUser(User user) {
         verifyExistEmail(user.getEmail());
@@ -51,34 +53,8 @@ public class UserService {
          */
         List<String> roles = authorityUtils.createRoles(user.getEmail());
         user.setRoles(roles);
-        user.setAuth(true);
 
         User savedUser = userRepository.save(user);
-        return savedUser;
-    }
-
-
-    public User createUser(User user, List<String> skills) {
-        verifyExistEmail(user.getEmail());
-
-//        /**
-//         * 암호화된 비밀번호 설정
-//         */
-//        String encryptedPassword = passwordEncoder.encode(user.getPassword());
-//        user.setPassword(encryptedPassword);
-//
-
-        /**
-         * 초기 권한 부여 설정
-         */
-        List<String> roles = authorityUtils.createRoles(user.getEmail());
-        user.setRoles(roles);
-        user.setAuth(true);
-
-        User savedUser = userRepository.save(user);
-
-        addSkills(user,skills);
-
         return savedUser;
     }
 
@@ -92,21 +68,10 @@ public class UserService {
     }
 
     /**
-     * User별 Portfolio 조회 기능
-     */
-    public Page<Portfolio> findPortfolioByUser(long userId, int page, int size, Sort.Direction direction, String sort) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sort));
-        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
-        List<Portfolio> portfolios = user.getPortfolios();
-
-        return new PageImpl<>(portfolios, pageable, portfolios.size());
-    }
-
-    /**
      * 유저 정보 수정 기능 : 수정 가능한 정보 등 논의 필요
      */
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public User updateUser(User user, List<String> skills) {
+    public User updateUser(User user) {
         User findUser = findVerifiedUser(user.getUserId());
 
         Optional.ofNullable(user.getName()).ifPresent(name -> findUser.setName(name));
@@ -118,7 +83,7 @@ public class UserService {
 
         User saved = userRepository.save(findUser);
 
-        addSkills(saved, skills);
+//        addSkills(saved, skills);
 
         return saved;
     }
@@ -132,6 +97,9 @@ public class UserService {
         userRepository.delete(findUser);
     }
 
+    /**
+     * User관련 검증 기능
+     */
     private void verifyExistEmail(String email) {
         Optional<User> user = userRepository.findByEmail(email);
         if(user.isPresent())
@@ -160,10 +128,20 @@ public class UserService {
         return findUser;
     }
 
+    /**
+     * User 조회 기능
+     */
     public Long getUserId(String email) {
-        return userRepository.findByEmail(email).get().getUserId();
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        User findUser = optionalUser.orElseThrow(() ->
+                new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+
+        return findUser.getUserId();
     }
 
+    /**
+     * AddEmail 기능
+     */
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
     public User updateEmail(User user) {
         User findUser = findVerifiedUser(user.getUserId());
@@ -175,22 +153,39 @@ public class UserService {
         return userRepository.save(findUser);
     }
 
-    public void addSkills(User user,List<String> skills) {
-        for(int i = user.getSkills().size()-1; i>=0; i--) {
-            user.deleteSkill(user.getSkills().get(i));
-        }
+    /**
+     * ProfileImg 업로드 기능
+     */
+    public String uploadProfileImg(MultipartFile profileImg, Long userId) throws IOException {
+        User findUser = findVerifiedUser(userId);
 
-        if(skills==null) {
-            throw new BusinessLogicException(ExceptionCode.SKILL_NOT_EXIST);
-        }
+        String profileImgUrl = s3Service.uploadFile(profileImg, "images");
+        ProfileImgAttachment profileImgAttachment = new ProfileImgAttachment(profileImgUrl);
+        profileImgAttachment.setUser(findUser);
 
-        skills.stream()
-                .map(name -> {
-                    UserSkill userSkill = UserSkill.createUserSkill(
-                            skillService.findByName(name)
-                    );
-                    return userSkill;
-                })
-                .forEach(user::addSkill);
+        findUser.setProfileImgAttachment(profileImgAttachment);
+
+        profileImgRepository.save(profileImgAttachment);
+
+        return profileImgUrl;
+
     }
+//    public void addSkills(User user,List<String> skills) {
+//        for(int i = user.getSkills().size()-1; i>=0; i--) {
+//            user.deleteSkill(user.getSkills().get(i));
+//        }
+//
+//        if(skills==null) {
+//            throw new BusinessLogicException(ExceptionCode.SKILL_NOT_EXIST);
+//        }
+//
+//        skills.stream()
+//                .map(name -> {
+//                    UserSkill userSkill = UserSkill.createUserSkill(
+//                            skillService.findByName(name)
+//                    );
+//                    return userSkill;
+//                })
+//                .forEach(user::addSkill);
+//    }
 }

@@ -41,6 +41,11 @@ dependencies {
     runtimeOnly 'mysql:mysql-connector-java'
     implementation 'mysql:mysql-connector-java:8.0.28'
     implementation 'commons-io:commons-io:2.6'
+
+    // swagger 관련
+    implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+    // spring security를 사용할 때 필요
+    implementation 'org.springdoc:springdoc-openapi-security:1.7.0'
 }
 
 tasks.named('test') {

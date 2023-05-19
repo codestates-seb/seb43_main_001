@@ -13,6 +13,15 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
     @Query("update Portfolio p set p.views = p.views + 1 where p.portfolioId = :id")
     int updateView(Long id);
 
+    Page<Portfolio> findByUserUserId(Long userId, Pageable pageable);
+
     @Query("SELECT DISTINCT p FROM Portfolio p JOIN p.skills ps JOIN ps.skill s WHERE s.name = :name")
     Page<Portfolio> findBySkillName(@Param("name") String name, Pageable pageable);
+
+    @Query("SELECT DISTINCT p FROM Portfolio p JOIN p.user u WHERE u.name LIKE :userName%")
+    Page<Portfolio> findByUserName(@Param("userName") String name,Pageable pageable);
+
+    @Query("SELECT DISTINCT p from Portfolio p where p.title like %:title%")
+    Page<Portfolio> findByTitle(@Param("title") String title, Pageable pageable);
+
 }

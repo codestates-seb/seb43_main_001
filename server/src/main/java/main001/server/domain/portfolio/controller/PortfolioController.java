@@ -1,6 +1,12 @@
 package main001.server.domain.portfolio.controller;
 
 import com.amazonaws.util.CollectionUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import main001.server.amazon.s3.service.S3Service;
 import main001.server.domain.portfolio.dto.PortfolioDto;
@@ -10,6 +16,7 @@ import main001.server.domain.portfolio.service.PortfolioService;
 import main001.server.response.MultiResponseDto;
 import main001.server.response.SingleResponseDto;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +27,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.IOException;
 import java.net.URI;
@@ -102,6 +110,37 @@ public class PortfolioController {
         }
         List<Portfolio> portfolios = pagePortfolios.getContent();
         return new ResponseEntity<>(new MultiResponseDto<>(mapper.portfolioToPortfolioResponseDtos(portfolios), pagePortfolios), HttpStatus.OK);
+    }
+
+    @GetMapping("/{user-id}/portfolios")
+    public ResponseEntity getPortfoliosByUser(
+            @PathVariable("user-id") Long userId,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "1") @Positive int page,
+            @RequestParam(defaultValue = "15") @Positive int size) {
+        Page<Portfolio> portfolios = portfolioService.getPortfoliosByUser(userId, sortBy, page - 1, size);
+
+        List<Portfolio> content = portfolios.getContent();
+
+        return new ResponseEntity(
+                new MultiResponseDto<>(mapper.portfolioToPortfolioResponseDtos(content),portfolios), HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity searchPortfolios(
+            @RequestParam @NotNull String value,
+            @RequestParam(defaultValue = "userName") String category,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "1") @Positive int page,
+            @RequestParam(defaultValue = "15") @Positive int size)  {
+
+        Page<Portfolio> portfoliosPage =
+                portfolioService.searchPortfolios(page - 1, size, category, sortBy, value);
+
+        List<Portfolio> content = portfoliosPage.getContent();
+
+        return new ResponseEntity<>(
+                new MultiResponseDto<>(mapper.portfolioToPortfolioResponseDtos(content),portfoliosPage),HttpStatus.OK);
     }
 
     @DeleteMapping("/{portfolio-id}")
