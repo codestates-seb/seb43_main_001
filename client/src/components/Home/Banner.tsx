@@ -8,7 +8,7 @@ function Banner() {
 
   const handleClickButton = () => {
     if (isLogin) {
-      routeTo('/newPortfolio');
+      routeTo('/NewPortfolio');
     } else {
       routeTo('/Login');
     }

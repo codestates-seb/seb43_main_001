@@ -68,8 +68,8 @@ export type PatchUserComment = {
   content: string;
   path: string;
 
-  pathId:number;
-  commentId:number;
+  pathId: number;
+  commentId: number;
 };
 
 export type DeleteUserComment = {
@@ -122,8 +122,18 @@ export type GetPortfolio = {
   representativeImgUrl: string | null;
 };
 
-// Portfolio Comment
+type PageInfo = {
+  totalElements: number;
+  totalPages: number;
+};
 
+export type GetPortfolioPage = {
+  currentPage: number;
+  data: GetPortfolio[];
+  pageInfo: PageInfo;
+};
+
+// Portfolio Comment
 export type PostPortfolioComment = {
   userId: number | undefined;
   portfolioId: number;
@@ -151,4 +161,12 @@ export type GetPortfolioCommentById = {
 
 export type DeletePortfolioComment = {
   portfolioCommentId: number;
+};
+
+// Sort
+export type SortOption = 'createdAt' | 'recommend' | 'views';
+
+// Infinite Query PageParam
+export type PageParam = {
+  pageParam?: number;
 };

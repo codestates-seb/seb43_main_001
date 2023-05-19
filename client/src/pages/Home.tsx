@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
-import axios from 'axios';
 
 import { useAppSelector, useAppDispatch } from '../hooks/reduxHook';
+import { useGetAllPortfolio } from '../hooks/useGetAllPortfolio';
+import { useGetSearchPortfolio } from '../hooks/useGetSearchPortfolio';
 import { login } from '../store/slice/loginSlice';
 
 import Banner from '../components/Home/Banner';
@@ -14,31 +14,17 @@ import Loading from '../components/common/Loading';
 
 import * as S from './Home.style';
 
-type PortfolioList = {
-  content: string;
-  description: string;
-  distributionLink: string;
-  gitLink: string;
-  name: string;
-  portfolioId: string;
-  title: string;
-  updatedAt: number[];
-  userId: number;
-  views: number;
-};
+import { GetPortfolio, SortOption } from '../types/index';
 
 function Home() {
-  const [orderName, setOrderName] = useState('latest');
+  const [sortOption, setSortOption] = useState<SortOption>('createdAt');
+  const [value, setValue] = useState('');
+  const [category, setCategory] = useState('userName');
   const dispatch = useAppDispatch();
   const isLogin = useAppSelector((state) => state.login.isLogin);
 
-  // * 마운트 될때만 요청
-  // * 쿼리스트링은 옵션에 따라 계속 바뀌어야 함
-
-  // TODO: 이 부분 분리하기
   useEffect(() => {
     if (!isLogin) {
-      // const currentURL = window.location.href;
       const currentURL = document.location.search;
       const params = new URLSearchParams(currentURL);
 
@@ -51,36 +37,32 @@ function Home() {
         localStorage.setItem('refreshToken', refreshToken);
       }
     }
-  }, [isLogin, dispatch]);
+  }, []);
 
-  // const BASE_URL = 'http://43.201.157.191:8080';
-  const BASE_URL = 'http://localhost:8000';
+  const handleSearch = () => {
+    console.log('검색 요청');
+  };
 
-  // 데이터 패칭
-  // TODO: 에러 처리 필요
-  const { data, isError, isFetching, error, status, fetchNextPage, hasNextPage } = useInfiniteQuery(
-    ['portfolios'],
-    ({ pageParam = 1 }) => {
-      return axios.get(BASE_URL + `/portfolios?_page=${pageParam}&_limit=2`).then((res) => {
-        return {
-          // 실제 데이터
-          portfolio: res.data,
-          // 반환 값에 현재 페이지를 넘겨주자
-          currentPage: pageParam,
-          // 페이지가 마지막인지 알려주는 서버에서 넘겨준 true/false 값
-          isLast: res.data.at(-1).isLast,
-        };
-      });
-    },
-    {
-      getNextPageParam: (lastPage, pages) => {
-        if (!lastPage.isLast) {
-          return lastPage.currentPage + 1;
-        }
-        return undefined;
-      },
-    },
-  );
+  // * 검색
+  // const {
+  //   PortfolioData,
+  //   isPortfoliosError,
+  //   isPortfolioFetching,
+  //   ErrorInfo,
+  //   portfolioStatus,
+  //   fetchNextPortfolio,
+  //   hasNextPortfolio,
+  // } = useGetSearchPortfolio(value, '6', category, sortOption);
+
+  const {
+    PortfolioData,
+    isPortfoliosError,
+    isPortfolioFetching,
+    ErrorInfo,
+    portfolioStatus,
+    fetchNextPortfolio,
+    hasNextPortfolio,
+  } = useGetAllPortfolio('6', sortOption);
 
   const targetRef = useRef<HTMLDivElement | null>(null);
 
@@ -93,11 +75,10 @@ function Home() {
 
     const handleIntersect: IntersectionObserverCallback = (
       entries: IntersectionObserverEntry[],
-      observer: IntersectionObserver,
     ) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting && !isFetching && hasNextPage) {
-          fetchNextPage();
+        if (entry.isIntersecting && !isPortfoliosError && hasNextPortfolio) {
+          fetchNextPortfolio();
         }
       });
     };
@@ -113,34 +94,38 @@ function Home() {
         observer.unobserve(targetRef.current);
       }
     };
-  }, [fetchNextPage, hasNextPage, isFetching]);
+  }, [fetchNextPortfolio, hasNextPortfolio, isPortfolioFetching]);
 
   return (
     <S.Container>
       <Banner />
-      <Sort setOrderName={setOrderName} />
+      <Sort setSortOption={setSortOption} />
       <S.ContentWrapper>
-        <Search />
+        <Search setValue={setValue} setCategory={setCategory} handleSearch={handleSearch} />
         <S.CardWrapper>
-          {/* //? data가 undefined라면 에러 발생하는지....? */}
-          {data?.pages.map((page) =>
-            page.portfolio.map((item: PortfolioList) => (
-              <Card
-                key={item.portfolioId}
-                portfolioId={item.portfolioId}
-                title={item.title}
-                description={item.description}
-                views={item.views}
-                userId={item.userId}
-                name={item.name}
-              />
-            )),
-          )}
-          {isFetching && <Loading />}
-          {isError && <div>에러 발생</div>}
-          {!hasNextPage && <div>여기가 마지막이에요.</div>}
+          {PortfolioData
+            ? PortfolioData.pages.map((page) =>
+                page.data.map((item: GetPortfolio) => (
+                  <Card
+                    key={item.portfolioId}
+                    portfolioId={item.portfolioId}
+                    title={item.title}
+                    description={item.description}
+                    views={item.views}
+                    userId={item.userId}
+                    name={item.name}
+                    skills={item.skills}
+                    representativeImgUrl={item.representativeImgUrl}
+                  />
+                )),
+              )
+            : null}
           <S.Target ref={targetRef} />
         </S.CardWrapper>
+        {hasNextPortfolio && isPortfolioFetching && <Loading />}
+        {isPortfoliosError && <div>에러 발생</div>}
+        {!isPortfoliosError && !hasNextPortfolio && <div>여기가 마지막이에요.</div>}
+        {PortfolioData?.pages.length === 0 && <div>포트폴리오가 없습니다.</div>}
         <ArrowUp />
       </S.ContentWrapper>
     </S.Container>
