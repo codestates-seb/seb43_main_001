@@ -13,7 +13,7 @@ import { PortfolioCommentAPI } from '../api/client';
 const { postPortfolioComment } = PortfolioCommentAPI;
 
 export const usePostPortfolioComment = (portfolioId: number) => {
-  const token = useAppSelector((state) => state.login.accessToken);
+  const token = localStorage.getItem('accessToken');
   const isLogin = useAppSelector((state) => state.login.isLogin);
 
   // ! 추후에 아래에 추가해야 함!
