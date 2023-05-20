@@ -8,8 +8,8 @@ import { getUserIdFromAccessToken } from '../utils/getUserIdFromAccessToken';
 import { useGetUserProfile } from '../hooks/useGetUserProfile';
 
 // redux
-import { loginState, access } from '../store/slice/loginSlice';
-import store from '../store';
+import store, { RootState } from '../store';
+import { useSelector } from 'react-redux';
 
 function EditPortfolio() {
   const { portfolioId } = useParams();
@@ -17,9 +17,8 @@ function EditPortfolio() {
   // PortfolioInfo 받아오기
   const { PortfolioInfo, getPortfolioLoading } = useGetPortfolio(Number(portfolioId));
 
-  const isLogin = loginState(store.getState());
+  const isLogin = useSelector((state: RootState) => state.login.isLogin);
   const accessToken = localStorage.getItem('accessToken');
-  // const accessToken = access(store.getState());
 
   // userId 받아오기
   const userId = getUserIdFromAccessToken(isLogin, accessToken);
