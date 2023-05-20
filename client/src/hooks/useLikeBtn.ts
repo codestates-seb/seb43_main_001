@@ -12,7 +12,6 @@ export const useLikeBtn = (portfolioId: number, likes: boolean) => {
   const { mutate: clickLikeBtn } = useMutation({
     mutationFn: updateLikes,
     onSuccess: () => {
-      console.log('성공적');
       queryClient.invalidateQueries(['comment', portfolioId]);
     },
     onError: (error) => {
@@ -21,7 +20,6 @@ export const useLikeBtn = (portfolioId: number, likes: boolean) => {
   });
 
   const handleLikeBtnClick = () => {
-    console.log('클릭');
     clickLikeBtn({ portfolioId, likes });
   };
   return { handleLikeBtnClick };

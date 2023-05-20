@@ -10,7 +10,6 @@ type LikeBtnProps = {
 
 // 상세 페이지 포트폴리오 추천 버튼
 function LikeBtn({ likes, portfolioId }: LikeBtnProps) {
-  console.log('likes', likes);
   const { handleLikeBtnClick } = useLikeBtn(portfolioId, likes);
   return (
     <S.LikeBtnWrapper onClick={handleLikeBtnClick} likes={likes}>

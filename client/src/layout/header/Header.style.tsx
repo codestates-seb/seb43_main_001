@@ -49,4 +49,5 @@ export const Logo = styled.div`
 
 export const SignUp = styled.span`
   padding: 0 1.2rem;
+  cursor: pointer;
 `;

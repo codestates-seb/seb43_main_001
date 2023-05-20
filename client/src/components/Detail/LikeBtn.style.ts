@@ -25,6 +25,9 @@ export const LikeBtnWrapper = styled.section<LikeBtnWrapperProps>`
   border: 1px solid ${(props) => (props.likes ? 'red' : `${subFontColor}`)};
   background-color: transparent;
   z-index: 2;
+  & svg {
+    color: ${(props) => (props.likes ? 'red' : `${subFontColor}`)};
+  }
   cursor: pointer;
   &:active,
   &:hover {
@@ -37,7 +40,6 @@ export const LikeBtnWrapper = styled.section<LikeBtnWrapperProps>`
 
 export const LikeIcon = styled(RxHeartFilled)`
   font-size: 40px;
-  color: ${subFontColor};
 
   @media ${({ theme }) => theme.breakpoints.TABLETMIN} {
     font-size: 33px;
