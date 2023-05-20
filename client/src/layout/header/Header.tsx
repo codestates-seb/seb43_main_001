@@ -38,6 +38,8 @@ function Header() {
 
   const handleLogoutClick = () => {
     dispatch(logout(null));
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
   };
 
   const [openNav, setOpenNav] = useState<boolean>(false);

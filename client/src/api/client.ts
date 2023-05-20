@@ -28,13 +28,13 @@ const REFRESH_URL = ''; // refresh URL을 새롭게 추가를 해야 한다.
 const tokenClient = axios.create({ baseURL: process.env.REACT_APP_API_URL });
 // *: 요청하는 상태에 따라서 무조건 토큰을 담아서 보낸다.
 
-const accessToken = localStorage.getItem('accessToken');
-const refreshToken = localStorage.getItem('refreshToken');
-
 tokenClient.interceptors.request.use((config) => {
   // * :요청 헤더가 있으면 기존의 것을 반환하고 없으면 아래 처럼 새롭게 지정해준다.
   // !login 상태가 아니면 그냥 일반 헤더 반환
   // !login 상태면 아래와 같이 그냥 진행
+  const accessToken = localStorage.getItem('accessToken');
+  const refreshToken = localStorage.getItem('refreshToken');
+
   if (!config.headers || !accessToken) {
     return config;
   }
@@ -56,6 +56,7 @@ tokenClient.interceptors.response.use(
     const originalRequest = error.config;
     // !판단 기준은 state.login에 토큰이 있냐 없냐로 판별해라
     // !로그인을 안 했을 때의 401은 그냥 reject(Promise)를 반환해라!
+    const accessToken = localStorage.getItem('accessToken');
 
     // Login 상태가 아닐 때는 그냥 error을 반환하는 형식
     if (!accessToken && error.response.status === 401) {
