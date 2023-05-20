@@ -115,11 +115,12 @@ export type GetPortfolio = {
   content: string;
   imgUrl: string;
   fileUrl: string;
-  views: number;
+  viewCount: number;
   skills: string[];
   updatedAt: string;
   createdAt: string;
   representativeImgUrl: string | null;
+  likes: boolean;
 };
 
 type PageInfo = {
@@ -169,4 +170,10 @@ export type SortOption = 'createdAt' | 'recommend' | 'views';
 // Infinite Query PageParam
 export type PageParam = {
   pageParam?: number;
+};
+
+// LikesBtn
+export type LikeBtn = {
+  portfolioId: number;
+  likes: boolean;
 };

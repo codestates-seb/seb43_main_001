@@ -25,7 +25,7 @@ function Header() {
   const { routeTo } = useRouter();
 
   const isLogin = useAppSelector((state) => state.login.isLogin);
-  const token = useAppSelector((state) => state.login.accessToken);
+  const token = localStorage.getItem('accessToken');
   const dispatch = useAppDispatch();
   const userId = getUserIdFromAccessToken(isLogin, token);
   const handleLogoClick = () => {
@@ -62,7 +62,11 @@ function Header() {
         >
           {isLogin ? 'Logout' : 'Login'}
         </YellowBtn>
-        {isLogin ? null : <S.SignUp className='header-signup'>회원가입</S.SignUp>}
+        {isLogin ? null : (
+          <S.SignUp className='header-signup' onClick={() => routeTo('/SignUp')}>
+            회원가입
+          </S.SignUp>
+        )}
         <Hamburger openNav={openNav} setOpenNav={setOpenNav} />
       </S.ButtonContainer>
     </S.Header>

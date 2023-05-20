@@ -111,7 +111,7 @@ function Home() {
                     portfolioId={item.portfolioId}
                     title={item.title}
                     description={item.description}
-                    views={item.views}
+                    views={item.viewCount}
                     userId={item.userId}
                     name={item.name}
                     skills={item.skills}

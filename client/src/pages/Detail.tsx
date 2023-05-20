@@ -21,6 +21,8 @@ function Detail() {
   const { portfolioId } = useParams();
   const { getPortfolioLoading, PortfolioInfo } = useGetPortfolio(Number(portfolioId));
 
+  console.log(PortfolioInfo);
+
   if (getPortfolioLoading) {
     return (
       <S.LoadingContainer>
@@ -32,7 +34,7 @@ function Detail() {
     <S.Container>
       {PortfolioInfo && (
         <>
-          <LikeBtn />
+          <LikeBtn likes={PortfolioInfo.likes} portfolioId={PortfolioInfo.portfolioId} />
           <DetailTitle
             userId={PortfolioInfo.userId}
             title={PortfolioInfo.title}
@@ -43,7 +45,7 @@ function Detail() {
           />
           <ProjectImg
             representativeImgUrl={PortfolioInfo.representativeImgUrl}
-            views={PortfolioInfo.views}
+            viewCount={PortfolioInfo.viewCount}
           />
           <Description description={PortfolioInfo.description} />
           <ProjectContent content={PortfolioInfo.content} />
