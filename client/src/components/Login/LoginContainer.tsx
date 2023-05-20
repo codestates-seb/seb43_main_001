@@ -1,26 +1,22 @@
 import { Github, Google } from '../common/icons';
 import OAuthBtn from './OAuthBtn';
 import * as S from './LoginContainer.style';
-import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../../store/slice/loginSlice';
+import { useSelector } from 'react-redux';
+
 import { RootState } from '../../store';
 
-function LoginContainer() {
-  const dispatch = useDispatch();
-  const isLogin = useSelector((state: RootState) => state.login.isLogin);
+import { LoginAPI } from '../../api/client';
 
+function LoginContainer() {
+  const isLogin = useSelector((state: RootState) => state.login.isLogin);
   const GithubLoginHandler = () => {
     // 로그인 시도
-    window.location.assign(
-      'http://ec2-43-201-157-191.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/github',
-    );
+    LoginAPI.githubLogin();
   };
 
   const GoogleLoginHandler = () => {
     // 로그인 시도
-    window.location.assign(
-      'http://ec2-43-201-157-191.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/google',
-    );
+    LoginAPI.googleLogin();
   };
 
   return (
@@ -37,14 +33,8 @@ function LoginContainer() {
         <>
           <OAuthBtn logo={<Github />} text={'Github Login'} onClick={GithubLoginHandler}></OAuthBtn>
           <OAuthBtn logo={<Google />} text={'Google Login'} onClick={GoogleLoginHandler}></OAuthBtn>
-          {/* <OauthBtn logo={<Google />} text={'Google Login'}></OauthBtn> */}
         </>
       )}
-
-      {
-        //  로그아웃 예시
-        /* <button onClick={() => dispatch(logout(null))}>로그아웃</button> */
-      }
     </S.LoginLayout>
   );
 }
