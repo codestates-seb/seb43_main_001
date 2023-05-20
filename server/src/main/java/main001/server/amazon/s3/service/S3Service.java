@@ -7,20 +7,19 @@ import com.amazonaws.services.s3.AmazonS3Client;
 
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.util.StringUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLDecoder;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -67,17 +66,9 @@ public class S3Service {
             throw new RuntimeException("Failed to upload file to S3", e);
         }
 
-        return s3Client.getUrl(bucketName, folderKey + fileName).toString();
+        return URLDecoder.decode(s3Client.getUrl(bucketName, folderKey + fileName).toString());
     }
 
-
-    private String putS3(File uploadFile, String fileName) throws RuntimeException {
-        s3Client.putObject(new PutObjectRequest(bucketName, fileName, uploadFile)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
-
-        return s3Client.getUrl(bucketName, fileName).toString();
-
-    }
 
     private void removeOriginalFile(File targetFile) {
         if (targetFile.exists() && targetFile.delete()) {
@@ -85,22 +76,16 @@ public class S3Service {
         }
     }
 
-    public void removeS3File(String fileName) {
-        final DeleteObjectRequest deleteObjectRequest =
-                new DeleteObjectRequest(bucketName, fileName);
-        s3Client.deleteObject(deleteObjectRequest);
-    }
 
     public boolean deleteFile(String fileName) {
+        boolean deleted = true;
+
         try {
-            s3Client.deleteObject("my-bucket", fileName);
-            return true;
+            s3Client.deleteObject(bucketName, fileName);
         } catch (Exception exception) {
-            return false;
+            deleted = false;
         }
+        return deleted;
     }
-
-
-
 
 }

@@ -36,8 +36,7 @@ public class Portfolio extends BaseTimeEntity {
     @Column(length = 500, nullable = false)
     private String description; // 프로젝트 소개글
 
-    @Lob
-    @Column(length = Integer.MAX_VALUE)
+    @Column(length = 55000)
     private String content; //프로젝트 설명
 
     private int likes;

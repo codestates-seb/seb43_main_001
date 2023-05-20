@@ -112,11 +112,13 @@ public class PortfolioService {
         Optional.ofNullable(portfolio.getContent())
                 .ifPresent(content -> findPortfolio.setContent(content));
 
-        if (representativeImg != null && !representativeImg.isEmpty()) {
+        if (representativeImg != null && representativeImg.getSize() > 0) {
             updateRepresentativeImage(portfolioId, representativeImg);
+        }  else {
+            updateRepresentativeImage(portfolioId, null);
         }
 
-        if (images != null && !images.isEmpty()) {
+        if (images != null && images.size() > 0) {
             updateImage(portfolioId, images);
         }
 
@@ -174,15 +176,15 @@ public class PortfolioService {
 
         // 현재 첨부된 대표 이미지 파일을 삭제
         if (currentImageAttachment != null) {
-            // Delete existing image from S3
+            // s3에서 이미지 파일 삭제
             s3Service.deleteFile(currentImageAttachment.getRepresentativeImgUrl());
-            // Remove the existing representative image attachment from the portfolio
+            // 포트폴리오에서 이미지 첨부 파일 삭제
             portfolio.setRepresentativeAttachment(null);
             representativeImageRepository.delete(currentImageAttachment);
         }
 
         // 새로운 대표 이미지 파일 첨부
-        if (representativeImg != null) {
+        if (representativeImg != null && representativeImg.getSize() > 0) {
             String imgUrl = s3Service.uploadFile(representativeImg, "images");
             RepresentativeAttachment newImageAttachment = new RepresentativeAttachment(imgUrl);
             newImageAttachment.setPortfolio(portfolio);
@@ -210,6 +212,7 @@ public class PortfolioService {
             }
         }
 
+
         // 새로운 이미지 파일을 첨부
         if (!CollectionUtils.isNullOrEmpty(images)) {
             for (MultipartFile image : images) {
@@ -230,53 +233,6 @@ public class PortfolioService {
         portfolioRepository.save(portfolio);
     }
 
-
-//    @Transactional
-//    public int countView(Long portfolioId, HttpServletRequest request, HttpServletResponse response) {
-//
-//        Cookie[] cookies = request.getCookies();
-//        boolean checkCookie = false;
-//        int result = 0;
-//        if(cookies != null){
-//            for (Cookie cookie : cookies)
-//            {
-//                // 이미 조회를 한 경우 체크
-//                if (cookie.getName().equals(VIEWCOOKIENAME+portfolioId)) checkCookie = true;
-//
-//            }
-//            if(!checkCookie){
-//                Cookie newCookie = createCookieForForNotOverlap(portfolioId);
-//                response.addCookie(newCookie);
-//                result = portfolioRepository.updateView(portfolioId);
-//            }
-//        } else {
-//            Cookie newCookie = createCookieForForNotOverlap(portfolioId);
-//            response.addCookie(newCookie);
-//            result = portfolioRepository.updateView(portfolioId);
-//        }
-//        return result;
-//    }
-
-    /*
-     * 조회수 중복 방지를 위한 쿠키 생성 메소드
-     * @param cookie
-     * @return
-     * */
-//    private Cookie createCookieForForNotOverlap(Long portfolioId) {
-//        Cookie cookie = new Cookie(VIEWCOOKIENAME+portfolioId, String.valueOf(portfolioId));
-//        cookie.setComment("조회수 중복 증가 방지 쿠키");	// 쿠키 용도 설명 기재
-//        cookie.setMaxAge(getRemainSecondForTommorow()); 	// 하루를 준다.
-//        cookie.setHttpOnly(true);				// 서버에서만 조작 가능
-//        return cookie;
-//    }
-//
-//    // 다음 날 정각까지 남은 시간(초)
-//    private int getRemainSecondForTommorow() {
-//        LocalDateTime now = LocalDateTime.now();
-//        LocalDateTime tommorow = LocalDateTime.now().plusDays(1L).truncatedTo(ChronoUnit.DAYS);
-//        return (int) now.until(tommorow, ChronoUnit.SECONDS);
-//    }
-//
     public Page<Portfolio> getPortfoliosByUser(Long userId, String sortBy, int page, int size) {
         PageRequest pageable = getPageRequest(page, size, sortBy);
 
