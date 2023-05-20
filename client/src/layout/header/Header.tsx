@@ -62,7 +62,11 @@ function Header() {
         >
           {isLogin ? 'Logout' : 'Login'}
         </YellowBtn>
-        {isLogin ? null : <S.SignUp className='header-signup'>회원가입</S.SignUp>}
+        {isLogin ? null : (
+          <S.SignUp className='header-signup' onClick={() => routeTo('/SignUp')}>
+            회원가입
+          </S.SignUp>
+        )}
         <Hamburger openNav={openNav} setOpenNav={setOpenNav} />
       </S.ButtonContainer>
     </S.Header>

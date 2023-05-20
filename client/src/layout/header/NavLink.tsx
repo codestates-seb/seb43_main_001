@@ -35,7 +35,7 @@ const NavLink = ({ setOpenNav }: NavLinkProps) => {
         <S.Link onClick={isLogin ? handleLogoutClick : handleLoginClick}>
           {isLogin ? 'Logout' : 'Login'}
         </S.Link>
-        {isLogin ? null : <S.Link>SignUp</S.Link>}
+        {isLogin ? null : <S.Link onClick={() => routeTo('/SignUp')}>SignUp</S.Link>}
       </S.LinkList>
     </S.NavDropDonwMenu>
   );

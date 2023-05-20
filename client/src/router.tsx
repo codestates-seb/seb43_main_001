@@ -58,6 +58,7 @@ export const routers: RemixRouter = createBrowserRouter([
       {
         path: '/SignUp',
         element: <SignUp />,
+        loader: preventLoginPage,
       },
     ],
   },
