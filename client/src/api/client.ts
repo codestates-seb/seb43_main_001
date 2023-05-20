@@ -21,6 +21,7 @@ import {
   PostUserComment,
   PatchUserComment,
   DeleteUserComment,
+  LikeBtn,
 } from '../types/index';
 
 const REFRESH_URL = ''; // refresh URL을 새롭게 추가를 해야 한다.
@@ -165,13 +166,11 @@ export const PortfolioAPI = {
 
 export const PortfolioCommentAPI = {
   getPortfolioComment: async (portfolioId: number): Promise<GetPortfolioCommentById[]> => {
-    const commentData = await tokenClient.get(
-      `${process.env.REACT_APP_API_URL}/api/portfoliocomments/portfolios/${portfolioId}`,
-    );
+    const commentData = await tokenClient.get(`/api/portfoliocomments/portfolios/${portfolioId}`);
     return commentData.data.data;
   },
   postPortfolioComment: async ({ userId, portfolioId, content }: PostPortfolioComment) => {
-    return await tokenClient.post(`${process.env.REACT_APP_API_URL}/api/portfoliocomments`, {
+    return await tokenClient.post('/api/portfoliocomments', {
       userId,
       portfolioId,
       content,
@@ -183,20 +182,15 @@ export const PortfolioCommentAPI = {
     portfolioId,
     content,
   }: PatchPortfolioComment) => {
-    return await tokenClient.patch(
-      `${process.env.REACT_APP_API_URL}/api/portfoliocomments/${portfolioCommentId}`,
-      {
-        portfolioCommentId,
-        userId,
-        portfolioId,
-        content,
-      },
-    );
+    return await tokenClient.patch(`/api/portfoliocomments/${portfolioCommentId}`, {
+      portfolioCommentId,
+      userId,
+      portfolioId,
+      content,
+    });
   },
   deletePortfolioComment: async ({ portfolioCommentId }: DeletePortfolioComment) => {
-    return await tokenClient.delete(
-      `${process.env.REACT_APP_API_URL}/api/portfoliocomments/${portfolioCommentId}`,
-    );
+    return await tokenClient.delete(`/api/portfoliocomments/${portfolioCommentId}`);
   },
 };
 
@@ -286,6 +280,19 @@ export const UserCommentsAPI = {
   // ! : 전달되는게 어떤 id값인지 확인 필요
   deleteUserComment: async ({ commentId, path }: DeleteUserComment) => {
     await tokenClient.delete(`${process.env.REACT_APP_API_URL}/api/${path}/${commentId}`);
+  },
+};
+
+export const PortfolioLikeBtn = {
+  updateLikes: async ({ portfolioId, likes }: LikeBtn) => {
+    if (likes) {
+      console.log('delete');
+      await tokenClient.delete(`/portfolios/likes/${portfolioId}`);
+    } else {
+      console.log('post');
+      await tokenClient.post(`/portfolios/likes/${portfolioId}`);
+      console.log('post 후');
+    }
   },
 };
 

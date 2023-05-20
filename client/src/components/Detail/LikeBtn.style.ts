@@ -6,9 +6,13 @@ import { RxHeartFilled } from 'react-icons/rx';
 // constants
 import { COLOR } from '../../constants';
 
+type LikeBtnWrapperProps = {
+  likes: boolean;
+};
+
 const { subFontColor } = COLOR;
 
-export const LikeBtnWrapper = styled.section`
+export const LikeBtnWrapper = styled.section<LikeBtnWrapperProps>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -18,15 +22,15 @@ export const LikeBtnWrapper = styled.section`
   top: 50%;
   right: 8%;
   border-radius: 50%;
-  border: 1px solid ${subFontColor};
+  border: 1px solid ${(props) => (props.likes ? 'red' : `${subFontColor}`)};
   background-color: transparent;
   z-index: 2;
   cursor: pointer;
   &:active,
   &:hover {
-    border: 1px solid red;
+    border: 1px solid ${(props) => (props.likes ? `${subFontColor}` : 'red')};
     svg {
-      color: red;
+      color: ${(props) => (props.likes ? `${subFontColor}` : 'red')};
     }
   }
 `;

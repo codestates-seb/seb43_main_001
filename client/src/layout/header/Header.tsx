@@ -25,7 +25,7 @@ function Header() {
   const { routeTo } = useRouter();
 
   const isLogin = useAppSelector((state) => state.login.isLogin);
-  const token = useAppSelector((state) => state.login.accessToken);
+  const token = localStorage.getItem('accessToken');
   const dispatch = useAppDispatch();
   const userId = getUserIdFromAccessToken(isLogin, token);
   const handleLogoClick = () => {
