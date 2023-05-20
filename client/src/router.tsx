@@ -10,7 +10,7 @@ import NewPortfolio from './pages/NewPortfolio';
 import EditPortfolio from './pages/EditPortfolio';
 import AddEmail from './pages/AddEmail';
 import NotFound from './pages/NotFound';
-
+import SignUp from './pages/SignUp';
 // layout
 import GeneralLayout from './layout/GeneraLayout';
 
@@ -54,6 +54,10 @@ export const routers: RemixRouter = createBrowserRouter([
       {
         path: '/AddEmail',
         element: <AddEmail />,
+      },
+      {
+        path: '/SignUp',
+        element: <SignUp />,
       },
     ],
   },
