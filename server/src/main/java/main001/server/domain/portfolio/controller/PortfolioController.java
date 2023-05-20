@@ -11,10 +11,13 @@ import main001.server.domain.portfolio.service.PortfolioService;
 import main001.server.response.MultiResponseDto;
 import main001.server.response.SingleResponseDto;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -79,15 +82,21 @@ public class PortfolioController {
     }
 
     @GetMapping("/{portfolio-id}")
-    public ResponseEntity getPortfolio(@PathVariable("portfolio-id") Long portfolioId,
-                                       @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity getPortfolio(@PathVariable("portfolio-id") Long portfolioId) {
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String token = request.getHeader("Authorization");
 
         Portfolio portfolio = portfolioService.findPortfolio(portfolioId);
         PortfolioDto.Response responseDto = mapper.portfolioToPortfolioResponseDto(portfolio);
 
-        boolean likes = likesService.findExistLikes(token, portfolioId);
-
-        responseDto.setLikes(likes);
+        if(token==null) {
+            responseDto.setLikes(false);
+        }
+        else {
+            boolean likes = likesService.findExistLikes(token, portfolioId);
+            responseDto.setLikes(likes);
+        }
 
         return new ResponseEntity<>(new SingleResponseDto<>(responseDto), HttpStatus.OK);
     }
