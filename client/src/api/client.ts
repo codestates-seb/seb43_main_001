@@ -296,4 +296,30 @@ export const PortfolioLikeBtn = {
   },
 };
 
+// * : Login
+export const LoginAPI = {
+  googleLogin: () => {
+    // 로그인 시도
+    window.location.assign(
+      'http://ec2-43-201-157-191.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/google',
+    );
+  },
+
+  githubLogin: () => {
+    // 로그인 시도
+    window.location.assign(
+      'http://ec2-43-201-157-191.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/github',
+    );
+  },
+};
+
+// * : AddEmail
+export const postEmail = async (email: string, userId: string) => {
+  return await axios
+    .patch(`${process.env.REACT_APP_API_URL}/addemail?userId=${userId}`, {
+      email: email,
+    })
+    .then(() => LoginAPI.githubLogin());
+};
+
 export { tokenClient };
