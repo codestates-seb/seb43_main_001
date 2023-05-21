@@ -31,12 +31,13 @@ public class SecurityController {
 
     @PatchMapping("/addemail")
     public ResponseEntity addEmail(@Positive @RequestParam(value = "userId") Long userId,
-                                   @Valid @RequestBody UserDto.PatchEmail requestBody) {
+                                   @Valid @RequestBody UserDto.PatchEmail requestBody,
+                                   HttpServletRequest request) {
         requestBody.setUserId(userId);
         User user = userService.updateEmail(mapper.userPatchEmailToUser(requestBody));
 
         return new ResponseEntity<>(
-                new SingleResponseDto<>(mapper.userToUserProfileResponse(user)), HttpStatus.OK);
+                new SingleResponseDto<>(mapper.userToUserProfileResponse(user, request)), HttpStatus.OK);
     }
 
     @PostMapping("/auth/refresh")
