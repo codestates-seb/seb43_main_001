@@ -9,6 +9,7 @@ import main001.server.domain.user.entity.User;
 import main001.server.domain.user.repository.UserRepository;
 import main001.server.exception.BusinessLogicException;
 import main001.server.exception.ExceptionCode;
+import main001.server.security.jwt.JwtTokenizer;
 import main001.server.security.service.SecurityService;
 import main001.server.security.service.SecurityServiceImpl;
 import main001.server.security.utils.CustomAuthorityUtils;
@@ -27,10 +28,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class UserService {
-
+    private final JwtTokenizer jwtTokenizer;
     private final UserRepository userRepository;
-    private final SkillService skillService;
-
 //    private final PasswordEncoder passwordEncoder; // Security 적용 후 사용
 //
     private final CustomAuthorityUtils authorityUtils;
@@ -94,6 +93,7 @@ public class UserService {
     /**
      * 유저 탈퇴 기능 : 구현관련 논의 필요
      */
+   @Transactional()
     public void deleteUser(long userId) {
         User findUser = findVerifiedUser(userId);
 
@@ -151,7 +151,7 @@ public class UserService {
     public User updateEmail(User user) {
         User findUser = findVerifiedUser(user.getUserId());
 
-        Optional.ofNullable(user.getName()).ifPresent(name -> findUser.setName(name));
+        Optional.ofNullable(user.getEmail()).ifPresent(email -> findUser.setEmail(email));
 
         return userRepository.save(findUser);
     }
@@ -172,6 +172,10 @@ public class UserService {
 
         return profileImgUrl;
 
+    }
+
+    public Long findByToken(String token) {
+        return jwtTokenizer.getUserId(token);
     }
 //    public void addSkills(User user,List<String> skills) {
 //        for(int i = user.getSkills().size()-1; i>=0; i--) {

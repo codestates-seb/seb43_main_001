@@ -1,14 +1,9 @@
 package main001.server.domain.portfolio.controller;
 
-import com.amazonaws.util.CollectionUtils;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import main001.server.amazon.s3.service.S3Service;
+import main001.server.domain.likes.service.LikesService;
 import main001.server.domain.portfolio.dto.PortfolioDto;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.mapper.PortfolioMapper;
@@ -16,11 +11,13 @@ import main001.server.domain.portfolio.service.PortfolioService;
 import main001.server.response.MultiResponseDto;
 import main001.server.response.SingleResponseDto;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -37,17 +34,13 @@ import java.util.List;
 @RequestMapping("/portfolios")
 @Validated
 @Slf4j
+@RequiredArgsConstructor
 public class PortfolioController {
     private final static String PORTFOLIO_DEFAULT_URL = "/portfolios";
     private final PortfolioService portfolioService;
     private final PortfolioMapper mapper;
+    private final LikesService likesService;
     private final S3Service s3Service;
-
-    public PortfolioController(PortfolioService portfolioService, PortfolioMapper mapper, S3Service s3Service) {
-        this.portfolioService = portfolioService;
-        this.mapper = mapper;
-        this.s3Service = s3Service;
-    }
 
     @PostMapping
     public ResponseEntity postPortfolio(@Valid @RequestPart PortfolioDto.Post postDto,
@@ -97,8 +90,22 @@ public class PortfolioController {
 
     @GetMapping("/{portfolio-id}")
     public ResponseEntity getPortfolio(@PathVariable("portfolio-id") Long portfolioId) {
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String token = request.getHeader("Authorization");
+
         Portfolio portfolio = portfolioService.findPortfolio(portfolioId);
-        return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(portfolio)), HttpStatus.OK);
+        PortfolioDto.Response responseDto = mapper.portfolioToPortfolioResponseDto(portfolio);
+
+        if(token==null) {
+            responseDto.setLikes(false);
+        }
+        else {
+            boolean likes = likesService.findExistLikes(token, portfolioId);
+            responseDto.setLikes(likes);
+        }
+
+        return new ResponseEntity<>(new SingleResponseDto<>(responseDto), HttpStatus.OK);
     }
 
     @GetMapping

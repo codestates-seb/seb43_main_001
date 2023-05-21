@@ -16,10 +16,12 @@ public class PortfolioLikes {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long likesId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name="userId")
     private User user;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "portfolioId")
     private Portfolio portfolio;
 
     public void setUser(User user) {

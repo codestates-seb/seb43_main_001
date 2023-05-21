@@ -12,6 +12,7 @@ import main001.server.domain.user.enums.Grade;
 import main001.server.domain.user.enums.JobStatus;
 import main001.server.domain.user.enums.UserStatus;
 import main001.server.domain.usercomment.entity.UserComment;
+import main001.server.security.jwt.RefreshToken;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -82,8 +83,11 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PortfolioLikes> likes = new ArrayList<>();
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private ProfileImgAttachment profileImgAttachment = new ProfileImgAttachment();
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
+    private RefreshToken refreshToken = new RefreshToken();
 
     public User(Long userId, String email, String name, String profileImg, String gitLink, String blogLink, JobStatus jobStatus, String about) {
         this.userId = userId;

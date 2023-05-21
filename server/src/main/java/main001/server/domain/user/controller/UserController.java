@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import main001.server.domain.utils.AuthValidator;
+import main001.server.domain.utils.CurrentUserIdFinder;
 import main001.server.domain.utils.OAuth2UserValidator;
 import main001.server.exception.BusinessLogicException;
 import main001.server.exception.ExceptionCode;
@@ -39,10 +40,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.aspectj.runtime.internal.Conversions.intValue;
 
@@ -111,30 +109,36 @@ public class UserController {
             }
     )
     @GetMapping("/{user-id}")
-    public ResponseEntity getUser(@PathVariable("user-id") @Positive long userId, HttpServletRequest request) {
+    public ResponseEntity<UserDto.Response> getUser(@PathVariable("user-id") @Positive long userId, HttpServletRequest request) {
 
         User findUser = userService.findUser(userId);
-
-        if (userService.isExistOAuth2User(findUser.getOauthId())) {
-            boolean isAuth = OAuth2UserValidator.isAuth(userId, request);
-            findUser.setAuth(isAuth);
-        } else {
-            boolean isAuth = AuthValidator.isAuth(userId);
-            findUser.setAuth(isAuth);
+        if (CurrentUserIdFinder.getCurrentUserId(request) == userId) {
+            findUser.setAuth(true);
         }
 
         UserDto.Response response = mapper.userToUserResponse(findUser);
-        Optional.of(findUser.isAuth()).ifPresent(isAuth -> response.setAuth(isAuth));
+        response.setAuth(findUser.isAuth());
 
-        return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.OK);
+        return new ResponseEntity(new SingleResponseDto<>(response), HttpStatus.OK);
     }
 
     @Operation(hidden = true)
     @GetMapping
     public ResponseEntity getUsers(@Positive @RequestParam(value = "page",defaultValue = "1") int page,
-                                   @Positive @RequestParam(value = "size",defaultValue = "15") int size) {
+                                   @Positive @RequestParam(value = "size",defaultValue = "15") int size,
+                                   HttpServletRequest request) {
         Page<User> pageUsers = userService.findUsers(page - 1, size);
         List<User> users = pageUsers.getContent();
+
+        List<UserDto.Response> responses = new ArrayList<>(users.size());
+        users.forEach(u -> {
+            if (u.getUserId().equals(CurrentUserIdFinder.getCurrentUserId(request))) {
+                u.setAuth(true);
+            }
+                UserDto.Response response = mapper.userToUserResponse(u);
+                response.setAuth(u.isAuth());
+                responses.add(response);
+        });
 
         return new ResponseEntity<>(
                 new MultiResponseDto<>(mapper.usersToUserResponses(users), pageUsers), HttpStatus.OK
@@ -165,10 +169,18 @@ public class UserController {
             }
     )
     @GetMapping("/{user-id}/profile")
-    public ResponseEntity getUserProfile(@PathVariable("user-id") @Positive long userId) {
-        User user = userService.findUser(userId);
+    public ResponseEntity getUserProfile(@PathVariable("user-id") @Positive long userId, HttpServletRequest request) {
 
-        UserDto.UserProfileResponse response = mapper.userToUserProfileResponse(user);
+        User findUser = userService.findUser(userId);
+
+        if (CurrentUserIdFinder.getCurrentUserId(request) == userId) {
+            findUser.setAuth(true);
+        }
+
+        UserDto.UserProfileResponse response = mapper.userToUserProfileResponse(findUser);
+
+        response.setAuth(findUser.isAuth());
+
         return new ResponseEntity<>(
                 new SingleResponseDto<>(response), HttpStatus.OK
         );
