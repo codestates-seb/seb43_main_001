@@ -1,14 +1,9 @@
 package main001.server.domain.portfolio.controller;
 
-import com.amazonaws.util.CollectionUtils;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import main001.server.amazon.s3.service.S3Service;
+import main001.server.domain.attachment.image.repository.ImageAttachmentRepository;
+import main001.server.domain.likes.service.LikesService;
 import main001.server.domain.portfolio.dto.PortfolioDto;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.mapper.PortfolioMapper;
@@ -16,7 +11,6 @@ import main001.server.domain.portfolio.service.PortfolioService;
 import main001.server.response.MultiResponseDto;
 import main001.server.response.SingleResponseDto;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -27,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -92,14 +85,15 @@ public class PortfolioController {
     @PatchMapping("/{portfolio-id}")
     public ResponseEntity patchPortfolio(@PathVariable("portfolio-id") long portfolioId,
                                          @RequestPart PortfolioDto.Patch patchDto,
-                                         @RequestPart(value = "representativeImg", required = false) MultipartFile representativeImg) throws IOException {
+                                         @RequestPart(value = "representativeImg", required = false) MultipartFile representativeImg,
+                                         HttpServletRequest request) throws IOException {
         patchDto.setPortfolioId(portfolioId);
         Portfolio portfolio = mapper.portfolioPatchDtoToPortfolio(patchDto);
 
 
         Portfolio response = portfolioService.updatePortfolio(portfolio, portfolioId, patchDto.getSkills(), representativeImg);
 
-        return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response)), HttpStatus.OK);
+        return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response, request)), HttpStatus.OK);
     }
 
     @PatchMapping("/{portfolio-id}/views")
