@@ -26,3 +26,11 @@ export const PortfolioBtns = styled.div`
     border: 0;
   }
 `;
+export const ErrorContainer = styled.p`
+  margin-top: 50px;
+  text-align: center;
+`;
+
+export const Target = styled.div`
+  height: 1px;
+`;

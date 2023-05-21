@@ -26,6 +26,12 @@ export type GetUserPortfolio = {
   updatedAt: number[];
 };
 
+export type GetUserPortfolioPage = {
+  currentPage: number;
+  data: GetUserPortfolio[];
+  pageInfo: PageInfo;
+};
+
 export type GetUserComment = {
   // 댓글 공통
   userId: number;
@@ -56,7 +62,7 @@ export type PostUserComment = {
 export type PatchUserProfile = {
   userId: number;
   name: string;
-  profileImg: File | null;
+  profileImg: string;
   gitLink: string;
   blogLink: string;
   jobStatus: string;

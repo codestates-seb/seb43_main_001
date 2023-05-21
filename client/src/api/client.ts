@@ -11,7 +11,6 @@ import {
   GetPortfolioPage,
   PostPortfolioComment,
   PatchPortfolioComment,
-  GetUserPortfolio,
   GetUserProfile,
   GetUserComment,
   PatchUserProfile,
@@ -22,6 +21,7 @@ import {
   PatchUserComment,
   DeleteUserComment,
   LikeBtn,
+  GetUserPortfolioPage,
 } from '../types/index';
 
 const REFRESH_URL = ''; // refresh URL을 새롭게 추가를 해야 한다.
@@ -236,14 +236,19 @@ export const UserProfileAPI = {
 };
 
 export const UserPortfolioAPI = {
-  getUserPortfolio: async (userId: number): Promise<GetUserPortfolio[]> => {
-    // ! : sort 기능 추가 필요(아직 테스트하지 못함)
+  getUserPortfolio: async (
+    userId: number,
+    sort: string,
+    page: number,
+    size: string,
+  ): Promise<GetUserPortfolioPage> => {
     const userPortfoliosData = await tokenClient.get(
-      `${process.env.REACT_APP_API_URL}/portfolios/${userId}/portfolios?sortBy=createdAt&page=1&size=15`,
+      `/portfolios/users/${userId}?page=${page}&size=${size}&sortBy=${sort}`,
     );
-    return userPortfoliosData.data.data;
+    return { ...userPortfoliosData.data, currentPage: page };
   },
 };
+
 export const UserCommentsAPI = {
   getUserComments: async (userId: number): Promise<GetUserComment[]> => {
     const userCommentsData = await tokenClient.get(
