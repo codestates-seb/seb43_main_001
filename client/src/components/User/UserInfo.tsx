@@ -28,7 +28,7 @@ const UserInfo: React.FC<IdProps> = ({ userId }) => {
   const [select, setSelect] = useState<boolean>(true);
   const [onEdit, setOnEdit] = useState<boolean>(false);
 
-  const { handlerPatchProfile } = usePatchUserProfile();
+  const { handlerPatchProfile } = usePatchUserProfile(userId);
 
   // * : 유저 정보를 변경할 때 사용하는 redux-toolkit 정보
   const userEditInfo = useSelector((state: RootState) => {
@@ -59,7 +59,7 @@ const UserInfo: React.FC<IdProps> = ({ userId }) => {
     dispatch(setJobStatus(UserProfile?.jobStatus));
     dispatch(setBlog(UserProfile?.blogLink));
   };
-  
+
   const { UserProfile } = useGetUserProfile(userId);
 
   return (
@@ -67,11 +67,13 @@ const UserInfo: React.FC<IdProps> = ({ userId }) => {
       {UserProfile ? (
         <>
           <UserBasicInfo
+            userId={userId}
             onEdit={onEdit}
             profileImg={UserProfile.profileImg}
             name={UserProfile.name}
             gitLink={UserProfile.gitLink}
             auth={UserProfile.auth}
+            grade={UserProfile.grade}
           />
           <S.SelectBtn>
             <button onClick={() => setSelect(true)} className={select ? 'select' : ''}>
@@ -83,28 +85,30 @@ const UserInfo: React.FC<IdProps> = ({ userId }) => {
           </S.SelectBtn>
           {select && (
             <S.MoreInfo>
-              {UserProfile.auth && (
-                <>
-                  {onEdit ? (
-                    <UserEditForm userId={userId} />
-                  ) : (
-                    <UserDetailInfo
-                      about={UserProfile.about}
-                      jobStatus={UserProfile.jobStatus}
-                      email={UserProfile.email}
-                      blogLink={UserProfile.blogLink}
-                    />
-                  )}
-                  {onEdit ? (
-                    <S.DetailBtns>
-                      <YellowBtn onClick={submitHandler}>수정 완료</YellowBtn>
-                      <button onClick={() => setOnEdit(false)}>수정 취소</button>
-                    </S.DetailBtns>
-                  ) : (
-                    <YellowBtn onClick={editHandler}>정보 수정</YellowBtn>
-                  )}
-                </>
-              )}
+              <>
+                {onEdit ? (
+                  <UserEditForm userId={userId} />
+                ) : (
+                  <UserDetailInfo
+                    about={UserProfile.about}
+                    jobStatus={UserProfile.jobStatus}
+                    email={UserProfile.email}
+                    blogLink={UserProfile.blogLink}
+                  />
+                )}
+                {UserProfile.auth && (
+                  <>
+                    {onEdit ? (
+                      <S.DetailBtns>
+                        <YellowBtn onClick={submitHandler}>수정 완료</YellowBtn>
+                        <button onClick={() => setOnEdit(false)}>수정 취소</button>
+                      </S.DetailBtns>
+                    ) : (
+                      <YellowBtn onClick={editHandler}>정보 수정</YellowBtn>
+                    )}
+                  </>
+                )}
+              </>
               <CommentContainer userId={userId} />
             </S.MoreInfo>
           )}
