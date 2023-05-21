@@ -14,9 +14,15 @@ public class CurrentUserIdFinder {
     public static Long getCurrentUserId(HttpServletRequest request) {
         String secretKey = EnvConfig.getSecretKey();
 
-        String tokenValue = request.getHeader("Authorization").replace("Bearer ", ""); // 요청 시 전달한 JWT value
+        Integer userIdFromToken;
 
-        Integer userIdFromToken; // JWT에서 추출한 유저 ID
+        String authorization = request.getHeader("Authorization");
+
+        if (authorization == null) {
+            return null;
+        }
+
+        String tokenValue = authorization.replace("Bearer ", ""); // 요청 시 전달한 JWT value
 
         // JWT에서 추출한 인증 정보를 불러오기 위한 JWT Parser
         JwtParser jwtParser = Jwts.parserBuilder()
