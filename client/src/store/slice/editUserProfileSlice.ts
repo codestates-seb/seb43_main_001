@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 // ! : 다른 방법을 발견하면 삭제 예정.
 type UserInfo = {
   name: string;
-  profileImg: File | null;
+  profileImg: string;
   about: string;
   jobStatus: string;
   gitLink: string;
@@ -13,14 +13,14 @@ type UserInfo = {
 
 const initialState: UserInfo = {
   name: '',
-  profileImg: null,
+  profileImg: '',
   about: '',
   jobStatus: '',
   gitLink: '',
   blogLink: '',
 };
 
-const EditUserProfileSlice = createSlice({
+const editUserProfileSlice = createSlice({
   name: 'editUserProfile',
   initialState,
   reducers: {
@@ -28,6 +28,7 @@ const EditUserProfileSlice = createSlice({
       state.name = action.payload;
     },
     setImg: (state, action) => {
+      console.log(action.payload);
       state.profileImg = action.payload;
     },
     setAbout: (state, action) => {
@@ -54,6 +55,6 @@ const EditUserProfileSlice = createSlice({
 });
 
 export const { setName, setImg, setAbout, setJobStatus, setGit, setBlog } =
-  EditUserProfileSlice.actions;
+  editUserProfileSlice.actions;
 
-export default EditUserProfileSlice.reducer;
+export default editUserProfileSlice.reducer;

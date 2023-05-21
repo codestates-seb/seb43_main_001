@@ -5,22 +5,28 @@ import * as S from './UserBasicInfo.style';
 import { setGit, setImg, setName } from '../../store/slice/editUserProfileSlice';
 import { useState } from 'react';
 import { RootState } from '../../store';
+import { UserProfileAPI } from '../../api/client';
 
 type UserBasicInfoProps = {
+  userId: number;
   onEdit: boolean;
   name: string;
   profileImg: string;
   gitLink: string;
   auth: boolean;
+  grade: string;
 };
 const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
+  userId,
   onEdit,
   name,
   profileImg,
   gitLink,
   auth,
+  grade,
 }) => {
   const dispatch = useDispatch();
+  const { postUserImg } = UserProfileAPI;
   const userEditInfo = useSelector((state: RootState) => {
     return state.editUserProfile;
   });
@@ -29,8 +35,9 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
   const [userName, setUserName] = useState<string>(name);
   // ! : input에 null값을 넣지 않기 위해 editSlice의 정보 사용,(서버에서 처리해주면 기존값 사용해도 괜찮음)
   const [userGit, setUserGit] = useState<string>(editGitLink);
+  const [gradecolor, setGradecolor] = useState<string>('brown');
 
-  const fileUploadHanlder = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const fileUploadHanlder = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.currentTarget;
     const files = (target.files as FileList)[0];
     if (!files) return;
@@ -39,7 +46,12 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
       setPhoto(reader.result as string);
     };
     reader.readAsDataURL(files);
-    dispatch(setImg({ ...files }));
+    postUserImg(userId, files)
+      .then((res) => {
+        console.log(res.data);
+        dispatch(setImg(res.data));
+      })
+      .catch((e) => console.log(e));
   };
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,6 +64,23 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
       dispatch(setGit(value));
     }
   };
+
+  // const changeGradeColor = () => {
+  //   switch (grade) {
+  //     case 'NOVICE':
+  //       return setGradeColor('brown');
+  //     case 'INTERMEDIATE':
+  //       return setGradeColor('silver');
+  //     case 'ADVANCED':
+  //       return setGradeColor('gold');
+  //     case 'EXPERT':
+  //       return setGradeColor('red');
+  //     case 'MASTER':
+  //       return setGradeColor('');
+  //     default:
+  //       return setGradeColor('brown');
+  //   }
+  // };
 
   return (
     <S.BasicInfo>
@@ -70,14 +99,19 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
         </S.UserImg>
       )}
       <div>
-        {onEdit ? (
-          <S.EditName>
-            Name
-            <input onChange={inputChangeHandler} value={userName} name='name' />
-          </S.EditName>
-        ) : (
-          <S.UserName>{name}</S.UserName>
-        )}
+        <S.UserNameBox>
+          {onEdit ? (
+            <S.EditName>
+              Name
+              <input onChange={inputChangeHandler} value={userName} name='name' />
+            </S.EditName>
+          ) : (
+            <S.UserName>
+              <S.GradeIcon gradecolor={gradecolor} />
+              <span>{name}</span>
+            </S.UserName>
+          )}
+        </S.UserNameBox>
         {onEdit ? (
           <S.EditGit>
             <S.GithubIcon />
@@ -85,10 +119,16 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
           </S.EditGit>
         ) : (
           <S.GitBtn>
-            <a href={gitLink} target='_blank' rel='noreferrer'>
-              <S.GithubIcon />
-              <span>Github</span>
-            </a>
+            {gitLink ? (
+              <a href={gitLink} target='_blank' rel='noreferrer'>
+                <S.GithubIcon />
+                <span>Github</span>
+              </a>
+            ) : (
+              <>
+                <S.GithubIcon />
+              </>
+            )}
           </S.GitBtn>
         )}
         <div>
