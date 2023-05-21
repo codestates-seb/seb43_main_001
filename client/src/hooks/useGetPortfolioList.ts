@@ -1,11 +1,11 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { SortOption, PageParam } from '../types/index';
 import { PortfolioAPI } from '../api/client';
+import { GetPortfolioPage, SortOption, PageParam } from '../types/index';
+import type { AxiosError } from 'axios';
 
-const { getAllPortfolio, getSearchPortfolio } = PortfolioAPI;
+const { getSortPortfolioList, getSearchPortfolioList } = PortfolioAPI;
 
-// TODO: error, status 사용할지말지 정하기
-export const useGetAllPortfolio = (size: string, sortOption: SortOption) => {
+export const useGetPortfolioList = (sortOption: SortOption, category: string, value: string) => {
   const {
     data: PortfolioData,
     isError: isPortfoliosError,
@@ -14,10 +14,14 @@ export const useGetAllPortfolio = (size: string, sortOption: SortOption) => {
     status: portfolioStatus,
     fetchNextPage: fetchNextPortfolio,
     hasNextPage: hasNextPortfolio,
-  } = useInfiniteQuery({
-    // ? : queryKey, queryFn, parameter만 다르게 바꾸기..?
-    queryKey: ['allPortfolio', sortOption],
-    queryFn: ({ pageParam = 1 }: PageParam) => getAllPortfolio(pageParam, size, sortOption),
+  } = useInfiniteQuery<GetPortfolioPage, AxiosError>({
+    queryKey: value
+      ? ['portfolioList', { sortOption, category, value }]
+      : ['portfolioList', { sortOption }],
+    queryFn: ({ pageParam = 1 }: PageParam) =>
+      value
+        ? getSearchPortfolioList(pageParam, '6', sortOption, category, value)
+        : getSortPortfolioList(pageParam, '6', sortOption),
     getNextPageParam: (lastPage) => {
       if (lastPage.currentPage == lastPage.pageInfo.totalPages) {
         return undefined;

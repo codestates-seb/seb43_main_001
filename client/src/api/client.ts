@@ -134,23 +134,31 @@ export const PortfolioAPI = {
       },
     );
   },
-  getAllPortfolio: async (page: number, size: string, sort: string): Promise<GetPortfolioPage> => {
-    const allPortfolio = await tokenClient.get(
-      `/portfolios?page=${page}&size=${size}&sort=${sort}`,
-    );
-    return { ...allPortfolio.data, currentPage: page };
-  },
-  getSearchPortfolio: async (
-    value: string,
+  getSortPortfolioList: async (
     page: number,
     size: string,
-    category: string,
     sort: string,
   ): Promise<GetPortfolioPage> => {
-    const allSearchPortfolio = await tokenClient.get(
-      `/search?value=${value}&page=${page}&size=${size}&category=${category}&sortBy=${sort}`,
+    console.log('정렬 요청');
+    const sortPortfolio = await tokenClient.get(
+      `/portfolios?page=${page}&size=${size}&sort=${sort}`,
     );
-    return { ...allSearchPortfolio.data, currentPage: page };
+
+    return { ...sortPortfolio.data, currentPage: page };
+  },
+  getSearchPortfolioList: async (
+    page: number,
+    size: string,
+    sort: string,
+    category: string,
+    value: string,
+  ): Promise<GetPortfolioPage> => {
+    console.log('검색 요청');
+    const searchPortfolio = await tokenClient.get(
+      `/portfolios/search?value=${value}&page=${page}&size=${size}&category=${category}&sortBy=${sort}`,
+    );
+
+    return { ...searchPortfolio.data, currentPage: page };
   },
   portfolioViews: async (portfolioId: number) => {
     return await tokenClient.patch(`/portfolios/${portfolioId}/views`);
