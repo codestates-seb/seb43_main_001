@@ -1,14 +1,14 @@
 package main001.server.domain.user.mapper;
 
-import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.user.dto.UserDto;
 import main001.server.domain.user.entity.User;
+import main001.server.domain.utils.CurrentUserIdFinder;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
 public interface UserMapper {
@@ -21,11 +21,14 @@ public interface UserMapper {
 
     User userPatchEmailToUser(UserDto.PatchEmail requestBody);
 
-    default UserDto.Response userToUserResponse(User user) {
+    default UserDto.Response userToUserResponse(User user, HttpServletRequest request) {
+
         if (user == null) {
             return null;
         }
-        return UserDto.Response.builder()
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId(request);
+
+        UserDto.Response response = UserDto.Response.builder()
                 .userId(user.getUserId())
                 .email(user.getEmail())
                 .name(user.getName())
@@ -34,22 +37,27 @@ public interface UserMapper {
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
                 .build();
+        if (currentUserId != null && currentUserId.equals(user.getUserId())) {
+            response.setAuth(true);
+        }
+
+        return response;
     }
 
-    default UserDto.UserProfileResponse userToUserProfileResponse(User user) {
+    default UserDto.UserProfileResponse userToUserProfileResponse(User user, HttpServletRequest request) {
         if(user  == null) {
             return null;
         }
-        return UserDto.UserProfileResponse.builder()
+
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId(request);
+
+        UserDto.UserProfileResponse response = UserDto.UserProfileResponse.builder()
                 .userId(user.getUserId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .profileImg(user.getProfileImg())
                 .gitLink( user.getGitLink())
                 .blogLink( user.getBlogLink())
-//                .skills(user.getSkills().stream()
-//                        .map(userSkill -> userSkill.getSkill().getName())
-//                        .collect(Collectors.toList()))
                 .grade( user.getGrade())
                 .jobStatus( user.getJobStatus())
                 .about( user.getAbout())
@@ -57,10 +65,29 @@ public interface UserMapper {
                 .updatedAt(user.getUpdatedAt())
                 .isAuth(user.isAuth())
                 .build();
+        if (currentUserId != null && currentUserId.equals(user.getUserId())) {
+            response.setAuth(true);
+        }
+
+        return response;
 
     }
 
-    List<UserDto.Response> usersToUserResponses(List<User> users);
+    default List<UserDto.Response> usersToUserResponses(List<User> users, HttpServletRequest request) {
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId(request);
+        if ( users == null ) {
+            return null;
+        }
 
-    List<UserDto.UserPortfolioResponse> userPortfolioToUserResponses(List<Portfolio> userPortfolios);
+        List<UserDto.Response> list = new ArrayList<>( users.size() );
+        users.forEach(u -> {
+            UserDto.Response response = userToUserResponse(u, request);
+            if (u.getUserId().equals(currentUserId)) {
+                response.setAuth(true);
+            }
+            list.add(response);
+        });
+
+        return list;
+    }
 }

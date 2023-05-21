@@ -107,6 +107,7 @@ public class UserDto {
         private String description;
         private String content;
         private int views;
+        private boolean isAuth;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
     }

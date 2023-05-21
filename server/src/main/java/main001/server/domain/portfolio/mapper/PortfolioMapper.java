@@ -3,9 +3,11 @@ package main001.server.domain.portfolio.mapper;
 import main001.server.domain.attachment.image.entity.ImageAttachment;
 import main001.server.domain.portfolio.dto.PortfolioDto;
 import main001.server.domain.portfolio.entity.Portfolio;
+import main001.server.domain.utils.CurrentUserIdFinder;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,15 +22,12 @@ public interface PortfolioMapper {
     @Mapping(target = "skills", ignore = true)
     Portfolio portfolioPatchDtoToPortfolio(PortfolioDto.Patch patchDto);
 
-    default PortfolioDto.Response portfolioToPortfolioResponseDto(Portfolio portfolio) {
-        List<String> imgUrl = new ArrayList<>();
-        for(ImageAttachment imageAttachment : portfolio.getImageAttachments()) {
-            imgUrl.add(imageAttachment.getImgUrl());
-        }
-
+    default PortfolioDto.Response portfolioToPortfolioResponseDto(Portfolio portfolio, HttpServletRequest request) {
         if ( portfolio == null ) {
             return null;
         }
+
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId(request);
 
         PortfolioDto.Response response = PortfolioDto.Response.builder()
                 .portfolioId(portfolio.getPortfolioId())
@@ -40,7 +39,6 @@ public interface PortfolioMapper {
                 .description(portfolio.getDescription())
                 .content(portfolio.getContent())
                 .representativeImgUrl(portfolio.getRepresentativeAttachment() == null ? null : portfolio.getRepresentativeAttachment().getRepresentativeImgUrl())
-                .imgUrl(imgUrl)
                 .skills(portfolio.getSkills().stream()
                         .map(portfolioSkill -> portfolioSkill.getSkill().getName())
                         .collect(Collectors.toList()))
@@ -51,8 +49,29 @@ public interface PortfolioMapper {
                 .isAuth(portfolio.getUser().isAuth())
                 .build();
 
+        if (currentUserId != null && currentUserId.equals(portfolio.getUser().getUserId())) {
+            response.setAuth(true);
+        }
+
         return response;
     }
 
-    List<PortfolioDto.Response> portfolioToPortfolioResponseDtos(List<Portfolio> portfolios);
+    default List<PortfolioDto.Response> portfolioToPortfolioResponseDtos(List<Portfolio> portfolios, HttpServletRequest request) {
+        if ( portfolios == null ) {
+            return null;
+        }
+
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId(request);
+
+        List<PortfolioDto.Response> list = new ArrayList<>( portfolios.size() );
+        portfolios.forEach(p -> {
+            PortfolioDto.Response response = portfolioToPortfolioResponseDto(p, request);
+            if(p.getUser().getUserId().equals(currentUserId)) {
+                response.setAuth(true);
+            }
+            list.add(response);
+        });
+
+        return list;
+    }
 }
