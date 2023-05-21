@@ -44,20 +44,20 @@ public interface UserMapper {
         return response;
     }
 
-    default UserDto.UserProfileResponse userToUserProfileResponse(User user) {
+    default UserDto.UserProfileResponse userToUserProfileResponse(User user, HttpServletRequest request) {
         if(user  == null) {
             return null;
         }
-        return UserDto.UserProfileResponse.builder()
+
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId(request);
+
+        UserDto.UserProfileResponse response = UserDto.UserProfileResponse.builder()
                 .userId(user.getUserId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .profileImg(user.getProfileImg())
                 .gitLink( user.getGitLink())
                 .blogLink( user.getBlogLink())
-//                .skills(user.getSkills().stream()
-//                        .map(userSkill -> userSkill.getSkill().getName())
-//                        .collect(Collectors.toList()))
                 .grade( user.getGrade())
                 .jobStatus( user.getJobStatus())
                 .about( user.getAbout())
@@ -65,6 +65,11 @@ public interface UserMapper {
                 .updatedAt(user.getUpdatedAt())
                 .isAuth(user.isAuth())
                 .build();
+        if (currentUserId != null && currentUserId.equals(user.getUserId())) {
+            response.setAuth(true);
+        }
+
+        return response;
 
     }
 
