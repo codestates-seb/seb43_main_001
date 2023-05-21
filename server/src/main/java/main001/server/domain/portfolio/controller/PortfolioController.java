@@ -50,12 +50,11 @@ public class PortfolioController {
     }
 
     @PostMapping
-    public ResponseEntity postPortfolio(@Valid@RequestPart PortfolioDto.Post postDto,
-                                        @RequestPart(value = "representativeImg", required = false) MultipartFile representativeImg,
-                                        @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
+    public ResponseEntity postPortfolio(@Valid @RequestPart PortfolioDto.Post postDto,
+                                        @RequestPart(value = "representativeImg", required = false) MultipartFile representativeImg) throws IOException {
         Portfolio portfolio = mapper.portfolioPostDtoToPortfolio(postDto);
 
-        Portfolio response = portfolioService.createPortfolio(portfolio, postDto.getSkills(), representativeImg, images);
+        Portfolio response = portfolioService.createPortfolio(portfolio, postDto.getSkills(), representativeImg);
 
 
         portfolioService.addSkills(portfolio,postDto.getSkills());
@@ -69,16 +68,24 @@ public class PortfolioController {
         return ResponseEntity.created(location).build();
     }
 
+
+    @PostMapping("/img-upload")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity uploadImg(@RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
+        List<String> imgUrl = portfolioService.uploadImage(images);
+        return ResponseEntity.ok(imgUrl);
+    }
+
+
     @PatchMapping("/{portfolio-id}")
     public ResponseEntity patchPortfolio(@PathVariable("portfolio-id") long portfolioId,
                                          @RequestPart PortfolioDto.Patch patchDto,
-                                         @RequestPart(value = "representativeImg", required = false) MultipartFile representativeImg,
-                                         @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
+                                         @RequestPart(value = "representativeImg", required = false) MultipartFile representativeImg) throws IOException {
         patchDto.setPortfolioId(portfolioId);
         Portfolio portfolio = mapper.portfolioPatchDtoToPortfolio(patchDto);
 
 
-        Portfolio response = portfolioService.updatePortfolio(portfolio, portfolioId, patchDto.getSkills(),representativeImg, images);
+        Portfolio response = portfolioService.updatePortfolio(portfolio, portfolioId, patchDto.getSkills(), representativeImg);
 
         return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response)), HttpStatus.OK);
     }

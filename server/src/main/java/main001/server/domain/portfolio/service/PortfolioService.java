@@ -48,7 +48,7 @@ public class PortfolioService {
     private final SkillService skillService;
     private final static String VIEWCOOKIENAME = "alreadyViewCookie";
 
-    public Portfolio createPortfolio(Portfolio portfolio, List<String> skills, MultipartFile representativeImg, List<MultipartFile> images) throws IOException{
+    public Portfolio createPortfolio(Portfolio portfolio, List<String> skills, MultipartFile representativeImg) throws IOException{
         User user = portfolio.getUser();
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
@@ -64,7 +64,6 @@ public class PortfolioService {
         }
         portfolio.setUser(verifiedUser.get());
 
-
         if(representativeImg != null) {
             String representativeImgUrl = s3Service.uploadFile(representativeImg, "images");
             RepresentativeAttachment representativeAttachment = new RepresentativeAttachment(representativeImgUrl);
@@ -75,19 +74,6 @@ public class PortfolioService {
             representativeImageRepository.save(representativeAttachment);
         }
 
-
-
-        if (!CollectionUtils.isNullOrEmpty(images)) {
-            for (MultipartFile image : images) {
-                String imgUrl = s3Service.uploadFile(image, "images");
-                ImageAttachment imageAttachment = new ImageAttachment(imgUrl);
-                imageAttachment.setPortfolio(portfolio);
-                portfolio.getImageAttachments().add(imageAttachment);
-                imageAttachmentRepository.save(imageAttachment);
-            }
-        }
-
-
         Portfolio saved = portfolioRepository.save(portfolio);
 
         addSkills(saved, skills);
@@ -95,8 +81,7 @@ public class PortfolioService {
         return saved;
     }
 
-    public Portfolio updatePortfolio(Portfolio portfolio, Long portfolioId, List<String> skills,
-                                     MultipartFile representativeImg, List<MultipartFile> images) throws IOException{
+    public Portfolio updatePortfolio(Portfolio portfolio,Long portfolioId,  List<String> skills, MultipartFile representativeImg) throws IOException{
         Portfolio findPortfolio = findVerifiedPortfolio(portfolio.getPortfolioId());
         User user = portfolio.getUser();
         Optional<User> verifiedUser = userRepository.findById(user.getUserId());
@@ -116,10 +101,6 @@ public class PortfolioService {
             updateRepresentativeImage(portfolioId, representativeImg);
         }  else {
             updateRepresentativeImage(portfolioId, null);
-        }
-
-        if (images != null && images.size() > 0) {
-            updateImage(portfolioId, images);
         }
 
         Portfolio saved = portfolioRepository.save(findPortfolio);
@@ -193,37 +174,49 @@ public class PortfolioService {
             representativeImageRepository.save(newImageAttachment);
         }
     }
+//
+//    @Transactional
+//    public void updateImage(Long portfolioId, List<MultipartFile> images) throws IOException {
+//        Portfolio portfolio = findPortfolio(portfolioId);
+//        List<ImageAttachment> currentImageAttachments = portfolio.getImageAttachments();
+//
+//        // 기존 이미지 파일 첨부를 삭제
+//        if (!CollectionUtils.isNullOrEmpty(currentImageAttachments)) {
+//            Iterator<ImageAttachment> iterator = currentImageAttachments.iterator();
+//            while (iterator.hasNext()) {
+//                ImageAttachment imageAttachment = iterator.next();
+//                // s3에서 이미지 파일 삭제
+//                s3Service.deleteFile(imageAttachment.getImgUrl());
+//                // 포트폴리오에서 이미지 첨부 파일 삭제
+//                iterator.remove();
+//                imageAttachmentRepository.delete(imageAttachment);
+//            }
+//        }
+//
+//
+//        // 새로운 이미지 파일을 첨부
+//        if (!CollectionUtils.isNullOrEmpty(images)) {
+//            for (MultipartFile image : images) {
+//                String imgUrl = s3Service.uploadFile(image, "images");
+//                ImageAttachment newImageAttachment = new ImageAttachment(imgUrl);
+//                newImageAttachment.setPortfolio(portfolio);
+//
+//                portfolio.getImageAttachments().add(newImageAttachment);
+//                imageAttachmentRepository.save(newImageAttachment);
+//            }
+//        }
+//    }
 
-    @Transactional
-    public void updateImage(Long portfolioId, List<MultipartFile> images) throws IOException {
-        Portfolio portfolio = findPortfolio(portfolioId);
-        List<ImageAttachment> currentImageAttachments = portfolio.getImageAttachments();
 
-        // 기존 이미지 파일 첨부를 삭제
-        if (!CollectionUtils.isNullOrEmpty(currentImageAttachments)) {
-            Iterator<ImageAttachment> iterator = currentImageAttachments.iterator();
-            while (iterator.hasNext()) {
-                ImageAttachment imageAttachment = iterator.next();
-                // s3에서 이미지 파일 삭제
-                s3Service.deleteFile(imageAttachment.getImgUrl());
-                // 포트폴리오에서 이미지 첨부 파일 삭제
-                iterator.remove();
-                imageAttachmentRepository.delete(imageAttachment);
-            }
+    public List<String> uploadImage(List<MultipartFile> images) throws IOException {
+        List<String> ImgUrls = new ArrayList<>();
+        for (MultipartFile image : images) {
+            String ImgUrl = s3Service.uploadFile(image, "images");
+            ImageAttachment imageAttachment = new ImageAttachment(ImgUrl);
+            imageAttachmentRepository.save(imageAttachment);
+            ImgUrls.add(ImgUrl);
         }
-
-
-        // 새로운 이미지 파일을 첨부
-        if (!CollectionUtils.isNullOrEmpty(images)) {
-            for (MultipartFile image : images) {
-                String imgUrl = s3Service.uploadFile(image, "images");
-                ImageAttachment newImageAttachment = new ImageAttachment(imgUrl);
-                newImageAttachment.setPortfolio(portfolio);
-
-                portfolio.getImageAttachments().add(newImageAttachment);
-                imageAttachmentRepository.save(newImageAttachment);
-            }
-        }
+        return ImgUrls;
     }
 
     @Transactional
