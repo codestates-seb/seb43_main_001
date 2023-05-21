@@ -10,6 +10,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import main001.server.domain.utils.CurrentUserIdFinder;
+import main001.server.exception.BusinessLogicException;
+import main001.server.exception.ExceptionCode;
 import main001.server.response.MultiResponseDto;
 import main001.server.response.SingleResponseDto;
 import main001.server.domain.user.dto.UserDto;
@@ -179,7 +182,11 @@ public class UserController {
             @PathVariable("user-id") @Positive long userId,
             @Valid @RequestBody UserDto.Patch requestBody,
             HttpServletRequest request) {
-        requestBody.setUserId(userId);
+        long currentUserId = CurrentUserIdFinder.getCurrentUserId(request);
+        if (currentUserId != userId) {
+            throw new BusinessLogicException(ExceptionCode.INVALID_USER_STATUS);
+        }
+            requestBody.setUserId(userId);
 
         User user = userService.updateUser(mapper.userPatchToUser(requestBody));
 
