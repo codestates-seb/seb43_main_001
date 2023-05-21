@@ -12,7 +12,7 @@ export const useGetUserProfile = (userId: number) => {
     isError: getUserProfileError,
     data: UserProfile,
   } = useQuery<GetUserProfile, Error>({
-    queryKey: ['UserProfile', userId],
+    queryKey: ['userProfile', userId],
     queryFn: () => getUserProfile(userId),
     onError: () => {
       console.error('해당하는 유저를 찾을 수 없습니다.');

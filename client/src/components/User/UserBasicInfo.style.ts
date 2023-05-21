@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { RxGithubLogo, RxPerson } from 'react-icons/rx';
+import { RxGithubLogo, RxPerson, RxSketchLogo } from 'react-icons/rx';
 import { IoMdEye } from 'react-icons/io';
 
 import { COLOR } from '../../constants/index';
@@ -67,6 +67,7 @@ export const UserImg = styled.div`
   }
   margin-right: 15px;
 `;
+export const UserNameBox = styled.div``;
 export const UserName = styled.p`
   font-weight: bold;
   font-size: 1.5rem;
@@ -92,7 +93,11 @@ export const Buttons = styled.div`
 `;
 export const GithubIcon = styled(RxGithubLogo)``;
 export const ViewIcon = styled(IoMdEye)`
-  /* margin: 0 10px; */
   margin-left: 8px;
 `;
 export const FollowrIcon = styled(RxPerson)``;
+export const GradeIcon = styled(RxSketchLogo)<{ gradecolor: string }>`
+  color: ${(props) => props.gradecolor};
+  font-size: 1rem;
+  margin: 0;
+`;

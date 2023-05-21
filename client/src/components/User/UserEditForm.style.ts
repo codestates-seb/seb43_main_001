@@ -33,15 +33,15 @@ export const EditForm = styled.form`
     border: 1px solid;
     border-radius: 5px;
   }
-  button {
-    position: relative;
-    left: 85%;
-    font-size: 0.8rem;
-    color: ${subFontColor};
-  }
   svg {
     font-size: 1.3rem;
   }
+`;
+export const DeleteBtn = styled.button`
+  position: relative;
+  left: 85%;
+  font-size: 0.8rem;
+  color: ${subFontColor};
 `;
 export const EditSelect = styled.select`
   width: 100%;

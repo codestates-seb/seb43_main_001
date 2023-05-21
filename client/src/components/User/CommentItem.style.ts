@@ -26,6 +26,11 @@ export const CommentItem = styled.li`
     resize: none;
   }
 `;
+export const TextBox = styled.p`
+  width: 100%;
+  margin: 8px 0;
+  overflow-wrap: break-word;
+`;
 export const ImgBox = styled.div`
   width: 20px;
   height: 20px;

@@ -6,8 +6,8 @@ export const CommentContainer = styled.div`
   padding: 10px;
   border-top: 1px double black;
 `;
-export const Comments = styled.ul`
-  height: 300px;
+export const Comments = styled.ul<{ CommentLen: number }>`
+  height: ${(props) => (props.CommentLen <= 3 ? `${props.CommentLen * 125}px` : '390px')};
   overflow: scroll;
   -ms-overflow-style: none;
   ::-webkit-scrollbar {

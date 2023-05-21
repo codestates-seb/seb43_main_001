@@ -3,13 +3,15 @@ import themeReducer from '../store/slice/themeSlice';
 import loginReducer from '../store/slice/loginSlice';
 import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import editUserProfileSlice from './slice/editUserProfileSlice';
+import editUserProfileReducer from './slice/editUserProfileSlice';
+import modalReducer from './slice/modalSlice';
 
 // reducer를 여기에 추가하시면 됩니다
 const rootReducer = combineReducers({
   theme: themeReducer,
   login: loginReducer,
-  editUserProfile: editUserProfileSlice,
+  editUserProfile: editUserProfileReducer,
+  modal: modalReducer,
 });
 
 const persistConfig = {
@@ -17,7 +19,7 @@ const persistConfig = {
   storage,
 
   // persist 적용하기
-  whitelist: ['theme', 'login', 'editUserProfile'],
+  whitelist: ['theme', 'login', 'editUserProfile', 'modal'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

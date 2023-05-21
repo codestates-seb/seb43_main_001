@@ -11,7 +11,6 @@ import {
   GetPortfolioPage,
   PostPortfolioComment,
   PatchPortfolioComment,
-  GetUserPortfolio,
   GetUserProfile,
   GetUserComment,
   PatchUserProfile,
@@ -22,6 +21,7 @@ import {
   PatchUserComment,
   DeleteUserComment,
   LikeBtn,
+  GetUserPortfolioPage,
 } from '../types/index';
 
 const REFRESH_URL = ''; // refresh URL을 새롭게 추가를 해야 한다.
@@ -198,11 +198,19 @@ export const PortfolioCommentAPI = {
 // * : UserComponent
 export const UserProfileAPI = {
   getUserProfile: async (userId: number): Promise<GetUserProfile> => {
-    // ! : 실제 사용을 할 때는 /users/1/profile
-    const userProfileData = await tokenClient.get(
-      `${process.env.REACT_APP_API_URL}/users/${userId}/profile`,
-    );
+    const userProfileData = await tokenClient.get(`/users/${userId}/profile`);
     return userProfileData.data.data;
+  },
+  postUserImg: async (userId: number, userImg: File) => {
+    // ! : 파일은 form 데이터로 전송
+    const profileImg = new FormData();
+    profileImg.append('profileImg', userImg);
+    const axiosConfig = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+    return await tokenClient.post(`/users/${userId}/profile-img-upload`, profileImg, axiosConfig);
   },
   patchUserProfile: async ({
     userId,
@@ -213,7 +221,7 @@ export const UserProfileAPI = {
     jobStatus,
     about,
   }: PatchUserProfile) => {
-    await tokenClient.patch(`${process.env.REACT_APP_API_URL}/users/${userId}`, {
+    await tokenClient.patch(`/users/${userId}`, {
       name,
       profileImg,
       gitLink,
@@ -223,43 +231,45 @@ export const UserProfileAPI = {
     });
   },
   deleteUserProfile: async (userId: number) => {
-    await tokenClient.delete(`${process.env.REACT_APP_API_URL}/users/${userId}`);
+    await tokenClient.delete(`/users/${userId}`);
   },
 };
 
 export const UserPortfolioAPI = {
-  getUserPortfolio: async (userId: number): Promise<GetUserPortfolio[]> => {
-    // ! : sort 기능 추가 필요(아직 테스트하지 못함)
+  getUserPortfolio: async (
+    userId: number,
+    sort: string,
+    page: number,
+    size: string,
+  ): Promise<GetUserPortfolioPage> => {
     const userPortfoliosData = await tokenClient.get(
-      `${process.env.REACT_APP_API_URL}/portfolios/${userId}/portfolios?sortBy=createdAt&page=1&size=15`,
+      `/portfolios/users/${userId}?page=${page}&size=${size}&sortBy=${sort}`,
     );
-    return userPortfoliosData.data.data;
+    return { ...userPortfoliosData.data, currentPage: page };
   },
 };
 
 export const UserCommentsAPI = {
   getUserComments: async (userId: number): Promise<GetUserComment[]> => {
     const userCommentsData = await tokenClient.get(
-      `${process.env.REACT_APP_API_URL}/api/usercomments/users/${userId}?page=1&size=10`,
+      `/api/usercomments/users/${userId}?page=1&size=10`,
     );
     return userCommentsData.data.data;
   },
   // * : 한 유저가 다른 사람의 포트폴리에 작성한 댓글
   getCommentsToPortfolio: async (userId: number): Promise<GetUserComment[]> => {
-    const commentsToPortfolioData = await tokenClient.get(
-      `${process.env.REACT_APP_API_URL}/api/portfoliocomments/users/${userId}`,
-    );
+    const commentsToPortfolioData = await tokenClient.get(`/api/portfoliocomments/users/${userId}`);
     return commentsToPortfolioData.data.data;
   },
   // * : 한 유저가 다른 사람에게 작성한 댓글
   getCommentsToUser: async (userId: number): Promise<GetUserComment[]> => {
     const commentsToUserData = await tokenClient.get(
-      `${process.env.REACT_APP_API_URL}/api/usercomments/writers/${userId}?page=1&size=10`,
+      `/api/usercomments/writers/${userId}?page=1&size=10`,
     );
     return commentsToUserData.data.data;
   },
   postUserComment: async ({ userId, writerId, content }: PostUserComment) => {
-    return await tokenClient.post(`${process.env.REACT_APP_API_URL}/api/usercomments`, {
+    return await tokenClient.post('/api/usercomments', {
       userId,
       writerId,
       content,
@@ -267,7 +277,7 @@ export const UserCommentsAPI = {
   },
   patchUserComment: async ({ userId, content, path, pathId, commentId }: PatchUserComment) => {
     await tokenClient.patch(
-      `${process.env.REACT_APP_API_URL}/api/${path}/${commentId}`,
+      `/api/${path}/${commentId}`,
       path === 'usercomments'
         ? {
             userCommentId: commentId,
@@ -280,7 +290,7 @@ export const UserCommentsAPI = {
   },
   // ! : 전달되는게 어떤 id값인지 확인 필요
   deleteUserComment: async ({ commentId, path }: DeleteUserComment) => {
-    await tokenClient.delete(`${process.env.REACT_APP_API_URL}/api/${path}/${commentId}`);
+    await tokenClient.delete(`/api/${path}/${commentId}`);
   },
 };
 

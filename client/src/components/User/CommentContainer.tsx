@@ -19,7 +19,7 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
 
   const addHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO : 데이터 전송
+    // TODO : 데이터 전
     handlerPostUserComment(userId, content);
     setContent('');
   };
@@ -46,23 +46,21 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
       </S.SelectBtn>
       {selectComment ? (
         <>
-          <S.Comments>
-            {UserComments && (
-              <>
-                {UserComments.length > 0 ? (
-                  <>
-                    {UserComments.map((ele) => (
-                      <CommentItem key={ele.userCommentId} data={ele} path='usercomments' />
-                    ))}
-                  </>
-                ) : (
-                  <>
-                    <p></p>
-                  </>
-                )}
-              </>
-            )}
-          </S.Comments>
+          {UserComments && (
+            <>
+              {UserComments.length > 0 ? (
+                <S.Comments CommentLen={UserComments.length}>
+                  {UserComments.map((ele) => (
+                    <CommentItem key={ele.userCommentId} data={ele} path='usercomments' />
+                  ))}
+                </S.Comments>
+              ) : (
+                <>
+                  <p>작성된 댓글이 없습니다.</p>
+                </>
+              )}
+            </>
+          )}
           <S.CommentAdd onSubmit={addHandler}>
             <label htmlFor='Comment'></label>
             <textarea id='Comment' value={content} onChange={contentChangeHandler} />
@@ -84,19 +82,45 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
             </button>
           </S.CategoryBtns>
           {category ? (
-            <S.Comments>
-              {CommentsToUser &&
-                CommentsToUser?.map((ele) => (
-                  <CommentItem key={ele.userCommentId} data={ele} path='usercomments' />
-                ))}
-            </S.Comments>
+            <>
+              {CommentsToUser && (
+                <>
+                  {CommentsToUser.length > 0 ? (
+                    <S.Comments CommentLen={CommentsToUser.length}>
+                      {CommentsToUser.map((ele) => (
+                        <CommentItem key={ele.userCommentId} data={ele} path='usercomments' />
+                      ))}
+                    </S.Comments>
+                  ) : (
+                    <>
+                      <p>작성한 댓글이 없습니다.</p>
+                    </>
+                  )}
+                </>
+              )}
+            </>
           ) : (
-            <S.Comments>
-              {CommentsToPortfolio &&
-                CommentsToPortfolio?.map((ele) => (
-                  <CommentItem key={ele.portfolioCommentId} data={ele} path='portfoliocomments' />
-                ))}
-            </S.Comments>
+            <>
+              {CommentsToPortfolio && (
+                <>
+                  {CommentsToPortfolio.length > 0 ? (
+                    <S.Comments CommentLen={CommentsToPortfolio.length}>
+                      {CommentsToPortfolio.map((ele) => (
+                        <CommentItem
+                          key={ele.userCommentId}
+                          data={ele}
+                          path='portfoliocomments'
+                        />
+                      ))}
+                    </S.Comments>
+                  ) : (
+                    <>
+                      <p>작성한 댓글이 없습니다.</p>
+                    </>
+                  )}
+                </>
+              )}
+            </>
           )}
         </>
       )}
