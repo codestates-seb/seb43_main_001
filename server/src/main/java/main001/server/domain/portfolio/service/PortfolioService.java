@@ -218,6 +218,25 @@ public class PortfolioService {
         return ImgUrls;
     }
 
+    public void deleteImage(Long imgId) {
+        Optional<ImageAttachment> imageAttachmentOptional = imageAttachmentRepository.findById(imgId);
+        imageAttachmentOptional.ifPresent(imageAttachment -> {
+            imageAttachmentRepository.delete(imageAttachment);
+            s3Service.deleteFile(imageAttachment.getImgUrl());
+        });
+    }
+
+    public List<String> getImageUrlList() {
+        List<ImageAttachment> imageList = imageAttachmentRepository.findAll();
+        List<String> imageUrlList = new ArrayList<>();
+
+        for (ImageAttachment imageAttachment : imageList) {
+            imageUrlList.add(imageAttachment.getImgUrl());
+        }
+
+        return imageUrlList;
+    }
+
     @Transactional
     public void increaseViewCount(Long portfolioId) {
         Portfolio portfolio = findVerifiedPortfolio(portfolioId);
