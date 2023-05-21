@@ -20,7 +20,7 @@ public class UserDto {
         @Email
         @NotBlank(message = "이메일을 입력해주세요.")
         private String email;
-//        private String password;
+        private String password;
         @NotBlank(message = "이름을 입력해주세요.")
         private String name;
         private String profileImg;

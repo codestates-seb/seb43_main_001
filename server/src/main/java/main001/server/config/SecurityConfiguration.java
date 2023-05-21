@@ -48,32 +48,33 @@ public class SecurityConfiguration {
                 .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
                 .accessDeniedHandler(new MemberAccessDeniedHandler())
                 .and()
-//                .apply(new CustomFilterConfigurer())
-//                .and()
+                .apply(new CustomFilterConfigurer())
+                .and()
                 .apply(new OAuth2FilterConfigurer())
                 .and()
                 .logout().logoutSuccessUrl("/")
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
-//                        .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//                        .antMatchers(HttpMethod.POST, "/users/login/**", "/users/signup/**").permitAll() // 로그인 및 회원 가입 모두 접근 가능
-//                        .antMatchers(HttpMethod.GET, "/users/**").hasRole("USER")
-//                        .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
-                        .antMatchers(HttpMethod.GET, "/api/portfoliocomments/portfolios/**").hasRole("USER")
+                        .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // USER
+                        .antMatchers(HttpMethod.POST, "/users/login/**", "/users/signup/**").permitAll() // 로그인 및 회원 가입 모두 접근 가능
+                        .antMatchers(HttpMethod.PATCH, "/users/**").hasAnyRole("USER", "ADMIN")
+                        .antMatchers(HttpMethod.DELETE, "/users/**").hasAnyRole("USER", "ADMIN")
+
+                        // USER_COMMENT, PORTFOLIO_COMMENT
+                        .antMatchers(HttpMethod.POST, "/api/**").hasAnyRole("USER", "ADMIN")
+                        .antMatchers(HttpMethod.PATCH, "/api/**").hasAnyRole("USER", "ADMIN")
+                        .antMatchers(HttpMethod.DELETE, "/api/**").hasAnyRole("USER", "ADMIN")
+
+                        // PORTFOLIO
+                        .antMatchers(HttpMethod.POST, "/portfolios/**").hasAnyRole("USER", "ADMIN")
+                        .antMatchers(HttpMethod.PATCH, "/portfolios/**").hasAnyRole("USER", "ADMIN")
+                        .antMatchers(HttpMethod.DELETE, "/portfolios/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().permitAll())
                 .oauth2Login(oauth2 -> oauth2
-                        .successHandler(new OAuth2UserSuccessHandler(authorityUtils, securityService, userService)))
-        ;
+                        .successHandler(new OAuth2UserSuccessHandler(authorityUtils, securityService, userService)));
         return http.build();
     }
-
-    /**
-     * 로그인시 사용
-     */
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//    }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
