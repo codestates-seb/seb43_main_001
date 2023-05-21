@@ -110,14 +110,8 @@ public class UserCommentService {
                 () -> new BusinessLogicException(ExceptionCode.COMMENT_NOT_FOUND)
         );
 
-        if(userComment.getUserCommentStatus() == UserCommentStatus.COMMENT_DELETED) {
-            throw new BusinessLogicException(ExceptionCode.COMMNET_DELETED);
-        }
-
         return userComment;
     }
-
-
 
     private UserComment setUserAndWriter(UserComment userComment) {
         User user = userService.findUser(userComment.getUser().getUserId());
