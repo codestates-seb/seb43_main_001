@@ -111,6 +111,7 @@ export type PatchPortfolio = {
 };
 
 export type GetPortfolio = {
+  auth: boolean;
   portfolioId: number;
   userId: number;
   name: string;
@@ -127,6 +128,7 @@ export type GetPortfolio = {
   createdAt: string;
   representativeImgUrl: string | null;
   likes: boolean;
+  countLikes: number;
 };
 
 type PageInfo = {

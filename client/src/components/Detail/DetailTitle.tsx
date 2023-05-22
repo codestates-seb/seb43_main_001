@@ -6,6 +6,7 @@ import { useRouter } from '../../hooks/useRouter';
 type LinkName = readonly [string, string];
 
 type DetailTileProps = {
+  auth: boolean;
   userId: number;
   title: string;
   name: string;
@@ -14,7 +15,15 @@ type DetailTileProps = {
   skills: string[];
 };
 // 상세 페이지 포트폴리오 제목 및 사용자 정보
-function DetailTitle({ userId, name, title, gitLink, distributionLink, skills }: DetailTileProps) {
+function DetailTitle({
+  auth,
+  userId,
+  name,
+  title,
+  gitLink,
+  distributionLink,
+  skills,
+}: DetailTileProps) {
   const { routeTo } = useRouter();
 
   const handleOnClickUserImg = () => {
@@ -54,10 +63,12 @@ function DetailTitle({ userId, name, title, gitLink, distributionLink, skills }:
         </S.Tags>
       </S.TitleDowner>
       <S.UserInfoEdit>
-        <S.EditBox>
-          <S.Edit>수정</S.Edit>
-          <S.Delete>삭제</S.Delete>
-        </S.EditBox>
+        {auth ? (
+          <S.EditBox>
+            <S.Edit>수정</S.Edit>
+            <S.Delete>삭제</S.Delete>
+          </S.EditBox>
+        ) : null}
       </S.UserInfoEdit>
     </S.DetailTitle>
   );

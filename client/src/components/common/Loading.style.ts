@@ -8,7 +8,7 @@ const { mainColor } = COLOR;
 export const StyledLoading = styled.div`
   display: inline-block;
   position: relative;
-
+  margin: 8rem auto;
   &::after {
     content: '';
     display: block;

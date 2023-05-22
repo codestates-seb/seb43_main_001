@@ -18,4 +18,6 @@ export const THEME = {
   light: 'light',
 } as const;
 
-export const QUERY_KEY = {};
+export const URL = {
+  refreshUrl: `${process.env.REACT_APP_API_URL}/auth/refresh`,
+};
