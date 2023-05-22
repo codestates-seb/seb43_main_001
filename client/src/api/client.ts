@@ -81,7 +81,20 @@ tokenClient.interceptors.response.use(
 
 export const userAPI = {};
 
+// * : Portfolio
 export const PortfolioAPI = {
+  uploadImg: async (img: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('images', img);
+
+    const { data } = await tokenClient.post('/portfolios/img-upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return data[0];
+  },
+
   getPortfolio: async (portfolioId: number): Promise<GetPortfolio> => {
     const PortfolioData = await tokenClient.get(
       `${process.env.REACT_APP_API_URL}/portfolios/${portfolioId}`,
@@ -89,7 +102,7 @@ export const PortfolioAPI = {
     return PortfolioData.data.data;
   },
   postPortfolio: async (Portfolio: PostPortfolio): Promise<GetPortfolio> => {
-    const { postDto, representativeImg, images, files } = Portfolio;
+    const { postDto, representativeImg, files } = Portfolio;
 
     // 폼 데이터 형식 사용
     const formData = new FormData();
@@ -100,7 +113,6 @@ export const PortfolioAPI = {
 
     formData.append('postDto', Dto);
     if (representativeImg) formData.append('representativeImg', representativeImg);
-    if (images) formData.append('images', images);
     if (files) formData.append('files', files);
 
     return await tokenClient.post(`${process.env.REACT_APP_API_URL}/portfolios`, formData, {
@@ -110,7 +122,7 @@ export const PortfolioAPI = {
     });
   },
   patchPortfolio: async (Portfolio: PatchPortfolio): Promise<GetPortfolio> => {
-    const { portfolioId, postDto, representativeImg, images, files } = Portfolio;
+    const { portfolioId, postDto, representativeImg, files } = Portfolio;
 
     // 폼 데이터 형식 사용
     const formData = new FormData();
@@ -121,7 +133,6 @@ export const PortfolioAPI = {
 
     formData.append('patchDto', Dto);
     if (representativeImg) formData.append('representativeImg', representativeImg);
-    if (images) formData.append('images', images);
     if (files) formData.append('files', files);
 
     return await tokenClient.patch(
