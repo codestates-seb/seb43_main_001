@@ -36,12 +36,16 @@ public class MemberAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String accessToken = securityService.delegateAccessToken(user);
         String refreshToken = securityService.delegateRefreshToken(request, user);
 
+        String url = createURI(accessToken, refreshToken).toString();
+
+        getRedirectStrategy().sendRedirect(request, response, url);
+    }
+    private URI createURI(String accessToken, String refreshToken) {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("access_token", accessToken);
         queryParams.add("refresh_token", refreshToken);
 
-
-        URI url = UriComponentsBuilder
+        return UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
                 .host(EnvConfig.getBaseUrl())
@@ -50,6 +54,5 @@ public class MemberAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .queryParams(queryParams)
                 .build()
                 .toUri();
-        getRedirectStrategy().sendRedirect(request, response, url.toString());
     }
 }
