@@ -11,9 +11,9 @@ import main001.server.exception.BusinessLogicException;
 import main001.server.exception.ExceptionCode;
 import main001.server.security.jwt.JwtTokenizer;
 import main001.server.security.service.SecurityService;
-import main001.server.security.service.SecurityServiceImpl;
 import main001.server.security.utils.CustomAuthorityUtils;
 import org.springframework.data.domain.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -28,31 +28,23 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class UserService {
-    private final JwtTokenizer jwtTokenizer;
     private final UserRepository userRepository;
-//    private final PasswordEncoder passwordEncoder; // Security 적용 후 사용
-//
-    private final CustomAuthorityUtils authorityUtils;
-
     private final ProfileImgRepository profileImgRepository;
-
     private final S3Service s3Service;
-
     private final SecurityService securityService;
+    private final CustomAuthorityUtils authorityUtils;
+    private final JwtTokenizer jwtTokenizer;
+    private final PasswordEncoder passwordEncoder;
 
     public User createUser(User user) {
         verifyExistEmail(user.getEmail());
 
-//        /**
-//         * 암호화된 비밀번호 설정
-//         */
-//        String encryptedPassword = passwordEncoder.encode(user.getPassword());
-//        user.setPassword(encryptedPassword);
-//
+        // 암호화된 비밀번호 설정
+        String encryptedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encryptedPassword);
 
-        /**
-         * 초기 권한 부여 설정
-         */
+
+        // 초기 권한 부여 설정
         List<String> roles = authorityUtils.createRoles(user.getEmail());
         user.setRoles(roles);
 
