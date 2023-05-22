@@ -76,6 +76,7 @@ public class PortfolioController {
     }
 
 
+
     @DeleteMapping("/img-delete/{imgId}")
     public ResponseEntity deleteImg(@PathVariable Long imgId) {
         portfolioService.deleteImage(imgId);
@@ -87,7 +88,6 @@ public class PortfolioController {
         List<String> imageUrlList = portfolioService.getImageUrlList();
         return ResponseEntity.ok(imageUrlList);
     }
-
 
     @PatchMapping("/{portfolio-id}")
     public ResponseEntity patchPortfolio(@PathVariable("portfolio-id") long portfolioId,
