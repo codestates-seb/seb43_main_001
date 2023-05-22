@@ -80,7 +80,7 @@ tokenClient.interceptors.response.use(
 
         const newAccessToken = localStorage.getItem('accessToken');
 
-        originalRequest.headers.authorization = `${newAccessToken}`;
+        originalRequest.headers.authorization = `Bearer ${newAccessToken}`;
 
         return await axios(originalRequest);
       } catch (error) {
