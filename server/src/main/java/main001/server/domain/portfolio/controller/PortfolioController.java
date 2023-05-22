@@ -48,7 +48,6 @@ public class PortfolioController {
 
         Portfolio response = portfolioService.createPortfolio(portfolio, postDto.getSkills(), representativeImg);
 
-
         portfolioService.addSkills(portfolio,postDto.getSkills());
 
         URI location =
@@ -60,14 +59,12 @@ public class PortfolioController {
         return ResponseEntity.created(location).build();
     }
 
-
     @PostMapping("/img-upload")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity uploadImg(@RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
         List<String> imgUrl = portfolioService.uploadImage(images);
         return ResponseEntity.ok(imgUrl);
     }
-
 
     @DeleteMapping("/img-delete/{imgId}")
     public ResponseEntity deleteImg(@PathVariable Long imgId) {
@@ -80,7 +77,6 @@ public class PortfolioController {
         List<String> imageUrlList = portfolioService.getImageUrlList();
         return ResponseEntity.ok(imageUrlList);
     }
-
 
     @PatchMapping("/{portfolio-id}")
     public ResponseEntity patchPortfolio(@PathVariable("portfolio-id") long portfolioId,

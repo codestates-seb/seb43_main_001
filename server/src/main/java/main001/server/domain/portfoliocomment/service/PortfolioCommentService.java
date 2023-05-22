@@ -5,7 +5,9 @@ import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.service.PortfolioService;
 import main001.server.domain.portfoliocomment.dto.PortfolioCommentDto;
 import main001.server.domain.portfoliocomment.entity.PortfolioComment;
+import main001.server.domain.portfoliocomment.entity.PortfolioCommentRelation;
 import main001.server.domain.portfoliocomment.mapper.PortfolioCommentMapper;
+import main001.server.domain.portfoliocomment.repository.PortfolioCommentRelationRepository;
 import main001.server.domain.portfoliocomment.repository.PortfolioCommentRepository;
 import main001.server.domain.user.entity.User;
 import main001.server.domain.user.service.UserService;
@@ -28,6 +30,7 @@ public class PortfolioCommentService {
 
     private final PortfolioCommentMapper portfolioCommentMapper;
     private final PortfolioCommentRepository portfolioCommentRepository;
+    private final PortfolioCommentRelationRepository relationRepository;
     private final UserService userService;
     private final PortfolioService portfolioService;
 
@@ -41,7 +44,22 @@ public class PortfolioCommentService {
 
         PortfolioComment savedComment = portfolioCommentRepository.save(setUserAndPortfolio(portfolioComment));
 
+        saveCommentRelations(portfolioComment, portfolioComment);
+
         return portfolioCommentMapper.entityToResponse(savedComment);
+    }
+
+    private void saveCommentRelations(PortfolioComment ancestorComment, PortfolioComment descendantComment) {
+        PortfolioCommentRelation relation = new PortfolioCommentRelation();
+
+        relation.setAncestor(ancestorComment);
+        relation.setDescendant(ancestorComment);
+
+        relationRepository.save(relation);
+
+        if(ancestorComment.getParentComment()!=null) {
+            saveCommentRelations(ancestorComment.getParentComment(),descendantComment);
+        }
     }
 
     /**
@@ -68,7 +86,7 @@ public class PortfolioCommentService {
      * @param size
      * @return
      */
-    public PortfolioCommentDto.ResponseList findPortfolioCommentsByUser(Long userId, int page, int size) {
+    public PortfolioCommentDto.ResponseList findPortfolioCommentsByWriter(Long userId, int page, int size) {
         User user = userService.findUser(userId);
 
         Pageable pageable = PageRequest.of(page, size);

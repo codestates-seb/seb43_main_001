@@ -25,6 +25,24 @@ public class PortfolioCommentMapper {
         portfolio.setPortfolioId(postDto.getPortfolioId());
         portfolioComment.setPortfolio(portfolio);
 
+        if(postDto.getRootCommentId()==null) {
+            portfolioComment.setRootComment(null);
+        }
+        else {
+            PortfolioComment rootComment = new PortfolioComment();
+            rootComment.setPortfolioCommentId(postDto.getRootCommentId());
+            portfolioComment.setRootComment(rootComment);
+        }
+
+        if(postDto.getParentCommentId()==null) {
+            portfolioComment.setParentComment(null);
+        }
+        else {
+            PortfolioComment parentComment = new PortfolioComment();
+            parentComment.setPortfolioCommentId(postDto.getParentCommentId());
+            portfolioComment.setParentComment(parentComment);
+        }
+
         return portfolioComment;
     }
 
@@ -38,30 +56,26 @@ public class PortfolioCommentMapper {
         portfolioComment.setPortfolioCommentId(patchDto.getPortfolioCommentId());
         portfolioComment.setContent(patchDto.getContent());
 
-        User user = new User();
-        user.setUserId(patchDto.getUserId());
-        portfolioComment.setUser(user);
-
-        Portfolio portfolio = new Portfolio();
-        portfolio.setPortfolioId(patchDto.getPortfolioId());
-        portfolioComment.setPortfolio(portfolio);
-
         return portfolioComment;
 
     }
 
     public PortfolioCommentDto.Response entityToResponse(PortfolioComment portfolioComment) {
-        PortfolioCommentDto.Response response = new PortfolioCommentDto.Response(
-                portfolioComment.getPortfolioCommentId(),
-                portfolioComment.getContent(),
-                portfolioComment.getUser().getUserId(),
-                portfolioComment.getUser().getName(),
-                portfolioComment.getUser().getProfileImg(),
-                portfolioComment.getPortfolio().getPortfolioId(),
-                portfolioComment.getCreatedAt(),
-                portfolioComment.getUpdatedAt(),
-                portfolioComment.getUser().isAuth()
-        );
-        return response;
+
+        return PortfolioCommentDto.Response.builder()
+                .portfolioCommentId(portfolioComment.getPortfolioCommentId())
+                .userId(portfolioComment.getUser().getUserId())
+                .userName(portfolioComment.getUser().getName())
+                .userProfileImg(portfolioComment.getUser().getProfileImg())
+                .portfolioId(portfolioComment.getPortfolio().getPortfolioId())
+                .rootId(portfolioComment.getRootComment()==null ?
+                        null : portfolioComment.getRootComment().getPortfolioCommentId())
+                .parentId(portfolioComment.getParentComment()==null ?
+                        null:portfolioComment.getParentComment().getPortfolioCommentId())
+                .createdAt(portfolioComment.getCreatedAt())
+                .updatedAt(portfolioComment.getUpdatedAt())
+                .auth(portfolioComment.getUser().isAuth())
+                .build();
+
     }
 }
