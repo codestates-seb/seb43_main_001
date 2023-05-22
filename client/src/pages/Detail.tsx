@@ -18,9 +18,6 @@ import { useParams } from 'react-router-dom';
 // common component
 import Loading from '../components/common/Loading';
 
-// test
-import { getNewAccessToken } from '../utils/getAccessToken';
-
 function Detail() {
   const { portfolioId } = useParams();
   const { getPortfolioLoading, PortfolioInfo } = useGetPortfolio(Number(portfolioId));
@@ -28,7 +25,6 @@ function Detail() {
   IncreasePageView(Number(portfolioId));
 
   console.log(PortfolioInfo);
-  console.log('getNewAccessToken', getNewAccessToken());
 
   if (getPortfolioLoading) {
     return (

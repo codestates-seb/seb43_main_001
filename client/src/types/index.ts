@@ -185,3 +185,10 @@ export type LikeBtn = {
   portfolioId: number;
   likes: boolean;
 };
+
+// SignUp
+export type SignUp = {
+  email: string;
+  password: string;
+  name: string;
+};

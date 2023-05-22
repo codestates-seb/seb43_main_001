@@ -3,9 +3,12 @@ import axios from 'axios';
 
 // util
 import { getNewAccessToken } from '../utils/getAccessToken';
+import { getUserIdFromAccessToken } from '../utils/getUserIdFromAccessToken';
 
 // constant
 import { URL } from '../constants';
+
+import { toast } from 'react-toastify';
 
 // types
 import {
@@ -25,6 +28,7 @@ import {
   DeleteUserComment,
   LikeBtn,
   GetUserPortfolioPage,
+  SignUp,
 } from '../types/index';
 
 const { refreshUrl } = URL;
@@ -55,7 +59,15 @@ tokenClient.interceptors.response.use(
     const accessToken = localStorage.getItem('accessToken');
 
     if (!accessToken && error.response.status === 401) {
+      toast.error('로그인 후 진행해주세요!');
       return Promise.reject(error);
+    }
+
+    // error handling
+    if (error.response.status === 400) {
+      toast.error('잘못된 요청입니다');
+    } else if (error.response.status === 500) {
+      toast.error('에러가 발생했습니다. 잠시후 다시 시도해 주세요.');
     }
 
     if (error.response.status === 401 && originalRequest && !originalRequest._retry) {
@@ -79,7 +91,19 @@ tokenClient.interceptors.response.use(
   },
 );
 
-export const userAPI = {};
+export const userAPI = {
+  postSignUp: async ({ name, password, email }: SignUp) => {
+    return await tokenClient.post(
+      `/users/signup
+    `,
+      {
+        name,
+        password,
+        email,
+      },
+    );
+  },
+};
 
 export const PortfolioAPI = {
   getPortfolio: async (portfolioId: number): Promise<GetPortfolio> => {
