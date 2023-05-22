@@ -22,7 +22,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.IOException;
 import java.net.URI;
@@ -117,21 +116,6 @@ public class PortfolioController {
         return new ResponseEntity<>(new SingleResponseDto<>(responseDto), HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity getPortfolios(@Positive @RequestParam int page,
-                                        @Positive @RequestParam int size,
-                                        @RequestParam(value = "sort", defaultValue = "createdAt") String sort,
-                                        HttpServletRequest request) {
-        Page<Portfolio> pagePortfolios;
-        if (sort.equals("views")) {
-            pagePortfolios = portfolioService.findAllOrderByViewsDesc(page - 1, size);
-        } else {
-            pagePortfolios = portfolioService.findAllOrderByCreatedAtDesc(page - 1, size);
-        }
-        List<Portfolio> portfolios = pagePortfolios.getContent();
-        return new ResponseEntity<>(new MultiResponseDto<>(mapper.portfolioToPortfolioResponseDtos(portfolios, request), pagePortfolios), HttpStatus.OK);
-    }
-
     @GetMapping("/users/{user-id}")
     public ResponseEntity getPortfoliosByUser(
             @PathVariable("user-id") Long userId,
@@ -149,7 +133,7 @@ public class PortfolioController {
 
     @GetMapping("/search")
     public ResponseEntity searchPortfolios(
-            @RequestParam @NotNull String value,
+            @RequestParam String value,
             @RequestParam(defaultValue = "userName") String category,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "1") @Positive int page,

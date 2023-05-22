@@ -44,21 +44,27 @@ public class PortfolioCommentService {
 
         PortfolioComment savedComment = portfolioCommentRepository.save(setUserAndPortfolio(portfolioComment));
 
-        saveCommentRelations(portfolioComment, portfolioComment);
+        saveCommentRelations(portfolioComment, portfolioComment, 0);
 
         return portfolioCommentMapper.entityToResponse(savedComment);
     }
 
-    private void saveCommentRelations(PortfolioComment ancestorComment, PortfolioComment descendantComment) {
+    private void saveCommentRelations(PortfolioComment ancestorComment, PortfolioComment descendantComment, int depth) {
         PortfolioCommentRelation relation = new PortfolioCommentRelation();
 
-        relation.setAncestor(ancestorComment);
-        relation.setDescendant(ancestorComment);
+        if(depth==0) {
+            relation.setAncestor(null);
+        }
+        else {
+            relation.setAncestor(ancestorComment);
+        }
+        relation.setDescendant(descendantComment);
+        relation.setDepth(depth);
 
         relationRepository.save(relation);
 
         if(ancestorComment.getParentComment()!=null) {
-            saveCommentRelations(ancestorComment.getParentComment(),descendantComment);
+            saveCommentRelations(ancestorComment.getParentComment(),descendantComment, depth+1);
         }
     }
 
@@ -118,7 +124,7 @@ public class PortfolioCommentService {
         Pageable pageable = PageRequest.of(page,size);
 
         Page<PortfolioCommentDto.Response> portfoliosPage =
-                portfolioCommentRepository.findByPortfolio(portfolio,pageable)
+                portfolioCommentRepository.findAllComments(portfolio,pageable)
                         .map(portfolioCommentMapper::entityToResponse);
 
         List<PortfolioCommentDto.Response> content = portfoliosPage.getContent();

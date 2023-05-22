@@ -27,10 +27,6 @@ public class PortfolioComment extends BaseTimeEntity {
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "rootId")
-    private PortfolioComment rootComment;
-
-    @ManyToOne
     @JoinColumn(name = "parentId")
     private PortfolioComment parentComment;
 

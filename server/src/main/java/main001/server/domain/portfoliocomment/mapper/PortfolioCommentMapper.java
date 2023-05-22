@@ -25,15 +25,6 @@ public class PortfolioCommentMapper {
         portfolio.setPortfolioId(postDto.getPortfolioId());
         portfolioComment.setPortfolio(portfolio);
 
-        if(postDto.getRootCommentId()==null) {
-            portfolioComment.setRootComment(null);
-        }
-        else {
-            PortfolioComment rootComment = new PortfolioComment();
-            rootComment.setPortfolioCommentId(postDto.getRootCommentId());
-            portfolioComment.setRootComment(rootComment);
-        }
-
         if(postDto.getParentCommentId()==null) {
             portfolioComment.setParentComment(null);
         }
@@ -68,8 +59,6 @@ public class PortfolioCommentMapper {
                 .userName(portfolioComment.getUser().getName())
                 .userProfileImg(portfolioComment.getUser().getProfileImg())
                 .portfolioId(portfolioComment.getPortfolio().getPortfolioId())
-                .rootId(portfolioComment.getRootComment()==null ?
-                        null : portfolioComment.getRootComment().getPortfolioCommentId())
                 .parentId(portfolioComment.getParentComment()==null ?
                         null:portfolioComment.getParentComment().getPortfolioCommentId())
                 .createdAt(portfolioComment.getCreatedAt())

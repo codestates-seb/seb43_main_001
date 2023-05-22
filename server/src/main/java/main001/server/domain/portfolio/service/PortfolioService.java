@@ -260,6 +260,10 @@ public class PortfolioService {
 
         Page<Portfolio> response;
 
+        if(value.equals("")) {
+            return portfolioRepository.findAll(pageable);
+        }
+
         if(category.equals("userName")) {
             response = portfolioRepository.findByUserName(value, pageable);
         } else if (category.equals("title")) {

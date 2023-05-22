@@ -25,5 +25,6 @@ public class PortfolioCommentRelation {
     @JoinColumn(name = "descendantId")
     private PortfolioComment descendant;
 
+    @Setter
     private int depth;
 }
