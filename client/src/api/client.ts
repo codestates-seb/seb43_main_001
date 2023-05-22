@@ -63,6 +63,13 @@ tokenClient.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    // error handling
+    if (error.response.status === 400) {
+      toast.error('잘못된 요청입니다');
+    } else if (error.response.status === 500) {
+      toast.error('에러가 발생했습니다. 잠시후 다시 시도해 주세요.');
+    }
+
     if (error.response.status === 401 && originalRequest && !originalRequest._retry) {
       originalRequest._retry = true;
 
