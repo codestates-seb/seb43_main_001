@@ -67,10 +67,10 @@ public class UserController {
                             description = "이미 존재하는 이메일입니다")}
     )
     @PostMapping("/signup")
-    public ResponseEntity join(@Valid @RequestBody UserDto.Post requestBody) {
+    public ResponseEntity signup(@Valid @RequestBody UserDto.Post requestBody) {
         User user = mapper.userPostToUser(requestBody);
 
-        User createdUser = userService.createUser(user);
+        User createdUser = userService.joinUser(user);
 
         URI location = UriCreator.createUri(USER_DEFAULT_URL, createdUser.getUserId());
 

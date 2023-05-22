@@ -41,7 +41,7 @@ public class User extends BaseTimeEntity {
     private String name;
 
     @Column
-    private String profileImg;
+    private String profileImg = "https://main001-portfolio.s3.ap-northeast-2.amazonaws.com/default/default_profileImg.png";
 
     @Column(length = 500)
     private String gitLink;
@@ -83,7 +83,7 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PortfolioLikes> likes = new ArrayList<>();
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private ProfileImgAttachment profileImgAttachment = new ProfileImgAttachment();
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
