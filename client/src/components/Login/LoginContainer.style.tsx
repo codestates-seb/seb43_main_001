@@ -1,64 +1,40 @@
 import styled from 'styled-components';
 import { COLOR } from '../../constants';
 import { lightTheme } from '../../style/theme';
+import * as S from '../SignUp/SignupForm.style';
 
 const { mainColor } = COLOR;
 const { TABLETMIN, DESKTOPMIN } = lightTheme.breakpoints;
 
 export const LoginLayout = styled.div`
-  height: 90vh;
+  height: 80vh;
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-direction: column;
+
+  width: 70%;
+  margin: 0 auto;
+
+  .sns__title {
+    margin-top: 1.5rem;
+    font-size: 1.3rem;
+    font-weight: bold;
+  }
 `;
 
-export const ProjectName = styled.span`
+export const LoginForm = styled(S.SignUpForm)``;
+
+export const Title = styled(S.Title)``;
+
+export const ErrorMessage = styled(S.ErrorMessage)``;
+
+export const LoginButton = styled(S.SignUpButton)``;
+
+export const NewAccount = styled(S.AlreadySignUp)``;
+
+export const SnsLogin = styled.div`
   display: flex;
-  align-items: center;
-  text-align: center;
-  font-size: 1.9rem;
-  margin-bottom: 75px;
-  margin-top: 40px;
-  > img {
-    height: 50px;
-    width: 50px;
-    margin-right: 10px;
-  }
-  @media ${TABLETMIN} {
-    margin-top: 60px;
-  }
-  @media ${DESKTOPMIN} {
-    margin-top: 120px;
-  }
-`;
-
-export const Title = styled.span`
-  text-align: center;
-  color: ${mainColor};
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  font-weight: 700;
-  @media ${TABLETMIN} {
-    font-size: 1.9rem;
-    margin-bottom: 100px;
-  }
-  @media ${DESKTOPMIN} {
-    font-size: 1.9rem;
-    margin-bottom: 65px;
-  }
-`;
-
-export const Detail = styled.p`
-  text-align: center;
-  font-size: 0.9rem;
-  /* width: 420px; */
-  margin-bottom: 40px;
-  @media ${TABLETMIN} {
-    font-size: 1.5rem;
-    margin-bottom: 120px;
-  }
-  @media ${DESKTOPMIN} {
-    font-size: 1.5rem;
-    margin-bottom: 100px;
-  }
+  gap: 2rem;
+  margin-top: 1rem;
 `;
