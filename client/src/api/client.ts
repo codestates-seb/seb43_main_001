@@ -4,6 +4,9 @@ import axios from 'axios';
 // util
 import { getNewAccessToken } from '../utils/getAccessToken';
 
+// constant
+import { URL } from '../constants';
+
 // types
 import {
   GetPortfolioCommentById,
@@ -24,22 +27,17 @@ import {
   GetUserPortfolioPage,
 } from '../types/index';
 
-const REFRESH_URL = ''; // refresh URL을 새롭게 추가를 해야 한다.
+const { refreshUrl } = URL;
 const tokenClient = axios.create({ baseURL: process.env.REACT_APP_API_URL });
-// *: 요청하는 상태에 따라서 무조건 토큰을 담아서 보낸다.
 
 tokenClient.interceptors.request.use((config) => {
-  // * :요청 헤더가 있으면 기존의 것을 반환하고 없으면 아래 처럼 새롭게 지정해준다.
-  // !login 상태가 아니면 그냥 일반 헤더 반환
-  // !login 상태면 아래와 같이 그냥 진행
   const accessToken = localStorage.getItem('accessToken');
   const refreshToken = localStorage.getItem('refreshToken');
 
   if (!config.headers || !accessToken) {
     return config;
   }
-  // REFRESH_URL 기준으로 분류 처리를
-  if (config.url === REFRESH_URL) {
+  if (config.url === refreshUrl) {
     config.headers.Authorization = `Bearer ${refreshToken}`;
   } else {
     config.headers.Authorization = `Bearer ${accessToken}`;
@@ -47,43 +45,34 @@ tokenClient.interceptors.request.use((config) => {
   return config;
 });
 
-// *: token을 사용하는 response 설정
 tokenClient.interceptors.response.use(
   (response) => {
     return response;
   },
   async (error) => {
     const originalRequest = error.config;
-    // !판단 기준은 state.login에 토큰이 있냐 없냐로 판별해라
-    // !로그인을 안 했을 때의 401은 그냥 reject(Promise)를 반환해라!
+
     const accessToken = localStorage.getItem('accessToken');
 
-    // Login 상태가 아닐 때는 그냥 error을 반환하는 형식
     if (!accessToken && error.response.status === 401) {
       return Promise.reject(error);
     }
 
-    // originalRequest._retry은 재시도 여부를 나타낸다(계속 요청하는 loop를 방지하기 위해)
     if (error.response.status === 401 && originalRequest && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-        // refreshToken을 이용해 새로운 accessToken 발급
         const { accessToken } = await getNewAccessToken();
 
-        // 새롭게 발급 받은 accessToken을 로컬 스토리지에 저장하기
         localStorage.setItem('accessToken', accessToken);
+
         const newAccessToken = localStorage.getItem('accessToken');
-        // *:새롭게 받은 accessToken을 다시 기존의 요청 헤더 권한에 부여
+
         originalRequest.headers.authorization = `Bearer ${newAccessToken}`;
 
-        // 실패했던 원래 요청에 대해 다시 요청을 보낸다.
         return await axios(originalRequest);
       } catch (error) {
-        // refreshToken으로 accessToken 발급을 실패한 경우
         console.log('Error in getNewAccessToken: ', error);
-        // 로그아웃 처리 등의 작업을 한다. 발급 실패를 했으니 어떻게 해야 하나?
-        // 에러 페이지로 전환을 해야 할까?
       }
     }
     return Promise.reject(error);

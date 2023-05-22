@@ -29,13 +29,13 @@ export const IconSection = styled.div`
   right: 15px;
   bottom: 15px;
   span {
-    margin-left: 2px;
+    margin-left: 5px;
   }
 `;
 
 const CommonIconStyle = css`
   color: ${subFontColor};
-  font-size: 14px;
+  font-size: 1rem;
 `;
 
 export const ViewIcon = styled(IoMdEye)`

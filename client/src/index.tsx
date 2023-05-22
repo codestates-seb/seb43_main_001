@@ -12,7 +12,7 @@ import { persistStore } from 'redux-persist';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({ defaultOptions: { queries: { staleTime: 1000 * 25 } } });
 
 const persistor = persistStore(store);
 
