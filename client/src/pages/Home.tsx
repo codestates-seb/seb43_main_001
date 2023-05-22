@@ -57,8 +57,6 @@ function Home() {
     hasNextPortfolio,
   } = useGetPortfolioList(sortOption, searchCategory, searchValue);
 
-  console.log(isPortfoliosError);
-
   const targetRef = useRef<HTMLDivElement | null>(null);
 
   // * 무한스크롤
@@ -99,12 +97,14 @@ function Home() {
       <S.ContentWrapper>
         <Search setValue={setValue} setCategory={setCategory} handleSearch={handleSearch} />
         {/* TODO: 수정 필요함 */}
-        {isPortfoliosError || isPortfolioFetching ? null : (
-          <p>
-            총 <strong>{PortfolioData?.pages[0].pageInfo.totalElements}개</strong>의 포트폴리오를
-            찾았습니다.
-          </p>
-        )}
+        {isPortfoliosError || isPortfolioFetching
+          ? null
+          : searchValue && (
+              <p>
+                총 <strong>{PortfolioData?.pages[0].pageInfo.totalElements}개</strong>의
+                포트폴리오를 찾았습니다.
+              </p>
+            )}
         <S.CardWrapper>
           {PortfolioData
             ? PortfolioData.pages.map((page) =>
@@ -125,17 +125,14 @@ function Home() {
             : null}
           <S.Target ref={targetRef} />
         </S.CardWrapper>
-        {/* TODO: 수정 필요함 */}
+        {/* TODO: 수정 필요함*/}
         {hasNextPortfolio && isPortfolioFetching && <Loading />}
         {!isPortfolioFetching && !isPortfoliosError && !hasNextPortfolio && (
           <div>여기가 마지막이에요.</div>
         )}
         {PortfolioData?.pages.length === 0 && <div>포트폴리오가 없습니다.</div>}
-        {isPortfolioFetching && <Loading />}
+        {!hasNextPortfolio && isPortfolioFetching && <Loading />}
         {ErrorInfo?.response?.status === 404 && <div>검색 결과가 없습니다.</div>}
-        {(isPortfoliosError || ErrorInfo?.response?.status === 500) && (
-          <div>에러가 발생했습니다. 잠시후 다시 시도해주세요.</div>
-        )}
         <ArrowUp />
       </S.ContentWrapper>
     </S.Container>
