@@ -21,12 +21,12 @@ public interface UserMapper {
 
     User userPatchEmailToUser(UserDto.PatchEmail requestBody);
 
-    default UserDto.Response userToUserResponse(User user, HttpServletRequest request) {
+    default UserDto.Response userToUserResponse(User user) {
 
         if (user == null) {
             return null;
         }
-        Long currentUserId = CurrentUserIdFinder.getCurrentUserId(request);
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId();
 
         UserDto.Response response = UserDto.Response.builder()
                 .userId(user.getUserId())
@@ -44,12 +44,12 @@ public interface UserMapper {
         return response;
     }
 
-    default UserDto.UserProfileResponse userToUserProfileResponse(User user, HttpServletRequest request) {
+    default UserDto.UserProfileResponse userToUserProfileResponse(User user) {
         if(user  == null) {
             return null;
         }
 
-        Long currentUserId = CurrentUserIdFinder.getCurrentUserId(request);
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId();
 
         UserDto.UserProfileResponse response = UserDto.UserProfileResponse.builder()
                 .userId(user.getUserId())
@@ -73,15 +73,15 @@ public interface UserMapper {
 
     }
 
-    default List<UserDto.Response> usersToUserResponses(List<User> users, HttpServletRequest request) {
-        Long currentUserId = CurrentUserIdFinder.getCurrentUserId(request);
+    default List<UserDto.Response> usersToUserResponses(List<User> users) {
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId();
         if ( users == null ) {
             return null;
         }
 
         List<UserDto.Response> list = new ArrayList<>( users.size() );
         users.forEach(u -> {
-            UserDto.Response response = userToUserResponse(u, request);
+            UserDto.Response response = userToUserResponse(u);
             if (u.getUserId().equals(currentUserId)) {
                 response.setAuth(true);
             }

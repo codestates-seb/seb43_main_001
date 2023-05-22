@@ -76,3 +76,8 @@ jwt:
   access-token-expiration: 1440 # Access Token 유효기간(단위 : 분단위)
   refresh-token-expiration: 2880 # Refresh Token 유효기간(단위 : 분단위)
 
+# redirect uri
+uri:
+  address:
+    url: "localhost"
+    port: "8080"
