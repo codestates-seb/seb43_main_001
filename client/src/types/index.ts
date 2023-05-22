@@ -21,7 +21,8 @@ export type GetUserPortfolio = {
   distributionLink: string;
   description: string;
   content: string;
-  views: number;
+  viewCount: number;
+  skills: string[];
   createdAt: number[];
   updatedAt: number[];
 };
@@ -97,17 +98,15 @@ export type postDto = {
 
 export type PostPortfolio = {
   postDto: postDto;
-  representativeImg: File | null;
-  images?: File;
-  files?: File;
+  representativeImg?: File | null;
+  files?: File | null;
 };
 
 export type PatchPortfolio = {
   portfolioId: number;
   postDto: postDto;
-  representativeImg: File | null;
-  images?: File;
-  files?: File;
+  representativeImg?: File | null;
+  files?: File | null;
 };
 
 export type GetPortfolio = {

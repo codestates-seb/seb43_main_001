@@ -63,4 +63,5 @@ export const LinkIcon = styled(RxDoubleArrowRight)`
   position: absolute;
   bottom: 30px;
   right: 10px;
+  color: ${subFontColor};
 `;

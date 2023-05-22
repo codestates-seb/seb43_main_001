@@ -7,6 +7,7 @@ const { mainColor } = COLOR;
 
 export const BasicInfo = styled.div`
   margin-top: 30px;
+  width: 100%;
   position: relative;
   display: flex;
   align-items: flex-end;
@@ -41,6 +42,12 @@ export const EditImg = styled.label`
   input {
     display: none;
   }
+`;
+export const TextBox = styled.div`
+  width: -moz-calc(100% - 115px);
+  width: -webkit-calc(100% - 115px);
+  width: -o-calc(100% - 115px);
+  width: calc(100% - 115px);
 `;
 export const EditName = styled.label`
   width: 100%;
@@ -81,6 +88,7 @@ export const EditGit = styled.label`
     border: 1px solid;
     border-radius: 5px;
     font-size: 1rem;
+    width: 100%;
   }
 `;
 
