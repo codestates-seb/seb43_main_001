@@ -46,6 +46,7 @@ function Detail() {
             gitLink={PortfolioInfo.gitLink}
             distributionLink={PortfolioInfo.distributionLink}
             skills={PortfolioInfo.skills}
+            portfolioId={PortfolioInfo.portfolioId}
           />
           <ProjectImg
             representativeImgUrl={PortfolioInfo.representativeImgUrl}

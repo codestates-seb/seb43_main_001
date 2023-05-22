@@ -3,7 +3,6 @@ import axios from 'axios';
 
 // util
 import { getNewAccessToken } from '../utils/getAccessToken';
-import { getUserIdFromAccessToken } from '../utils/getUserIdFromAccessToken';
 
 // constant
 import { URL } from '../constants';
@@ -197,6 +196,9 @@ export const PortfolioAPI = {
   },
   portfolioViews: async (portfolioId: number) => {
     return await tokenClient.patch(`/portfolios/${portfolioId}/views`);
+  },
+  deletePortfolio: async (portfolioId: number) => {
+    return await tokenClient.delete(`/portfolios/${portfolioId}`);
   },
 };
 
