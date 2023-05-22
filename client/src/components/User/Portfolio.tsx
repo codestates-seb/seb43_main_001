@@ -17,7 +17,8 @@ const Portfolio: React.FC<IdProps> = ({ userId }) => {
     fetchNextUserPortfolios,
     hasNextUserPortfolios,
     getUserPortfoliosFetched,
-  } = useGetUserPortfolios(userId, '2', orderName);
+    getUserPortfoliosLoading,
+  } = useGetUserPortfolios(userId, '6', `${orderName === 'recommend' ? 'likes' : orderName}`);
 
   const targetRef = useRef<HTMLDivElement | null>(null);
 
@@ -54,7 +55,19 @@ const Portfolio: React.FC<IdProps> = ({ userId }) => {
   if (getUserPortfoliosError) {
     return (
       <>
+        <Sort setSortOption={setOrderName} />
         <S.ErrorContainer>현재 작성된 포트폴리오가 없습니다.</S.ErrorContainer>
+      </>
+    );
+  }
+
+  if (getUserPortfoliosLoading) {
+    return (
+      <>
+        <Sort setSortOption={setOrderName} />
+        <S.ErrorContainer>
+          <Loading />
+        </S.ErrorContainer>
       </>
     );
   }
@@ -63,7 +76,7 @@ const Portfolio: React.FC<IdProps> = ({ userId }) => {
     <>
       <Sort setSortOption={setOrderName} />
       <S.PortfolioContainer>
-        {UserPortfolios ? (
+        {UserPortfolios &&
           UserPortfolios.pages.map((page) =>
             page.data.map((ele) => (
               <Card
@@ -71,13 +84,11 @@ const Portfolio: React.FC<IdProps> = ({ userId }) => {
                 portfolioId={ele.portfolioId}
                 description={ele.description}
                 title={ele.title}
-                views={ele.views}
+                views={ele.viewCount}
+                skills={ele.skills}
               />
             )),
-          )
-        ) : (
-          <Loading />
-        )}
+          )}
         <S.Target ref={targetRef} />
       </S.PortfolioContainer>
     </>

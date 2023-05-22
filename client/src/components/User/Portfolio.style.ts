@@ -13,6 +13,7 @@ export const PortfolioContainer = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   grid-auto-columns: minmax(316px, 316px);
   gap: 40px;
+  align-content: start;
   ::-webkit-scrollbar {
     display: none;
   }
