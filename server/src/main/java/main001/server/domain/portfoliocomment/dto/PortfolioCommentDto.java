@@ -52,6 +52,7 @@ public class PortfolioCommentDto {
     }
 
     @Getter
+    @Setter
     @AllArgsConstructor
     public static class Response {
         private Long portfolioCommentId;

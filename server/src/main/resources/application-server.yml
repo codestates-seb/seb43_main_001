@@ -72,3 +72,9 @@ jwt:
   secret-key: ${JWT_SECRET_KEY}
   access-token-expiration: 1440 # Access Token 유효기간(단위 : 분단위)
   refresh-token-expiration: 2880 # Refresh Token 유효기간(단위 : 분단위)
+
+  # redirect관련 uri
+  uri:
+    address:
+      url: ${BASE_URL}
+      port: ${BASE_PORT}

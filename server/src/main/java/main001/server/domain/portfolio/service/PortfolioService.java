@@ -299,9 +299,9 @@ public class PortfolioService {
         if(sortBy.equals("createdAt")) {
             pageable = PageRequest.of(page, size,Sort.by("createdAt").descending());
         } else if (sortBy.equals("views")) {
-            pageable = PageRequest.of(page, size,Sort.by("views").descending());
+            pageable = PageRequest.of(page, size,Sort.by("viewCount").descending());
         } else if (sortBy.equals("likes")) {
-            pageable = PageRequest.of(page, size,Sort.by("likes").descending());
+            pageable = PageRequest.of(page, size,Sort.by("countLikes").descending());
         } else {
             throw new BusinessLogicException(ExceptionCode.SEARCH_CONDITION_MISMATCH);
         }
