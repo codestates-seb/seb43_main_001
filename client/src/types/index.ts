@@ -191,3 +191,9 @@ export type SignUp = {
   password: string;
   name: string;
 };
+
+// Login
+export type Login = {
+  username: string;
+  password: string;
+};

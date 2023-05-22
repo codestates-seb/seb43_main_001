@@ -28,6 +28,7 @@ import {
   LikeBtn,
   GetUserPortfolioPage,
   SignUp,
+  Login,
 } from '../types/index';
 
 const { refreshUrl } = URL;
@@ -101,6 +102,18 @@ export const userAPI = {
         email,
       },
     );
+  },
+  postLogin: async ({ username, password }: Login) => {
+    const res = await tokenClient.post(
+      `/users/login
+    `,
+      {
+        username,
+        password,
+      },
+    );
+    console.log(res);
+    return res;
   },
 };
 
