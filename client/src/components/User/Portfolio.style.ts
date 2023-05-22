@@ -4,7 +4,8 @@ export const UserSort = styled.div`
   /* width: 60%; */
 `;
 export const PortfolioContainer = styled.div`
-  height: 100vh;
+  width: 100%;
+  height: 95%;
   padding: 10px;
   overflow: scroll;
   -ms-overflow-style: none;
@@ -12,6 +13,7 @@ export const PortfolioContainer = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   grid-auto-columns: minmax(316px, 316px);
   gap: 40px;
+  align-content: start;
   ::-webkit-scrollbar {
     display: none;
   }
@@ -26,7 +28,7 @@ export const PortfolioBtns = styled.div`
     border: 0;
   }
 `;
-export const ErrorContainer = styled.p`
+export const ErrorContainer = styled.div`
   margin-top: 50px;
   text-align: center;
 `;

@@ -98,7 +98,7 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
           <img src={profileImg} />
         </S.UserImg>
       )}
-      <div>
+      <S.TextBox>
         <S.UserNameBox>
           {onEdit ? (
             <S.EditName>
@@ -114,8 +114,12 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
         </S.UserNameBox>
         {onEdit ? (
           <S.EditGit>
-            <S.GithubIcon />
-            <input value={userGit} onChange={inputChangeHandler} name='git' />
+            <input
+              value={userGit}
+              onChange={inputChangeHandler}
+              name='git'
+              placeholder='깃허브 링크를 입력해주세요.'
+            />
           </S.EditGit>
         ) : (
           <S.GitBtn>
@@ -137,8 +141,12 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
           <S.ViewIcon />
           <span>321</span>
         </div>
-      </div>
-      <S.Buttons>{!auth && <YellowBtn>Follow</YellowBtn>}</S.Buttons>
+      </S.TextBox>
+      {!auth && (
+        <S.Buttons>
+          <YellowBtn>Follow</YellowBtn>
+        </S.Buttons>
+      )}
     </S.BasicInfo>
   );
 };

@@ -1,5 +1,4 @@
 import * as S from './CommentContainer.style';
-// import { user } from './mock';
 import CommentItem from './CommentItem';
 import { ChangeEvent, useState } from 'react';
 import { useGetUserComments } from '../../hooks/useGetUserComment';
@@ -19,7 +18,6 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
 
   const addHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO : 데이터 전
     handlerPostUserComment(userId, content);
     setContent('');
   };
@@ -27,12 +25,9 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
     setContent(e.target.value);
   };
 
-  // ! : 실제 테스트에서는 0 대신 id값 넣을 것
   const { UserComments } = useGetUserComments(userId);
   const { CommentsToPortfolio } = useGetCommentsToPortfolio(userId);
   const { CommentsToUser } = useGetCommentsToUser(userId);
-
-  // ? : 유저 댓글과 포트폴리오 댓글이 남아있는 문제 < ?????
 
   return (
     <S.CommentContainer>
@@ -51,7 +46,12 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
               {UserComments.length > 0 ? (
                 <S.Comments CommentLen={UserComments.length}>
                   {UserComments.map((ele) => (
-                    <CommentItem key={ele.userCommentId} data={ele} path='usercomments' />
+                    <CommentItem
+                      key={ele.userCommentId}
+                      data={ele}
+                      path='usercomments'
+                      link={false}
+                    />
                   ))}
                 </S.Comments>
               ) : (
@@ -88,7 +88,12 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
                   {CommentsToUser.length > 0 ? (
                     <S.Comments CommentLen={CommentsToUser.length}>
                       {CommentsToUser.map((ele) => (
-                        <CommentItem key={ele.userCommentId} data={ele} path='usercomments' />
+                        <CommentItem
+                          key={ele.userCommentId}
+                          data={ele}
+                          path='usercomments'
+                          link={true}
+                        />
                       ))}
                     </S.Comments>
                   ) : (
@@ -110,6 +115,7 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
                           key={ele.userCommentId}
                           data={ele}
                           path='portfoliocomments'
+                          link={true}
                         />
                       ))}
                     </S.Comments>
