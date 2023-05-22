@@ -1,5 +1,7 @@
 package main001.server.security.service;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import main001.server.domain.user.entity.User;
 import main001.server.domain.user.repository.UserRepository;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.*;
 
 
@@ -56,6 +59,7 @@ public class SecurityServiceImpl implements SecurityService{
         token.setUser(user);
         token.setRefreshToken(refreshToken);
         token.setUserIp(getClientIp(request));
+        token.setExpiredDate(expiration);
         refreshTokenRepository.save(token);
 
         return refreshToken;
@@ -83,6 +87,11 @@ public class SecurityServiceImpl implements SecurityService{
     }
 
     public String reissueRefreshToken(Long userId) {
+        try {
+            refreshTokenRepository.findByUserId(userId);
+        } catch (ExpiredJwtException ex) {
+            throw new BusinessLogicException(ExceptionCode.REFRESH_TOKEN_EXPIRED);
+        }
         RefreshToken findRefreshToken = refreshTokenRepository.findByUserId(userId);
 
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -138,23 +147,33 @@ public class SecurityServiceImpl implements SecurityService{
         refreshTokenRepository.deleteByUserId(userId);
     }
 
-//    public void verifyToken(long userId) {
-//        String clientIp = getClientIp(request);
-//        String userIp = refreshTokenRepository.findById(userId).get().getUserIp();
-//        String refreshToken = request.getHeader("refresh_token");
-//        String userRefreshToken = refreshTokenRepository.findByUserId(userId).getRefreshToken();
-//        Date tokenExpireDate = Jwts.claims().getExpiration();
-//
-//        if (!clientIp.equals(userIp)) {
-//            throw new BusinessLogicException(ExceptionCode.USER_IP_NOT_MATCH);
-//        }
-//
-//        if (!refreshToken.equals(userRefreshToken)) {
-//            throw new BusinessLogicException(ExceptionCode.REFRESH_TOKEN_NOT_MATCH);
-//        }
-//
-//        if(tokenExpireDate.after(new Date())) {
-//            throw new BusinessLogicException(ExceptionCode.REFRESH_TOKEN_EXPIRED);
-//        }
-//    }
+    public Long verifyToken(HttpServletRequest request) {
+
+        String authorization = request.getHeader("Authorization");
+
+        if( authorization == null) {
+            throw new BusinessLogicException(ExceptionCode.TOKEN_NOT_AVAILABLE);
+        }
+
+        String refreshToken = authorization.replace("Bearer ", "");
+
+        RefreshToken findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken);
+        if (findRefreshToken == null) {
+            throw new BusinessLogicException(ExceptionCode.REFRESH_TOKEN_NOT_MATCH);
+        }
+
+        String clientIp = getClientIp(request);
+        String userIp = findRefreshToken.getUserIp();
+
+        Date tokenExpireDate = findRefreshToken.getExpiredDate();
+        if (tokenExpireDate.before(new Date())) {
+            throw new BusinessLogicException(ExceptionCode.REFRESH_TOKEN_EXPIRED);
+        }
+
+        if (!clientIp.equals(userIp)) {
+            throw new BusinessLogicException(ExceptionCode.USER_IP_NOT_MATCH);
+        }
+
+        return findRefreshToken.getUser().getUserId();
+    }
 }

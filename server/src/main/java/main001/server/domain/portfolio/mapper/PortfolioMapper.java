@@ -32,6 +32,7 @@ public interface PortfolioMapper {
                 .portfolioId(portfolio.getPortfolioId())
                 .userId(portfolio.getUser().getUserId())
                 .name(portfolio.getUser().getName())
+                .profileImg(portfolio.getUser().getProfileImg())
                 .title(portfolio.getTitle())
                 .gitLink(portfolio.getGitLink())
                 .distributionLink(portfolio.getDistributionLink())

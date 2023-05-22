@@ -39,6 +39,17 @@ public class UserService {
     public User createUser(User user) {
         verifyExistEmail(user.getEmail());
 
+        // 초기 권한 부여 설정
+        List<String> roles = authorityUtils.createRoles(user.getEmail());
+        user.setRoles(roles);
+
+        User savedUser = userRepository.save(user);
+        return savedUser;
+    }
+
+    public User joinUser(User user) {
+        verifyExistEmail(user.getEmail());
+
         // 암호화된 비밀번호 설정
         String encryptedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encryptedPassword);
@@ -152,6 +163,10 @@ public class UserService {
      * ProfileImg 업로드 기능
      */
     public String uploadProfileImg(MultipartFile profileImg, Long userId) throws IOException {
+        if (profileImg == null || userId == null) {
+            throw new BusinessLogicException(ExceptionCode.NOT_ALLOW_NULL_VALUE);
+        }
+
         User findUser = findVerifiedUser(userId);
 
         String profileImgUrl = s3Service.uploadFile(profileImg, "images");
@@ -162,8 +177,8 @@ public class UserService {
 
         profileImgRepository.save(profileImgAttachment);
 
+        profileImgRepository.deleteByUserId(null);
         return profileImgUrl;
-
     }
 
     public Long findByToken(String token) {
