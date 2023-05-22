@@ -4,19 +4,30 @@ import io.jsonwebtoken.*;
 import main001.server.config.EnvConfig;
 import main001.server.exception.BusinessLogicException;
 import main001.server.exception.ExceptionCode;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class CurrentUserIdFinder {
 
-    public static Long getCurrentUserId(HttpServletRequest request) {
+    public static Long getCurrentUserId() {
+        Integer userIdFromToken;
+
+        HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
+
         String secretKey = EnvConfig.getSecretKey();
 
-        String tokenValue = request.getHeader("Authorization").replace("Bearer ", ""); // 요청 시 전달한 JWT value
+        String authorization = request.getHeader("Authorization");
 
-        Integer userIdFromToken; // JWT에서 추출한 유저 ID
+        if (authorization == null) {
+            return null;
+        }
+
+        String tokenValue = authorization.replace("Bearer ", ""); // 요청 시 전달한 JWT value
 
         // JWT에서 추출한 인증 정보를 불러오기 위한 JWT Parser
         JwtParser jwtParser = Jwts.parserBuilder()

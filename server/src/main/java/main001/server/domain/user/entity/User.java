@@ -37,7 +37,7 @@ public class User extends BaseTimeEntity {
     @Column(length = 100)
     private String password;
 
-    @Column(unique = true, length = 20)
+    @Column(length = 20)
     private String name;
 
     @Column
@@ -88,6 +88,21 @@ public class User extends BaseTimeEntity {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
     private RefreshToken refreshToken = new RefreshToken();
+
+    public User(String email, String name, String profileImg, String gitLink, String blogLink, JobStatus jobStatus, String about) {
+        this.email = email;
+        this.name = name;
+        this.profileImg = profileImg;
+        this.gitLink = gitLink;
+        this.blogLink = blogLink;
+        this.jobStatus = jobStatus;
+        this.about = about;
+    }
+
+    public User(String email, String name) {
+        this.email = email;
+        this.name = name;
+    }
 
     public User(Long userId, String email, String name, String profileImg, String gitLink, String blogLink, JobStatus jobStatus, String about) {
         this.userId = userId;

@@ -1,7 +1,5 @@
 package main001.server.domain.user.controller;
 
-import com.nimbusds.oauth2.sdk.ErrorResponse;
-import io.jsonwebtoken.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -12,9 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import main001.server.domain.utils.AuthValidator;
 import main001.server.domain.utils.CurrentUserIdFinder;
-import main001.server.domain.utils.OAuth2UserValidator;
 import main001.server.exception.BusinessLogicException;
 import main001.server.exception.ExceptionCode;
 import main001.server.response.MultiResponseDto;
@@ -28,13 +24,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -42,7 +35,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 
-import static org.aspectj.runtime.internal.Conversions.intValue;
 
 @RestController
 @RequiredArgsConstructor
@@ -109,36 +101,19 @@ public class UserController {
             }
     )
     @GetMapping("/{user-id}")
-    public ResponseEntity<UserDto.Response> getUser(@PathVariable("user-id") @Positive long userId, HttpServletRequest request) {
+    public ResponseEntity<UserDto.Response> getUser(@PathVariable("user-id") @Positive long userId) {
 
         User findUser = userService.findUser(userId);
-        if (CurrentUserIdFinder.getCurrentUserId(request) == userId) {
-            findUser.setAuth(true);
-        }
 
-        UserDto.Response response = mapper.userToUserResponse(findUser);
-        response.setAuth(findUser.isAuth());
-
-        return new ResponseEntity(new SingleResponseDto<>(response), HttpStatus.OK);
+        return new ResponseEntity(new SingleResponseDto<>(mapper.userToUserResponse(findUser)), HttpStatus.OK);
     }
 
     @Operation(hidden = true)
     @GetMapping
     public ResponseEntity getUsers(@Positive @RequestParam(value = "page",defaultValue = "1") int page,
-                                   @Positive @RequestParam(value = "size",defaultValue = "15") int size,
-                                   HttpServletRequest request) {
+                                   @Positive @RequestParam(value = "size",defaultValue = "15") int size) {
         Page<User> pageUsers = userService.findUsers(page - 1, size);
         List<User> users = pageUsers.getContent();
-
-        List<UserDto.Response> responses = new ArrayList<>(users.size());
-        users.forEach(u -> {
-            if (u.getUserId().equals(CurrentUserIdFinder.getCurrentUserId(request))) {
-                u.setAuth(true);
-            }
-                UserDto.Response response = mapper.userToUserResponse(u);
-                response.setAuth(u.isAuth());
-                responses.add(response);
-        });
 
         return new ResponseEntity<>(
                 new MultiResponseDto<>(mapper.usersToUserResponses(users), pageUsers), HttpStatus.OK
@@ -169,20 +144,12 @@ public class UserController {
             }
     )
     @GetMapping("/{user-id}/profile")
-    public ResponseEntity getUserProfile(@PathVariable("user-id") @Positive long userId, HttpServletRequest request) {
+    public ResponseEntity getUserProfile(@PathVariable("user-id") @Positive long userId) {
 
         User findUser = userService.findUser(userId);
 
-        if (CurrentUserIdFinder.getCurrentUserId(request) == userId) {
-            findUser.setAuth(true);
-        }
-
-        UserDto.UserProfileResponse response = mapper.userToUserProfileResponse(findUser);
-
-        response.setAuth(findUser.isAuth());
-
         return new ResponseEntity<>(
-                new SingleResponseDto<>(response), HttpStatus.OK
+                new SingleResponseDto<>(mapper.userToUserProfileResponse(findUser)), HttpStatus.OK
         );
     }
 
@@ -213,7 +180,11 @@ public class UserController {
     public ResponseEntity patchUser(
             @PathVariable("user-id") @Positive long userId,
             @Valid @RequestBody UserDto.Patch requestBody) {
-        requestBody.setUserId(userId);
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId();
+        if (currentUserId != null && currentUserId != userId) {
+            throw new BusinessLogicException(ExceptionCode.INVALID_USER_STATUS);
+        }
+            requestBody.setUserId(userId);
 
         User user = userService.updateUser(mapper.userPatchToUser(requestBody));
 

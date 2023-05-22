@@ -1,6 +1,7 @@
 package main001.server.security.handler;
 
 import lombok.RequiredArgsConstructor;
+import main001.server.config.EnvConfig;
 import main001.server.domain.user.entity.User;
 import main001.server.domain.user.service.UserService;
 import main001.server.security.service.SecurityService;
@@ -46,6 +47,9 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
             long userId = savedUser.getUserId();
             String addemail = UriComponentsBuilder
                     .newInstance()
+                    .scheme("http")
+                    .host(EnvConfig.getBaseUrl())
+                    .port(EnvConfig.getBasePort())
                     .path("/addemail") // addemail 페이지로 이동
                     .queryParam("userId", userId)
                     .build()
@@ -78,6 +82,9 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
         return UriComponentsBuilder
                 .newInstance()
+                .scheme("http")
+                .host(EnvConfig.getBaseUrl())
+                .port(EnvConfig.getBasePort())
                 .path("/") // 로그인 후 홈으로 이동
                 .queryParams(queryParams)
                 .build()

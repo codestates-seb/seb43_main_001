@@ -6,6 +6,9 @@ import main001.server.domain.user.dto.UserDto;
 import main001.server.domain.user.entity.User;
 import main001.server.domain.user.mapper.UserMapper;
 import main001.server.domain.user.service.UserService;
+import main001.server.domain.utils.CurrentUserIdFinder;
+import main001.server.exception.BusinessLogicException;
+import main001.server.exception.ExceptionCode;
 import main001.server.response.SingleResponseDto;
 import main001.server.security.service.SecurityServiceImpl;
 import org.springframework.http.HttpStatus;
@@ -31,7 +34,8 @@ public class SecurityController {
 
     @PatchMapping("/addemail")
     public ResponseEntity addEmail(@Positive @RequestParam(value = "userId") Long userId,
-                                   @Valid @RequestBody UserDto.PatchEmail requestBody) {
+                                   @Valid @RequestBody UserDto.PatchEmail requestBody,
+                                   HttpServletRequest request) {
         requestBody.setUserId(userId);
         User user = userService.updateEmail(mapper.userPatchEmailToUser(requestBody));
 
@@ -41,13 +45,15 @@ public class SecurityController {
 
     @PostMapping("/auth/refresh")
     @ResponseStatus(HttpStatus.OK)
-    public void reissueToken(@RequestParam(value = "userId") long userId,
-                             HttpServletRequest request, HttpServletResponse response) {
+    public void reissueToken(HttpServletResponse response) {
 
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId();
 
-
-        String reissuedAccessToken = securityService.reissueAccessToken(userId);
-        String reissuedRefreshToken = securityService.reissueRefreshToken(userId);
+        if (currentUserId == null) {
+            throw new BusinessLogicException(ExceptionCode.TOKEN_NOT_AVAILABLE);
+        }
+        String reissuedAccessToken = securityService.reissueAccessToken(currentUserId);
+        String reissuedRefreshToken = securityService.reissueRefreshToken(currentUserId);
 
         response.setHeader("Authorization", "Bearer " + reissuedAccessToken);
         response.setHeader("Refresh", reissuedRefreshToken);

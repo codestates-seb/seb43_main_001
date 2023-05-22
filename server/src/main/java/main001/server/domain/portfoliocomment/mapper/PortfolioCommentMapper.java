@@ -4,7 +4,12 @@ import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfoliocomment.dto.PortfolioCommentDto;
 import main001.server.domain.portfoliocomment.entity.PortfolioComment;
 import main001.server.domain.user.entity.User;
+import main001.server.domain.utils.CurrentUserIdFinder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Component
 public class PortfolioCommentMapper {
@@ -62,6 +67,13 @@ public class PortfolioCommentMapper {
                 portfolioComment.getUpdatedAt(),
                 portfolioComment.getUser().isAuth()
         );
+
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId();
+
+        if (currentUserId != null && currentUserId.equals(response.getUserId())) {
+            response.setAuth(true);
+        }
+
         return response;
     }
 }
