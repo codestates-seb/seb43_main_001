@@ -21,6 +21,7 @@ export const SignInput = styled.input`
   width: 360px;
   height: 45px;
   border: 2px solid ${subFontColor};
+  color: ${(props) => props.theme.themeStyle.fontColor};
   background-color: transparent;
   padding: 0.5rem;
   border-radius: 8px;

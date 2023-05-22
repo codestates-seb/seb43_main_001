@@ -8,6 +8,7 @@ import { useState } from 'react';
 
 // custom Hook
 import { useRouter } from '../../hooks/useRouter';
+import { usePostUserSignUp } from '../../hooks/usePostUserSignUp';
 
 function SignupForm() {
   const [userName, setUserName] = useState<string>('');
@@ -18,6 +19,7 @@ function SignupForm() {
   const [passwordError, setPasswordError] = useState<boolean>(false);
 
   const { routeTo } = useRouter();
+  const { postUserInfoSignUp } = usePostUserSignUp();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,9 +27,7 @@ function SignupForm() {
     else setNameError(false);
     if (userPassword.length < 8) return setPasswordError(true);
     else setPasswordError(false);
-    // 여기에 post 진행 후 Login으로 route하면 된다
-    alert('회원가입 성공!');
-    routeTo('/Login');
+    postUserInfoSignUp({ name: userName, password: userPassword, email: userEmail });
   };
   return (
     <>
