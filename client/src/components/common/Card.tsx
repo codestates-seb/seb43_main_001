@@ -30,6 +30,7 @@ function Card({
     routeTo(`/User/${userId}`);
   };
 
+  // TODO: 서버 데이터 확인 후 수정 필요함
   const capitalizeSkills = (skills: string[] | undefined) => {
     return skills?.map((tag) => {
       const words = tag.split(' ');

@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 import { useAppSelector, useAppDispatch } from '../hooks/reduxHook';
-import { useGetAllPortfolio } from '../hooks/useGetAllPortfolio';
-import { useGetSearchPortfolio } from '../hooks/useGetSearchPortfolio';
+import { useGetPortfolioList } from '../hooks/useGetPortfolioList';
 import { login } from '../store/slice/loginSlice';
 
 import Banner from '../components/Home/Banner';
@@ -17,12 +16,16 @@ import * as S from './Home.style';
 import { GetPortfolio, SortOption } from '../types/index';
 
 function Home() {
-  const [sortOption, setSortOption] = useState<SortOption>('createdAt');
-  const [value, setValue] = useState('');
-  const [category, setCategory] = useState('userName');
   const dispatch = useAppDispatch();
   const isLogin = useAppSelector((state) => state.login.isLogin);
 
+  const [sortOption, setSortOption] = useState<SortOption>('createdAt');
+  const [category, setCategory] = useState('userName');
+  const [value, setValue] = useState('');
+  const [searchValue, setSearchValue] = useState('');
+  const [searchCategory, setSearchCategory] = useState('');
+
+  // * 로그인 상태와 토큰 처리
   useEffect(() => {
     if (!isLogin) {
       const currentURL = document.location.search;
@@ -40,19 +43,9 @@ function Home() {
   }, []);
 
   const handleSearch = () => {
-    console.log('검색 요청');
+    setSearchValue(value);
+    setSearchCategory(category);
   };
-
-  // * 검색
-  // const {
-  //   PortfolioData,
-  //   isPortfoliosError,
-  //   isPortfolioFetching,
-  //   ErrorInfo,
-  //   portfolioStatus,
-  //   fetchNextPortfolio,
-  //   hasNextPortfolio,
-  // } = useGetSearchPortfolio(value, '6', category, sortOption);
 
   const {
     PortfolioData,
@@ -62,13 +55,14 @@ function Home() {
     portfolioStatus,
     fetchNextPortfolio,
     hasNextPortfolio,
-  } = useGetAllPortfolio('6', sortOption);
+  } = useGetPortfolioList(sortOption, searchCategory, searchValue);
 
   const targetRef = useRef<HTMLDivElement | null>(null);
 
+  // * 무한스크롤
   useEffect(() => {
     const options = {
-      root: null,
+      root: null, // * viewport
       rootMargin: '100px',
       threshold: 0.3,
     };
@@ -102,6 +96,15 @@ function Home() {
       <Sort setSortOption={setSortOption} />
       <S.ContentWrapper>
         <Search setValue={setValue} setCategory={setCategory} handleSearch={handleSearch} />
+        {/* TODO: 수정 필요함 */}
+        {isPortfoliosError || isPortfolioFetching
+          ? null
+          : searchValue && (
+              <p>
+                총 <strong>{PortfolioData?.pages[0].pageInfo.totalElements}개</strong>의
+                포트폴리오를 찾았습니다.
+              </p>
+            )}
         <S.CardWrapper>
           {PortfolioData
             ? PortfolioData.pages.map((page) =>
@@ -122,10 +125,14 @@ function Home() {
             : null}
           <S.Target ref={targetRef} />
         </S.CardWrapper>
+        {/* TODO: 수정 필요함*/}
         {hasNextPortfolio && isPortfolioFetching && <Loading />}
-        {isPortfoliosError && <div>에러 발생</div>}
-        {!isPortfoliosError && !hasNextPortfolio && <div>여기가 마지막이에요.</div>}
+        {!isPortfolioFetching && !isPortfoliosError && !hasNextPortfolio && (
+          <div>여기가 마지막이에요.</div>
+        )}
         {PortfolioData?.pages.length === 0 && <div>포트폴리오가 없습니다.</div>}
+        {!hasNextPortfolio && isPortfolioFetching && <Loading />}
+        {ErrorInfo?.response?.status === 404 && <div>검색 결과가 없습니다.</div>}
         <ArrowUp />
       </S.ContentWrapper>
     </S.Container>

@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import axios from 'axios';
 import * as S from './Search.style';
 
 type SearchProps = {
@@ -22,7 +20,7 @@ function Search({ setValue, setCategory, handleSearch }: SearchProps) {
   // * 일치하는 검색어 없으면 404 에러 뜸
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      // handleSearch();
+      handleSearch();
     }
   };
 
