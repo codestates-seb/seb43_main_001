@@ -10,9 +10,10 @@ import { getUserIdFromAccessToken } from '../../utils/getUserIdFromAccessToken';
 type CommentItemProps = {
   data: GetUserComment;
   path: string;
+  link: boolean;
 };
 
-const CommentItem: React.FC<CommentItemProps> = ({ data, path }) => {
+const CommentItem: React.FC<CommentItemProps> = ({ data, path, link }) => {
   const { routeTo } = useRouter();
   const [onEdit, setOnEdit] = useState<boolean>(false);
   const CommentRef = useRef<HTMLTextAreaElement>(null);
@@ -20,7 +21,8 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, path }) => {
   const { handlePatchUserComment } = usePatchUserComment(data.userId, data.portfolioId!);
   const { handlerDeleteUserComment } = useDeleteComment(data.userId, data.portfolioId!);
 
-  const date = `${data.createdAt[0]}. ${data.createdAt[1]}. ${data.createdAt[2]}`;
+  const date = `${data.createdAt[0]}. ${data.createdAt[1]}. ${data.createdAt[2]}.`;
+
   const onChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setEditText(e.currentTarget.value);
   };
@@ -48,15 +50,9 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, path }) => {
       routeTo(`/Detail/${data.portfolioId}`);
     }
   };
-  // ! : 로그인한 유저 === 페이지 유저 : 삭제 버튼 보여야 함 (isAuth ? 삭제 버튼 표시)
-  // ! : 로그인한 유저 === 작성자 : 삭제 & 수정 버튼 보여야 함 (isWriter ? 삭제 & 수정 버튼 표시)
-  // ? : 로그인한 유저 === 페이지 유저 === 작성자 일때도 삭제 & 수정버튼 보여야 함. 어떻게 처리할 것인지.
-  // ? : isAuth 가 true이고 isWriter가 false이면 삭제 버튼만
-  // ? : isAuth 가 true이고 isWriter가 true 이면 삭제&수정
-  // ! : Auth 데이터가 어떻게 도착하는지 보고 반영하기
 
+  // TODO : Auth 적용
   // ! : 임시 코드. 서버에서 auth 받아오면 지울 것.
-
   const token = localStorage.getItem('accessToken');
   const isLogin = useAppSelector((state) => state.login.isLogin);
   const loginUser = getUserIdFromAccessToken(isLogin, token);
@@ -67,16 +63,20 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, path }) => {
   useEffect(() => {
     if (loginUser === data.writerId) {
       setIsWriter(true);
+    } else {
+      setIsWriter(false);
     }
     if (loginUser === data.userId) {
       setIsAuth(true);
+    } else {
+      setIsAuth(false);
     }
-  }, [data]);
+  }, [data, token]);
 
   return (
     <S.CommentItem>
-      <S.DelBtn onClick={deleteHandler} />
-      {!onEdit && <S.EditBtn onClick={() => setOnEdit(true)} />}
+      {(isAuth || isWriter) && <S.DelBtn onClick={deleteHandler} />}
+      {isWriter && !onEdit && <S.EditBtn onClick={() => setOnEdit(true)} />}
       {onEdit && <S.SubmitBtn onClick={onSubmitHandler} />}
       {onEdit ? (
         <form>
@@ -86,7 +86,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, path }) => {
         <S.TextBox>{editText}</S.TextBox>
       )}
       {/* 본인의 페이지 일 때는 표시하지 않기 */}
-      <S.LinkIcon onClick={onClickHandler} />
+      {link && <S.LinkIcon onClick={onClickHandler} />}
       <S.CommentUser>
         <span>{date}</span>
         <S.ImgBox>
