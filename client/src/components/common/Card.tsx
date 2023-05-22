@@ -13,6 +13,22 @@ type CardProps = {
   representativeImgUrl?: string | null;
 };
 
+// * 테스트용 데이터
+const tagTest = [
+  'styled components',
+  'typescript',
+  'redux-toolkit',
+  'react',
+  'javascript',
+  'redux',
+  'eslint',
+  'prettier',
+  'github',
+  'notion',
+  'discord',
+  'react-query',
+];
+
 function Card({
   portfolioId,
   description,
@@ -31,6 +47,7 @@ function Card({
   };
 
   // TODO: 서버 데이터 확인 후 수정 필요함
+  // * 태그를 파스칼 케이스로 바꾸는 함수
   const capitalizeSkills = (skills: string[] | undefined) => {
     return skills?.map((tag) => {
       const words = tag.split(' ');
@@ -39,7 +56,11 @@ function Card({
     });
   };
 
-  const techSkills = skills?.length ? capitalizeSkills(skills) : skills;
+  // const techSkills = skills?.length ? capitalizeSkills(skills) : skills;
+
+  const viewTag = tagTest.length > 3 ? tagTest.slice(0, 3) : tagTest;
+  const hideTagLength = tagTest.length > 3 ? tagTest.length - 3 : 0;
+  console.log(viewTag, hideTagLength);
 
   return (
     <S.Container
@@ -72,7 +93,11 @@ function Card({
             </S.UserProfile>
           )}
           <S.TagWrapper>
-            {techSkills ? techSkills.map((tag, index) => <S.Tag key={index}>{tag}</S.Tag>) : null}
+            {/* {techSkills ? techSkills.map((tag, index) => <S.Tag key={index}>{tag}</S.Tag>) : null} */}
+            {viewTag.map((tag, index) => (
+              <S.Tag key={index}>{tag}</S.Tag>
+            ))}
+            {hideTagLength ? <span>+ {hideTagLength}</span> : null}
           </S.TagWrapper>
           <S.PostInfo>
             {/* TODO: 조회수, 추천수 숫자로 교체하기 */}
