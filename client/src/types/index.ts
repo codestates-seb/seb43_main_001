@@ -97,17 +97,15 @@ export type postDto = {
 
 export type PostPortfolio = {
   postDto: postDto;
-  representativeImg: File | null;
-  images?: File;
-  files?: File;
+  representativeImg?: File | null;
+  files?: File | null;
 };
 
 export type PatchPortfolio = {
   portfolioId: number;
   postDto: postDto;
-  representativeImg: File | null;
-  images?: File;
-  files?: File;
+  representativeImg?: File | null;
+  files?: File | null;
 };
 
 export type GetPortfolio = {

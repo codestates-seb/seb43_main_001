@@ -14,6 +14,9 @@ export const DetailContainer = styled.div`
   .ql-toolbar {
     background-color: ${mainColor};
   }
+  .ql-editor img {
+    max-width: 100%;
+  }
 `;
 export const Title = styled.span`
   height: 45px;

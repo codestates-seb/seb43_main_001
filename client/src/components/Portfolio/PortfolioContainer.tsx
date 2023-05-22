@@ -40,7 +40,7 @@ const PortfolioContainer: React.FC<PortfolioContainerProps> = ({
 
   // 유저 정보 받기
   const userId: number | null = UserProfile ? UserProfile.userId : null;
-  const email: string = UserProfile ? UserProfile.email : '';
+  const name: string = UserProfile ? UserProfile.name : '';
   const profileImg: string = UserProfile ? UserProfile.profileImg : '';
 
   const setting =
@@ -63,7 +63,6 @@ const PortfolioContainer: React.FC<PortfolioContainerProps> = ({
   // 수신 시 대표 이미지 파일 url
   const representativeImgUrl = PortfolioInfo ? PortfolioInfo.representativeImgUrl : null;
 
-  // const imgUrl = PortfolioInfo ? PortfolioInfo.imgUrl : '';
   // const fileUrl = PortfolioInfo ? PortfolioInfo.fileUrl : '';
 
   // input,textinput 값에 대한 변경
@@ -103,17 +102,6 @@ const PortfolioContainer: React.FC<PortfolioContainerProps> = ({
     setPortfolio({ ...portfolio, content: e });
   };
 
-  // 파일 선택 함수
-  const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.currentTarget.files?.[0]) {
-      const file = event.currentTarget.files[0];
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      setImg(file);
-      // console.log(file);
-    }
-  };
-
   // mutation을 이용한 서버 요청
   const { handlePatch } = usePatchPortfolio();
   const { handlePost } = usePostPortfolio();
@@ -138,12 +126,12 @@ const PortfolioContainer: React.FC<PortfolioContainerProps> = ({
 
   return (
     <S.PortfolioLayout>
-      <UserBox email={email} profileImg={profileImg} />
+      <UserBox name={name} profileImg={profileImg} />
       <TextBox text={'제목'} value={portfolio.title} name={'title'} onChange={handleInputChange} />
       <ImgBox
         text={'대표 사진'}
         img={img}
-        selectFile={selectFile}
+        setImg={setImg}
         representativeImgUrl={representativeImgUrl}
       />
       <TextBox
