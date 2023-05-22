@@ -21,7 +21,8 @@ export type GetUserPortfolio = {
   distributionLink: string;
   description: string;
   content: string;
-  views: number;
+  viewCount: number;
+  skills: string[];
   createdAt: number[];
   updatedAt: number[];
 };
