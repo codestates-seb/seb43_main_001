@@ -163,6 +163,9 @@ export const PortfolioAPI = {
     );
     return { ...allSearchPortfolio.data, currentPage: page };
   },
+  portfolioViews: async (portfolioId: number) => {
+    return await tokenClient.patch(`/portfolios/${portfolioId}/views`);
+  },
 };
 
 export const PortfolioCommentAPI = {
@@ -302,7 +305,6 @@ export const PortfolioLikeBtn = {
     } else {
       console.log('post');
       await tokenClient.post(`/portfolios/likes/${portfolioId}`);
-      console.log('post 후');
     }
   },
 };
