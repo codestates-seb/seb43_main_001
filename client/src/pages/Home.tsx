@@ -1,14 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 
-import { useAppSelector, useAppDispatch } from '../hooks/reduxHook';
 import { useGetPortfolioList } from '../hooks/useGetPortfolioList';
-import { login } from '../store/slice/loginSlice';
+import { useAuth } from '../hooks/useAuth';
+import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 
 import Banner from '../components/Home/Banner';
 import Sort from '../components/Home/Sort';
 import Search from '../components/Home/Search';
-import Card from '../components/common/Card';
 import ArrowUp from '../components/Home/ArrowUp';
+import Card from '../components/common/Card';
 import Loading from '../components/common/Loading';
 
 import * as S from './Home.style';
@@ -16,36 +16,13 @@ import * as S from './Home.style';
 import { GetPortfolio, SortOption } from '../types/index';
 
 function Home() {
-  const dispatch = useAppDispatch();
-  const isLogin = useAppSelector((state) => state.login.isLogin);
-
   const [sortOption, setSortOption] = useState<SortOption>('createdAt');
   const [category, setCategory] = useState('userName');
   const [value, setValue] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [searchCategory, setSearchCategory] = useState('');
 
-  // * 로그인 상태와 토큰 처리
-  useEffect(() => {
-    if (!isLogin) {
-      const currentURL = document.location.search;
-      const params = new URLSearchParams(currentURL);
-
-      const accessToken = params.get('access_token');
-      const refreshToken = params.get('refresh_token');
-
-      if (accessToken && refreshToken) {
-        dispatch(login({ accessToken, refreshToken }));
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
-      }
-    }
-  }, []);
-
-  const handleSearch = () => {
-    setSearchValue(value);
-    setSearchCategory(category);
-  };
+  const targetRef = useRef<HTMLDivElement | null>(null);
 
   const {
     PortfolioData,
@@ -57,38 +34,19 @@ function Home() {
     hasNextPortfolio,
   } = useGetPortfolioList(sortOption, searchCategory, searchValue);
 
-  const targetRef = useRef<HTMLDivElement | null>(null);
+  useAuth();
+  useInfiniteScroll({
+    targetRef,
+    isPortfoliosError,
+    isPortfolioFetching,
+    hasNextPortfolio,
+    fetchNextPortfolio,
+  });
 
-  // * 무한스크롤
-  useEffect(() => {
-    const options = {
-      root: null, // * viewport
-      rootMargin: '100px',
-      threshold: 0.3,
-    };
-
-    const handleIntersect: IntersectionObserverCallback = (
-      entries: IntersectionObserverEntry[],
-    ) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && !isPortfoliosError && hasNextPortfolio) {
-          fetchNextPortfolio();
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(handleIntersect, options);
-
-    if (targetRef.current) {
-      observer.observe(targetRef.current);
-    }
-
-    return () => {
-      if (targetRef.current) {
-        observer.unobserve(targetRef.current);
-      }
-    };
-  }, [fetchNextPortfolio, hasNextPortfolio, isPortfolioFetching]);
+  const handleSearch = () => {
+    setSearchValue(value);
+    setSearchCategory(category);
+  };
 
   return (
     <S.Container>
