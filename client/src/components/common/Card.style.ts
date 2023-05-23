@@ -60,6 +60,7 @@ export const CardContentWrapper = styled.div`
     margin-bottom: 23px;
     color: ${({ theme }) => theme.themeStyle.cardFontColor};
     font-size: 13px;
+    word-break: break-all;
 
     @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
       margin-bottom: 20px;

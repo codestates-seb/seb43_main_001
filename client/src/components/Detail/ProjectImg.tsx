@@ -1,7 +1,7 @@
 import * as S from './ProjectImg.style';
 
 type ProjectImgProps = {
-  representativeImgUrl: string | null;
+  representativeImgUrl: string;
   viewCount: number;
   countLikes: number;
 };
@@ -10,19 +10,17 @@ type ProjectImgProps = {
 function ProjectImg({ representativeImgUrl, viewCount, countLikes }: ProjectImgProps) {
   return (
     <S.Wrapper>
-      <S.Img>
-        프로젝트 이미지가 있는 곳
-        <S.IconSection>
-          <div className='view-icon'>
-            <S.ViewIcon />
-            <span>{viewCount}</span>
-          </div>
-          <div className='like-icon'>
-            <S.LikeIcon />
-            <span>{countLikes}</span>
-          </div>
-        </S.IconSection>
-      </S.Img>
+      <S.Img src={representativeImgUrl} />
+      <S.IconSection>
+        <div className='view-icon'>
+          <S.ViewIcon />
+          <span>{viewCount}</span>
+        </div>
+        <div className='like-icon'>
+          <S.LikeIcon />
+          <span>{countLikes}</span>
+        </div>
+      </S.IconSection>
     </S.Wrapper>
   );
 }

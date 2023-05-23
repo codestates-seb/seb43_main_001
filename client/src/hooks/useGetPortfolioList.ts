@@ -32,15 +32,6 @@ export const useGetPortfolioList = (sortOption: SortOption, category: string, va
       }
     },
     retry: false,
-    onError: (error) => {
-      if (error.response?.status === 400) {
-        return toast.error('잘못된 요청입니다.');
-      }
-
-      if (error.response?.status === 500) {
-        return toast.error('에러가 발생했습니다. 잠시후 다시 시도해 주세요.');
-      }
-    },
   });
 
   return {

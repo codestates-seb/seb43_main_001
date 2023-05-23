@@ -22,7 +22,7 @@ const CommonStlye = css`
   padding: 10px 0.5rem;
   @media ${(props) => props.theme.breakpoints.TABLETMIN} {
     padding: 10px 1rem;
-    flex-direction: row;
+    /* flex-direction: row; */
   }
 `;
 
@@ -32,18 +32,20 @@ export const TitleUpper = styled.div`
   align-items:center;
 `;
 
-export const ProjectTitle = styled.h1`
+export const ProjectTitle = styled.p`
   font-size: 1.4rem;
   font-weight: 700;
+  margin-bottom: 25px;
   @media ${(props) => props.theme.breakpoints.TABLETMIN} {
     font-size: 1.8rem;
   }
 `;
 
 export const UserInfo = styled.div`
+  width: 100%;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: row;
+  align-items: start;
 `;
 
 export const userName = styled.div`
@@ -53,12 +55,11 @@ export const userName = styled.div`
   }
 `;
 
-export const userImg = styled.div`
+export const userImg = styled.img`
   width: 50px;
   height: 50px;
-  border: 1px solid blue;
   border-radius: 50%;
-  margin-left: 1rem;
+  margin-right: 1rem;
   cursor: pointer;
 `;
 
