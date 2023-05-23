@@ -21,38 +21,11 @@ import java.net.URI;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class MemberAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-
-    private final SecurityService securityService;
-
+public class MemberAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException {
         log.info("# Authenticated successfully!");
-
-        User user = (User) authentication.getPrincipal();
-
-        String accessToken = securityService.delegateAccessToken(user);
-        String refreshToken = securityService.delegateRefreshToken(request, user);
-
-        String url = createURI(accessToken, refreshToken).toString();
-
-        getRedirectStrategy().sendRedirect(request, response, url);
-    }
-    private URI createURI(String accessToken, String refreshToken) {
-        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-        queryParams.add("access_token", accessToken);
-        queryParams.add("refresh_token", refreshToken);
-
-        return UriComponentsBuilder
-                .newInstance()
-                .scheme("http")
-                .host(EnvConfig.getBaseUrl())
-                .port(EnvConfig.getBasePort())
-                .path("/") // 로그인 후 홈으로 이동
-                .queryParams(queryParams)
-                .build()
-                .toUri();
     }
 }
