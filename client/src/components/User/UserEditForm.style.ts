@@ -48,10 +48,14 @@ export const EditSelect = styled.select`
   border: 1px solid black;
   font-size: 0.9rem;
   border-radius: 5px;
+  color: ${({ theme }) => theme.themeStyle.fontColor};
+  background-color: ${({ theme }) => theme.themeStyle.backgroundColor};
+  cursor: pointer;
+
   option {
-    color: red;
     width: 100%;
-    background-color: white;
+    color: ${({ theme }) => theme.themeStyle.fontColor};
+    background-color: ${({ theme }) => theme.themeStyle.backgroundColor};
   }
 `;
 export const EmailIcon = styled(RxEnvelopeClosed)``;
