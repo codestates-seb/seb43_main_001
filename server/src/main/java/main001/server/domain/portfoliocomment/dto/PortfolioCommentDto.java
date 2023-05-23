@@ -25,6 +25,8 @@ public class PortfolioCommentDto {
         @NotBlank
         private String content;
 
+        private int depth;
+
         private Long rootCommentId;
 
         private Long parentCommentId;
@@ -51,6 +53,7 @@ public class PortfolioCommentDto {
 
     @Builder
     @Getter
+    @Setter
     @AllArgsConstructor
     public static class Response {
         private Long portfolioCommentId;
@@ -58,9 +61,10 @@ public class PortfolioCommentDto {
         private Long userId;
         private String userName;
         private String userProfileImg;
-        private Long rootId;
         private Long portfolioId;
+        private Long rootId;
         private Long parentId;
+        private int depth;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
         private boolean auth;

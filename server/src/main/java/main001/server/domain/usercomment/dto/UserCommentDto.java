@@ -3,6 +3,7 @@ package main001.server.domain.usercomment.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import main001.server.response.PageInfo;
 
 import javax.validation.constraints.NotBlank;
@@ -50,6 +51,7 @@ public class UserCommentDto {
 
     @Getter
     @AllArgsConstructor
+    @Setter
     public static class Response {
         private Long userCommentId;
         private Long userId;

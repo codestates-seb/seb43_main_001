@@ -1,6 +1,5 @@
 package main001.server.domain.portfolio.service;
 
-import com.amazonaws.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import main001.server.amazon.s3.service.S3Service;
@@ -23,13 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDateTime;
 
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.List;
 
@@ -290,7 +284,7 @@ public class PortfolioService {
         skills.stream()
                 .map(name -> {
                     return PortfolioSkill.createPortfolioSkill(
-                            skillService.findByName(name.toUpperCase()));
+                            skillService.findById(name.replace(" ","").toUpperCase()));
                 })
                 .forEach(portfolio::addSkill);
     }
@@ -303,9 +297,9 @@ public class PortfolioService {
         if(sortBy.equals("createdAt")) {
             pageable = PageRequest.of(page, size,Sort.by("createdAt").descending());
         } else if (sortBy.equals("views")) {
-            pageable = PageRequest.of(page, size,Sort.by("views").descending());
+            pageable = PageRequest.of(page, size,Sort.by("viewCount").descending());
         } else if (sortBy.equals("likes")) {
-            pageable = PageRequest.of(page, size,Sort.by("likes").descending());
+            pageable = PageRequest.of(page, size,Sort.by("countLikes").descending());
         } else {
             throw new BusinessLogicException(ExceptionCode.SEARCH_CONDITION_MISMATCH);
         }

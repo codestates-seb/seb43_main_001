@@ -20,8 +20,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -42,29 +45,45 @@ public class PortfolioCommentService {
     public PortfolioCommentDto.Response createPortfolioComment(PortfolioCommentDto.Post postDto) {
         PortfolioComment portfolioComment = portfolioCommentMapper.postToEntity(postDto);
 
+        if(postDto.getRootCommentId()==null) {
+            portfolioComment.setRootComment(null);
+        }
+        else {
+            PortfolioComment verifiedRootComment = findVerifiedPortfolioComment(postDto.getRootCommentId());
+            portfolioComment.setRootComment(verifiedRootComment);
+        }
+
+        if(postDto.getParentCommentId()==null) {
+            portfolioComment.setParentComment(null);
+        }
+        else {
+            PortfolioComment verifiedParentComment = findVerifiedPortfolioComment(postDto.getParentCommentId());
+            portfolioComment.setParentComment(verifiedParentComment);
+        }
         PortfolioComment savedComment = portfolioCommentRepository.save(setUserAndPortfolio(portfolioComment));
 
-        saveCommentRelations(portfolioComment, portfolioComment, 0);
+        saveCommentRelations(portfolioComment, portfolioComment);
 
         return portfolioCommentMapper.entityToResponse(savedComment);
     }
 
-    private void saveCommentRelations(PortfolioComment ancestorComment, PortfolioComment descendantComment, int depth) {
-        PortfolioCommentRelation relation = new PortfolioCommentRelation();
+    private void saveCommentRelations(PortfolioComment ancestorComment, PortfolioComment descendantComment) {
+        Deque<PortfolioComment> stack = new ArrayDeque<>();
+        stack.push(ancestorComment);
 
-        if(depth==0) {
-            relation.setAncestor(null);
-        }
-        else {
-            relation.setAncestor(ancestorComment);
-        }
-        relation.setDescendant(descendantComment);
-        relation.setDepth(depth);
+        while (!stack.isEmpty()) {
+            PortfolioComment currentComment = stack.pop();
 
-        relationRepository.save(relation);
+            PortfolioCommentRelation relation = new PortfolioCommentRelation();
+            relation.setAncestor(currentComment);
+            relation.setDescendant(descendantComment);
+            relation.setDepth(descendantComment.getDepth()-currentComment.getDepth()); // 부모 댓글의 깊이에 1을 더한 값으로 설정
 
-        if(ancestorComment.getParentComment()!=null) {
-            saveCommentRelations(ancestorComment.getParentComment(),descendantComment, depth+1);
+            relationRepository.save(relation);
+
+            if(currentComment.getParentComment()!=null) {
+                stack.push(currentComment.getParentComment());
+            }
         }
     }
 
@@ -138,7 +157,13 @@ public class PortfolioCommentService {
     }
 
     public void deletePortfolioComment(Long portfolioCommentId) {
-        findVerifiedPortfolioComment(portfolioCommentId);
+        PortfolioComment portfolioComment = findVerifiedPortfolioComment(portfolioCommentId);
+
+        List<PortfolioComment> commentsToDelete = relationRepository.findAllByAncestor(portfolioComment);
+
+        for(PortfolioComment comment : commentsToDelete) {
+            relationRepository.deleteByAncestor(comment);
+        }
         portfolioCommentRepository.deleteById(portfolioCommentId);
     }
 
@@ -155,5 +180,16 @@ public class PortfolioCommentService {
         portfolioComment.setPortfolio(portfolio);
 
         return portfolioComment;
+    }
+
+    public List<PortfolioCommentDto.Response> testList(Long id) {
+        PortfolioComment findComment = findVerifiedPortfolioComment(id);
+
+        List<PortfolioComment> allByAncestor = relationRepository.findAllByAncestor(findComment);
+
+        List<PortfolioCommentDto.Response> collect = allByAncestor.stream().map(portfolioCommentMapper::entityToResponse)
+                .collect(Collectors.toList());
+
+        return collect;
     }
 }

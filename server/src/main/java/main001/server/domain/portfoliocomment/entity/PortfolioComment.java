@@ -26,6 +26,12 @@ public class PortfolioComment extends BaseTimeEntity {
     @NotBlank(message = "내용은 반드시 포함되어야 합니다.")
     private String content;
 
+    private int depth;
+
+    @ManyToOne
+    @JoinColumn(name = "rootId")
+    private PortfolioComment rootComment;
+
     @ManyToOne
     @JoinColumn(name = "parentId")
     private PortfolioComment parentComment;
