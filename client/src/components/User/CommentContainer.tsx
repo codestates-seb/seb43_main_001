@@ -63,7 +63,7 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
           )}
           <S.CommentAdd onSubmit={addHandler}>
             <label htmlFor='Comment'></label>
-            <textarea id='Comment' value={content} onChange={contentChangeHandler} />
+            <textarea id='Comment' value={content} onChange={contentChangeHandler} placeholder='유저에게 댓글을 남겨보세요!' />
             <S.Secret htmlFor='secret'>
               <span>비밀글</span>
               <input type='checkbox' id='secret' />
