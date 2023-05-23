@@ -56,6 +56,7 @@ function Header() {
     dispatch(logout(null));
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    routeTo('/');
   };
 
   const [openNav, setOpenNav] = useState<boolean>(false);

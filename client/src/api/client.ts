@@ -68,8 +68,9 @@ tokenClient.interceptors.response.use(
       toast.error('잘못된 요청입니다');
     } else if (error.response.status === 500) {
       toast.error('에러가 발생했습니다. 잠시후 다시 시도해 주세요.');
+    } else if (error.response.status === 403) {
+      toast.error('로그인 후 진행해주세요!');
     }
-
     if (error.response.status === 401 && originalRequest && !originalRequest._retry) {
       originalRequest._retry = true;
 

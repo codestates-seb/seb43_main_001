@@ -24,9 +24,11 @@ type DetailTileProps = {
   distributionLink: string;
   skills: string[];
   portfolioId: number;
+  profileImg: string;
 };
 // 상세 페이지 포트폴리오 제목 및 사용자 정보
 function DetailTitle({
+  profileImg,
   auth,
   userId,
   name,
@@ -55,8 +57,8 @@ function DetailTitle({
       <S.TitleUpper>
         <S.ProjectTitle>{title}</S.ProjectTitle>
         <S.UserInfo>
+          <S.userImg src={profileImg} onClick={handleOnClickUserImg} />
           <S.userName>{name}</S.userName>
-          <S.userImg onClick={handleOnClickUserImg}></S.userImg>
         </S.UserInfo>
       </S.TitleUpper>
       <S.TitleDowner>

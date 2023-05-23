@@ -125,9 +125,10 @@ export type GetPortfolio = {
   skills: string[];
   updatedAt: string;
   createdAt: string;
-  representativeImgUrl: string | null;
+  representativeImgUrl: string;
   likes: boolean;
   countLikes: number;
+  profileImg: string;
 };
 
 type PageInfo = {

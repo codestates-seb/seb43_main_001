@@ -39,6 +39,7 @@ function Detail() {
         <>
           <LikeBtn likes={PortfolioInfo.likes} portfolioId={PortfolioInfo.portfolioId} />
           <DetailTitle
+            profileImg={PortfolioInfo.profileImg}
             auth={PortfolioInfo.auth}
             userId={PortfolioInfo.userId}
             title={PortfolioInfo.title}

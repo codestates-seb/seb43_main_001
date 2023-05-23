@@ -9,13 +9,11 @@ const { subFontColor } = COLOR;
 
 export const Wrapper = styled.section`
   margin-top: 2rem;
-`;
-
-export const Img = styled.div`
   position: relative;
+`;
+export const Img = styled.img`
   width: 100%;
   height: 300px;
-  background-color: grey;
   border-radius: 12px;
   display: flex;
   justify-content: center;
