@@ -143,7 +143,7 @@ public class PortfolioCommentService {
         Pageable pageable = PageRequest.of(page,size);
 
         Page<PortfolioCommentDto.Response> portfoliosPage =
-                portfolioCommentRepository.findAllComments(portfolio,pageable)
+                portfolioCommentRepository.findByPortfolio(portfolio,pageable)
                         .map(portfolioCommentMapper::entityToResponse);
 
         List<PortfolioCommentDto.Response> content = portfoliosPage.getContent();

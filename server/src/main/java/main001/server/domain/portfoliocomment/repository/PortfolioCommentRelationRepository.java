@@ -13,6 +13,9 @@ public interface PortfolioCommentRelationRepository extends JpaRepository<Portfo
 
     void deleteByAncestor(PortfolioComment portfolioComment);
 
-    @Query("SELECT c FROM PortfolioComment c JOIN PortfolioCommentRelation cr ON c = cr.ancestor")
+    @Query("SELECT cr.descendant " +
+            "FROM PortfolioCommentRelation cr " +
+            "JOIN PortfolioComment c ON cr.ancestor = c " +
+            "WHERE cr.ancestor = :portfolioComment")
     List<PortfolioComment> findAllByAncestor(PortfolioComment portfolioComment);
 }

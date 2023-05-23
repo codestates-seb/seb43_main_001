@@ -39,6 +39,8 @@ public class PortfolioService {
     private final RepresentativeImageRepository representativeImageRepository;
     private final ImageAttachmentRepository imageAttachmentRepository;
     private final SkillService skillService;
+
+    private final String DEFAULT_IMAGE_URL = "https://main001-portfolio.s3.ap-northeast-2.amazonaws.com/default/default.jpg";
     private final static String VIEWCOOKIENAME = "alreadyViewCookie";
 
     public Portfolio createPortfolio(Portfolio portfolio, List<String> skills, MultipartFile representativeImg) throws IOException{
@@ -57,21 +59,36 @@ public class PortfolioService {
         }
         portfolio.setUser(verifiedUser.get());
 
-        if(representativeImg != null) {
-            String representativeImgUrl = s3Service.uploadFile(representativeImg, "images");
-            RepresentativeAttachment representativeAttachment = new RepresentativeAttachment(representativeImgUrl);
-            representativeAttachment.setPortfolio(portfolio);
-
-            portfolio.setRepresentativeAttachment(representativeAttachment);
-
-            representativeImageRepository.save(representativeAttachment);
-        }
+        RepresentativeAttachment attachment = extracted(portfolio, representativeImg);
+        representativeImageRepository.save(attachment);
 
         Portfolio saved = portfolioRepository.save(portfolio);
 
         addSkills(saved, skills);
 
         return saved;
+    }
+
+    private RepresentativeAttachment extracted(Portfolio portfolio, MultipartFile representativeImg) throws IOException {
+        if (representativeImg != null && !representativeImg.isEmpty()) {
+            // 이미지가 첨부된 경우에 대한 처리
+            String representativeImgUrl = s3Service.uploadFile(representativeImg, "images");
+            RepresentativeAttachment representativeAttachment = new RepresentativeAttachment(representativeImgUrl);
+            representativeAttachment.setPortfolio(portfolio);
+
+            portfolio.setRepresentativeAttachment(representativeAttachment);
+
+            return representativeAttachment;
+        } else {
+            // 이미지가 첨부되지 않은 경우에 대한 처리
+            String defaultImageUrl = DEFAULT_IMAGE_URL;
+            RepresentativeAttachment representativeAttachment = new RepresentativeAttachment(defaultImageUrl);
+            representativeAttachment.setPortfolio(portfolio);
+
+            portfolio.setRepresentativeAttachment(representativeAttachment);
+
+            return representativeAttachment;
+        }
     }
 
     public Portfolio updatePortfolio(Portfolio portfolio,Long portfolioId,  List<String> skills, MultipartFile representativeImg) throws IOException{
@@ -90,9 +107,10 @@ public class PortfolioService {
         Optional.ofNullable(portfolio.getContent())
                 .ifPresent(content -> findPortfolio.setContent(content));
 
+
         if (representativeImg != null && representativeImg.getSize() > 0) {
             updateRepresentativeImage(portfolioId, representativeImg);
-        }  else {
+        } else {
             updateRepresentativeImage(portfolioId, null);
         }
 
@@ -119,13 +137,13 @@ public class PortfolioService {
 //    }
 
 
-    public Page<Portfolio> findAllOrderByViewsDesc(int page, int size) {
-        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "viewCount")));
-    }
-
-    public Page<Portfolio> findAllOrderByCreatedAtDesc(int page, int size) {
-        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")));
-    }
+//    public Page<Portfolio> findAllOrderByViewsDesc(int page, int size) {
+//        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "viewCount")));
+//    }
+//
+//    public Page<Portfolio> findAllOrderByCreatedAtDesc(int page, int size) {
+//        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")));
+//    }
     public void deletePortfolio(long portfolioId) {
         Portfolio portfolio = findVerifiedPortfolio(portfolioId);
         User user = portfolio.getUser();
@@ -157,48 +175,20 @@ public class PortfolioService {
             representativeImageRepository.delete(currentImageAttachment);
         }
 
-        // 새로운 대표 이미지 파일 첨부
+        RepresentativeAttachment newImageAttachment = null;
         if (representativeImg != null && representativeImg.getSize() > 0) {
             String imgUrl = s3Service.uploadFile(representativeImg, "images");
-            RepresentativeAttachment newImageAttachment = new RepresentativeAttachment(imgUrl);
-            newImageAttachment.setPortfolio(portfolio);
-
-            portfolio.setRepresentativeAttachment(newImageAttachment);
-            representativeImageRepository.save(newImageAttachment);
+            newImageAttachment = new RepresentativeAttachment(imgUrl);
+        } else {
+            // 이미지가 첨부되지 않은 경우에 대한 처리
+            String defaultImageUrl = DEFAULT_IMAGE_URL;
+            newImageAttachment = new RepresentativeAttachment(defaultImageUrl);
         }
+
+        newImageAttachment.setPortfolio(portfolio);
+        portfolio.setRepresentativeAttachment(newImageAttachment);
+        representativeImageRepository.save(newImageAttachment);
     }
-//
-//    @Transactional
-//    public void updateImage(Long portfolioId, List<MultipartFile> images) throws IOException {
-//        Portfolio portfolio = findPortfolio(portfolioId);
-//        List<ImageAttachment> currentImageAttachments = portfolio.getImageAttachments();
-//
-//        // 기존 이미지 파일 첨부를 삭제
-//        if (!CollectionUtils.isNullOrEmpty(currentImageAttachments)) {
-//            Iterator<ImageAttachment> iterator = currentImageAttachments.iterator();
-//            while (iterator.hasNext()) {
-//                ImageAttachment imageAttachment = iterator.next();
-//                // s3에서 이미지 파일 삭제
-//                s3Service.deleteFile(imageAttachment.getImgUrl());
-//                // 포트폴리오에서 이미지 첨부 파일 삭제
-//                iterator.remove();
-//                imageAttachmentRepository.delete(imageAttachment);
-//            }
-//        }
-//
-//
-//        // 새로운 이미지 파일을 첨부
-//        if (!CollectionUtils.isNullOrEmpty(images)) {
-//            for (MultipartFile image : images) {
-//                String imgUrl = s3Service.uploadFile(image, "images");
-//                ImageAttachment newImageAttachment = new ImageAttachment(imgUrl);
-//                newImageAttachment.setPortfolio(portfolio);
-//
-//                portfolio.getImageAttachments().add(newImageAttachment);
-//                imageAttachmentRepository.save(newImageAttachment);
-//            }
-//        }
-//    }
 
 
     public List<String> uploadImage(List<MultipartFile> images) throws IOException {
@@ -230,6 +220,13 @@ public class PortfolioService {
 
         return imageUrlList;
     }
+
+//    public String getRepresentativeImageUrlList() {
+//        RepresentativeAttachment image =
+//
+//
+//        return imageUrlList;
+//    }
 
     @Transactional
     public void increaseViewCount(Long portfolioId) {
@@ -299,7 +296,7 @@ public class PortfolioService {
         } else if (sortBy.equals("views")) {
             pageable = PageRequest.of(page, size,Sort.by("viewCount").descending());
         } else if (sortBy.equals("likes")) {
-            pageable = PageRequest.of(page, size,Sort.by("countLikes").descending());
+            pageable = PageRequest.of(page, size,Sort.by("likesCount").descending());
         } else {
             throw new BusinessLogicException(ExceptionCode.SEARCH_CONDITION_MISMATCH);
         }
@@ -309,7 +306,7 @@ public class PortfolioService {
     public void updateLikes(Long portfolioId, int number) {
         Portfolio verifiedPortfolio = findVerifiedPortfolio(portfolioId);
 
-        verifiedPortfolio.setCountLikes(verifiedPortfolio.getCountLikes()+number);
+        verifiedPortfolio.setLikesCount(verifiedPortfolio.getLikesCount()+number);
 
         portfolioRepository.save(verifiedPortfolio);
     }

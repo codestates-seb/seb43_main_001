@@ -53,25 +53,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String accessToken = securityService.delegateAccessToken(user);
         String refreshToken = securityService.delegateRefreshToken(request, user);
 
-        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-        queryParams.add("access_token", accessToken);
-        queryParams.add("refresh_token", refreshToken);
-
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("Refresh", refreshToken);
-
-        URI url = UriComponentsBuilder
-                .newInstance()
-                .scheme("http")
-                .host(EnvConfig.getBaseUrl())
-                .port(EnvConfig.getBasePort())
-                .path("/") // 로그인 후 홈으로 이동
-                .queryParams(queryParams)
-                .build()
-                .toUri();
-
-        RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-        redirectStrategy.sendRedirect(request, response, url.toString());
 
         this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);
     }

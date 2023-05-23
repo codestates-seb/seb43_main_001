@@ -34,8 +34,7 @@ public class SecurityController {
 
     @PatchMapping("/addemail")
     public ResponseEntity addEmail(@Positive @RequestParam(value = "userId") Long userId,
-                                   @Valid @RequestBody UserDto.PatchEmail requestBody,
-                                   HttpServletRequest request) {
+                                   @Valid @RequestBody UserDto.PatchEmail requestBody) {
         requestBody.setUserId(userId);
         User user = userService.updateEmail(mapper.userPatchEmailToUser(requestBody));
 
@@ -45,17 +44,18 @@ public class SecurityController {
 
     @PostMapping("/auth/refresh")
     @ResponseStatus(HttpStatus.OK)
-    public void reissueToken(HttpServletResponse response) {
+    public void reissueToken(HttpServletRequest request, HttpServletResponse response) {
 
-        Long currentUserId = CurrentUserIdFinder.getCurrentUserId();
+        Long userId = securityService.verifyToken(request);
 
-        if (currentUserId == null) {
-            throw new BusinessLogicException(ExceptionCode.TOKEN_NOT_AVAILABLE);
+        if (userId == null) {
+            throw new BusinessLogicException(ExceptionCode.USER_NOT_FOUND);
         }
-        String reissuedAccessToken = securityService.reissueAccessToken(currentUserId);
-        String reissuedRefreshToken = securityService.reissueRefreshToken(currentUserId);
 
-        response.setHeader("Authorization", "Bearer " + reissuedAccessToken);
+        String reissuedAccessToken = securityService.reissueAccessToken(userId);
+        String reissuedRefreshToken = securityService.reissueRefreshToken(userId);
+
+        response.setHeader("Authorization", reissuedAccessToken);
         response.setHeader("Refresh", reissuedRefreshToken);
     }
 }

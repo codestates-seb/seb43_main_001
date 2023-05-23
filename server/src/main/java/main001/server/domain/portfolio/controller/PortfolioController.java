@@ -48,8 +48,6 @@ public class PortfolioController {
 
         Portfolio response = portfolioService.createPortfolio(portfolio, postDto.getSkills(), representativeImg);
 
-        portfolioService.addSkills(portfolio,postDto.getSkills());
-
         URI location =
                 UriComponentsBuilder
                         .newInstance()

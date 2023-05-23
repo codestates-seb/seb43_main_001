@@ -10,5 +10,6 @@ public interface SecurityService {
     String reissueAccessToken(Long userId);
     String reissueRefreshToken(Long userId);
     void deleteRefreshToken(Long userId);
+    Long verifyToken(HttpServletRequest request);
 
 }

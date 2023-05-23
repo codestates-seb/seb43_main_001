@@ -76,7 +76,7 @@ public class PortfolioDto {
         private long portfolioId;
         private long userId;
         private String name;
-        private String userProfileImg;
+        private String profileImg;
         private String title;
         private String gitLink;
         private String distributionLink;
@@ -85,7 +85,7 @@ public class PortfolioDto {
 
         private String representativeImgUrl;
         private List<String> skills;
-        private int countLikes;
+        private int likesCount;
         private int viewCount;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;

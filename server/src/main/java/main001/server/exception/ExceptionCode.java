@@ -12,6 +12,7 @@ public enum ExceptionCode {
     NO_PERMISSION_CREATING_POST(403, "회원만 작성 할 수 있습니다."),
     NO_PERMISSION_EDITING_POST(403,"작성자만 수정할 수 있습니다."),
     NO_PERMISSION_DELETING_POST(403,"작성자만 삭제할 수 있습니다."),
+    NOT_ALLOW_NULL_VALUE(400, "적절한 입력값을 입력하세요."),
 
     // portfolio 관련
     PORTFOLIO_NOT_FOUND(404, "포트폴리오가 존재하지 않습니다."),
@@ -32,7 +33,7 @@ public enum ExceptionCode {
 
     // security 관련
     // ACCESS_NOT_MATCH(403, "접속 정보가 일치하지 않습니다."); // 개발 후 해당 코드로 아래 코드 교체
-    USER_IP_NOT_MATCH(403, "접속 IP정보가 상이합니다."),
+    USER_IP_NOT_MATCH(400, "접속 IP정보가 상이합니다."),
     REFRESH_TOKEN_NOT_MATCH(403, "RefreshToken이 일치하지 않습니다."),
     REFRESH_TOKEN_EXPIRED(403, "RefreshToken이 만료되었습니다."),
     TOKEN_NOT_AVAILABLE(401, "사용이 불가능한 토큰입니다.");

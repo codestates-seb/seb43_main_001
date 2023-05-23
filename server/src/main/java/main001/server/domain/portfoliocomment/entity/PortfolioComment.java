@@ -36,7 +36,7 @@ public class PortfolioComment extends BaseTimeEntity {
     @JoinColumn(name = "parentId")
     private PortfolioComment parentComment;
 
-    @OneToMany(mappedBy = "parentComment", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parentComment",fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PortfolioComment> childComments = new ArrayList<>();
 
     @ManyToOne
