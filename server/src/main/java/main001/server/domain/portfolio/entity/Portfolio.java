@@ -36,6 +36,7 @@ public class Portfolio extends BaseTimeEntity {
     @Column(length = 500, nullable = false)
     private String description; // 프로젝트 소개글
 
+    // TODO longth 조절 또는 대안 필요
     @Column(length = 55000)
     private String content; //프로젝트 설명
 

@@ -13,6 +13,7 @@ public enum ExceptionCode {
     NO_PERMISSION_EDITING_POST(403,"작성자만 수정할 수 있습니다."),
     NO_PERMISSION_DELETING_POST(403,"작성자만 삭제할 수 있습니다."),
     NOT_ALLOW_NULL_VALUE(400, "적절한 입력값을 입력하세요."),
+    EMAIL_NOT_EXIST(400, "등록된 회원 이메일이 없습니다."),
 
     // portfolio 관련
     PORTFOLIO_NOT_FOUND(404, "포트폴리오가 존재하지 않습니다."),
