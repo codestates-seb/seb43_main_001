@@ -41,7 +41,7 @@ public class User extends BaseTimeEntity {
     private String name;
 
     @Column
-    private String profileImg = "https://main001-portfolio.s3.ap-northeast-2.amazonaws.com/default/default_profileImg.png";
+    private String profileImg;
 
     @Column(length = 500)
     private String gitLink;
