@@ -6,6 +6,8 @@ import { AxiosError } from 'axios';
 
 // api
 import { userAPI } from '../api/client';
+import { useAppSelector, useAppDispatch } from '../hooks/reduxHook';
+import { login } from '../store/slice/loginSlice';
 
 // types
 import { Login } from '../types/index';
@@ -20,16 +22,25 @@ const { postLogin } = userAPI;
 
 export const usePostUserLogin = () => {
   const { routeTo } = useRouter();
+  const dispatch = useAppDispatch();
+  const isLogin = useAppSelector((state) => state.login.isLogin);
   const { mutate: postUserLogin } = useMutation({
     // alert들은 toast library로 대체하기!
     mutationFn: postLogin,
-    onSuccess: () => {
-      return toast.success('성공적으로 로그인 되셨습니다');
+    onSuccess: (data) => {
+      // 로그인 처리
+      const accessToken = data.headers.authorization;
+      const refreshToken = data.headers.refresh;
+      if (accessToken) {
+        dispatch(login({ accessToken, refreshToken }));
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
+      }
+
+      toast.success('성공적으로 로그인 되셨습니다');
+      return routeTo('/');
     },
     onError: (error: AxiosError) => {
-      if (error.response?.status === 409) {
-        return toast.error('이미 가입하셨습니다');
-      }
       return toast.error('로그인이 실패했습니다');
     },
   });
