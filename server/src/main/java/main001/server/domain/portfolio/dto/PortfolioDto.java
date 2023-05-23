@@ -85,7 +85,7 @@ public class PortfolioDto {
 
         private String representativeImgUrl;
         private List<String> skills;
-        private int countLikes;
+        private int likesCount;
         private int viewCount;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;

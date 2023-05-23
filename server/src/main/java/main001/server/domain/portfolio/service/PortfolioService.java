@@ -1,6 +1,5 @@
 package main001.server.domain.portfolio.service;
 
-import com.amazonaws.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import main001.server.amazon.s3.service.S3Service;
@@ -23,13 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDateTime;
 
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.List;
 
@@ -65,6 +59,17 @@ public class PortfolioService {
         }
         portfolio.setUser(verifiedUser.get());
 
+        RepresentativeAttachment attachment = extracted(portfolio, representativeImg);
+        representativeImageRepository.save(attachment);
+
+        Portfolio saved = portfolioRepository.save(portfolio);
+
+        addSkills(saved, skills);
+
+        return saved;
+    }
+
+    private RepresentativeAttachment extracted(Portfolio portfolio, MultipartFile representativeImg) throws IOException {
         if (representativeImg != null && !representativeImg.isEmpty()) {
             // 이미지가 첨부된 경우에 대한 처리
             String representativeImgUrl = s3Service.uploadFile(representativeImg, "images");
@@ -73,7 +78,7 @@ public class PortfolioService {
 
             portfolio.setRepresentativeAttachment(representativeAttachment);
 
-            representativeImageRepository.save(representativeAttachment);
+            return representativeAttachment;
         } else {
             // 이미지가 첨부되지 않은 경우에 대한 처리
             String defaultImageUrl = DEFAULT_IMAGE_URL;
@@ -82,14 +87,8 @@ public class PortfolioService {
 
             portfolio.setRepresentativeAttachment(representativeAttachment);
 
-            representativeImageRepository.save(representativeAttachment);
+            return representativeAttachment;
         }
-
-        Portfolio saved = portfolioRepository.save(portfolio);
-
-        addSkills(saved, skills);
-
-        return saved;
     }
 
     public Portfolio updatePortfolio(Portfolio portfolio,Long portfolioId,  List<String> skills, MultipartFile representativeImg) throws IOException{
@@ -138,13 +137,13 @@ public class PortfolioService {
 //    }
 
 
-    public Page<Portfolio> findAllOrderByViewsDesc(int page, int size) {
-        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "viewCount")));
-    }
-
-    public Page<Portfolio> findAllOrderByCreatedAtDesc(int page, int size) {
-        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")));
-    }
+//    public Page<Portfolio> findAllOrderByViewsDesc(int page, int size) {
+//        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "viewCount")));
+//    }
+//
+//    public Page<Portfolio> findAllOrderByCreatedAtDesc(int page, int size) {
+//        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")));
+//    }
     public void deletePortfolio(long portfolioId) {
         Portfolio portfolio = findVerifiedPortfolio(portfolioId);
         User user = portfolio.getUser();
@@ -252,6 +251,10 @@ public class PortfolioService {
 
         Page<Portfolio> response;
 
+        if(value.equals("")) {
+            return portfolioRepository.findAll(pageable);
+        }
+
         if(category.equals("userName")) {
             response = portfolioRepository.findByUserName(value, pageable);
         } else if (category.equals("title")) {
@@ -278,7 +281,7 @@ public class PortfolioService {
         skills.stream()
                 .map(name -> {
                     return PortfolioSkill.createPortfolioSkill(
-                            skillService.findByName(name.toUpperCase()));
+                            skillService.findById(name.replace(" ","").toUpperCase()));
                 })
                 .forEach(portfolio::addSkill);
     }
@@ -293,7 +296,7 @@ public class PortfolioService {
         } else if (sortBy.equals("views")) {
             pageable = PageRequest.of(page, size,Sort.by("viewCount").descending());
         } else if (sortBy.equals("likes")) {
-            pageable = PageRequest.of(page, size,Sort.by("countLikes").descending());
+            pageable = PageRequest.of(page, size,Sort.by("likesCount").descending());
         } else {
             throw new BusinessLogicException(ExceptionCode.SEARCH_CONDITION_MISMATCH);
         }
@@ -303,7 +306,7 @@ public class PortfolioService {
     public void updateLikes(Long portfolioId, int number) {
         Portfolio verifiedPortfolio = findVerifiedPortfolio(portfolioId);
 
-        verifiedPortfolio.setCountLikes(verifiedPortfolio.getCountLikes()+number);
+        verifiedPortfolio.setLikesCount(verifiedPortfolio.getLikesCount()+number);
 
         portfolioRepository.save(verifiedPortfolio);
     }

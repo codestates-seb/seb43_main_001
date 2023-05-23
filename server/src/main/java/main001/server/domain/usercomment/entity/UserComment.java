@@ -31,11 +31,6 @@ public class UserComment extends BaseTimeEntity {
     @JoinColumn(name = "writerId")
     private User writer;
 
-    @Enumerated(value = EnumType.STRING)
-    @Column(name = "status")
-    private UserCommentStatus userCommentStatus = UserCommentStatus.COMMENT_REGISTERED;
-
-
     public void setUser(User user) {
         this.user = user;
         if(!this.user.getUserComments().contains(this)) {

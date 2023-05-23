@@ -47,7 +47,7 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
             long userId = savedUser.getUserId();
             String addemail = UriComponentsBuilder
                     .newInstance()
-                    .scheme("http")
+                    .scheme(EnvConfig.getScheme())
                     .host(EnvConfig.getBaseUrl())
                     .port(EnvConfig.getBasePort())
                     .path("/addemail") // addemail 페이지로 이동
@@ -82,7 +82,7 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
         return UriComponentsBuilder
                 .newInstance()
-                .scheme("http")
+                .scheme(EnvConfig.getScheme())
                 .host(EnvConfig.getBaseUrl())
                 .port(EnvConfig.getBasePort())
                 .path("/") // 로그인 후 홈으로 이동

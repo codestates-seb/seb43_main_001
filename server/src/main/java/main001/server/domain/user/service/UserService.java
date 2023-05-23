@@ -36,12 +36,18 @@ public class UserService {
     private final JwtTokenizer jwtTokenizer;
     private final PasswordEncoder passwordEncoder;
 
+    private final String DEFAULT_PROFILE_IMG = "https://main001-portfolio.s3.ap-northeast-2.amazonaws.com/default/default_profileImg.png";
+
     public User createUser(User user) {
         verifyExistEmail(user.getEmail());
 
         // 초기 권한 부여 설정
         List<String> roles = authorityUtils.createRoles(user.getEmail());
         user.setRoles(roles);
+
+        if (user.getProfileImg() == null) {
+            user.setProfileImg(DEFAULT_PROFILE_IMG);
+        }
 
         User savedUser = userRepository.save(user);
         return savedUser;
@@ -54,6 +60,9 @@ public class UserService {
         String encryptedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encryptedPassword);
 
+        if (user.getProfileImg() == null) {
+            user.setProfileImg(DEFAULT_PROFILE_IMG);
+        }
 
         // 초기 권한 부여 설정
         List<String> roles = authorityUtils.createRoles(user.getEmail());
