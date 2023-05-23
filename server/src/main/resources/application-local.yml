@@ -79,5 +79,6 @@ jwt:
 # redirect uri
 uri:
   address:
+    scheme: "http"
     url: "localhost"
     port: "8080"

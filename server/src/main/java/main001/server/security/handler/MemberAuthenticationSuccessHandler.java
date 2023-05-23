@@ -6,7 +6,6 @@ import main001.server.config.EnvConfig;
 import main001.server.domain.user.entity.User;
 import main001.server.security.service.SecurityService;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -47,7 +46,7 @@ public class MemberAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         return UriComponentsBuilder
                 .newInstance()
-                .scheme("http")
+                .scheme(EnvConfig.getScheme())
                 .host(EnvConfig.getBaseUrl())
                 .port(EnvConfig.getBasePort())
                 .path("/") // 로그인 후 홈으로 이동
