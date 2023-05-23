@@ -38,6 +38,8 @@ public class MemberAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         String url = createURI(accessToken, refreshToken).toString();
 
+//        response.sendRedirect(url);
+
         getRedirectStrategy().sendRedirect(request, response, url);
     }
     private URI createURI(String accessToken, String refreshToken) {
