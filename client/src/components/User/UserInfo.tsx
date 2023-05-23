@@ -86,8 +86,6 @@ const UserInfo: React.FC<IdProps> = ({ userId }) => {
 
   const { UserProfile, getUserProfileError } = useGetUserProfile(userId);
 
-  console.log(UserProfile);
-
   if (getUserProfileError) {
     return (
       <S.UserInfo>

@@ -30,9 +30,9 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
   const userEditInfo = useSelector((state: RootState) => {
     return state.editUserProfile;
   });
-  const { gitLink: editGitLink } = userEditInfo;
-  const [photo, setPhoto] = useState<string>(profileImg);
-  const [userName, setUserName] = useState<string>(name);
+  const { name: editName, profileImg: editProfileImg, gitLink: editGitLink } = userEditInfo;
+  const [photo, setPhoto] = useState<string>(editProfileImg);
+  const [userName, setUserName] = useState<string>(editName);
   // ! : input에 null값을 넣지 않기 위해 editSlice의 정보 사용,(서버에서 처리해주면 기존값 사용해도 괜찮음)
   const [userGit, setUserGit] = useState<string>(editGitLink);
   const [gradecolor, setGradecolor] = useState<string>('brown');
