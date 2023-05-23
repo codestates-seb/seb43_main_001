@@ -1,6 +1,5 @@
 package main001.server.domain.portfolio.mapper;
 
-import main001.server.domain.attachment.image.entity.ImageAttachment;
 import main001.server.domain.portfolio.dto.PortfolioDto;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.utils.CurrentUserIdFinder;
@@ -43,7 +42,7 @@ public interface PortfolioMapper {
                         .map(portfolioSkill -> portfolioSkill.getSkill().getName())
                         .collect(Collectors.toList()))
                 .viewCount(portfolio.getViewCount())
-                .countLikes(portfolio.getCountLikes())
+                .likesCount(portfolio.getLikesCount())
                 .createdAt(portfolio.getCreatedAt())
                 .updatedAt(portfolio.getUpdatedAt())
                 .isAuth(portfolio.getUser().isAuth())

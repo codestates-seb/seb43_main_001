@@ -40,7 +40,7 @@ public class Portfolio extends BaseTimeEntity {
     private String content; //프로젝트 설명
 
     @Column(columnDefinition = "integer default 0", nullable = false)
-    private int countLikes;
+    private int likesCount;
 
     @Column(columnDefinition = "integer default 0", nullable = false)
     private int viewCount;

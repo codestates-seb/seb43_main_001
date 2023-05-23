@@ -2,6 +2,7 @@ package main001.server.domain.portfoliocomment.controller;
 
 import lombok.RequiredArgsConstructor;
 import main001.server.domain.portfoliocomment.dto.PortfolioCommentDto;
+import main001.server.domain.portfoliocomment.entity.PortfolioComment;
 import main001.server.domain.portfoliocomment.service.PortfolioCommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import java.util.List;
 
 @RestController
 @Validated
@@ -20,16 +22,15 @@ public class PortfolioCommentController {
     private final PortfolioCommentService portfolioCommentService;
 
     @PostMapping
-    public ResponseEntity postUserComment(@RequestBody @Valid PortfolioCommentDto.Post postDto) {
+    public ResponseEntity postPortfolioComment(@RequestBody @Valid PortfolioCommentDto.Post postDto) {
         portfolioCommentService.createPortfolioComment(postDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-
     @PatchMapping("/{portfolioComment_id}")
     @ResponseStatus(HttpStatus.OK)
-    public PortfolioCommentDto.Response patchUserComment(@PathVariable("portfolioComment_id") @Positive Long portfolioCommentId,
-                                                         @RequestBody @Valid PortfolioCommentDto.Patch patchDto) {
+    public PortfolioCommentDto.Response patchPortfolioComment(@PathVariable("portfolioComment_id") @Positive Long portfolioCommentId,
+                                                              @RequestBody @Valid PortfolioCommentDto.Patch patchDto) {
         patchDto.setPortfolioCommentId(portfolioCommentId);
         PortfolioCommentDto.Response response = portfolioCommentService.updatePortfolioComment(patchDto);
         return response;
@@ -37,23 +38,29 @@ public class PortfolioCommentController {
 
     @GetMapping("/users/{user_id}")
     @ResponseStatus(HttpStatus.OK)
-    public PortfolioCommentDto.ResponseList getUserCommentsByUser(@PathVariable("user_id") @Positive Long userId,
-                                                                  @RequestParam(defaultValue = "1") @Positive int page,
-                                                                  @RequestParam(defaultValue = "15") @Positive int size) {
-        return portfolioCommentService.findPortfolioCommentsByUser(userId, page - 1, size);
+    public PortfolioCommentDto.ResponseList getPortfolioCommentsByWriter(@PathVariable("user_id") @Positive Long userId,
+                                                                         @RequestParam(defaultValue = "1") @Positive int page,
+                                                                         @RequestParam(defaultValue = "15") @Positive int size) {
+        return portfolioCommentService.findPortfolioCommentsByWriter(userId, page - 1, size);
     }
 
     @GetMapping("/portfolios/{portfolio_id}")
     @ResponseStatus(HttpStatus.OK)
-    public PortfolioCommentDto.ResponseList getUserCommentsByWriter(@PathVariable("portfolio_id") @Positive Long portfolioId,
-                                                                    @RequestParam(defaultValue = "1") @Positive int page,
-                                                                    @RequestParam(defaultValue = "15") @Positive int size) {
-        return portfolioCommentService.findPortfolioCommentsByPortfolio(portfolioId, page-1, size);
+    public PortfolioCommentDto.ResponseList getPortfolioCommentsByPortfolio(@PathVariable("portfolio_id") @Positive Long portfolioId,
+                                                                            @RequestParam(defaultValue = "1") @Positive int page,
+                                                                            @RequestParam(defaultValue = "15") @Positive int size) {
+        return portfolioCommentService.findPortfolioCommentsByPortfolio(portfolioId, page - 1, size);
     }
 
     @DeleteMapping("/{portfolioComment_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUserComment(@PathVariable("portfolioComment_id") @Positive Long portfolioCommentId) {
+    public void deletePortfolioComment(@PathVariable("portfolioComment_id") @Positive Long portfolioCommentId) {
         portfolioCommentService.deletePortfolioComment(portfolioCommentId);
+    }
+
+    @GetMapping("/test/{portfolioComment_id}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<PortfolioCommentDto.Response> test(@PathVariable("portfolioComment_id") @Positive Long portfolioCommentId) {
+        return portfolioCommentService.testList(portfolioCommentId);
     }
 }

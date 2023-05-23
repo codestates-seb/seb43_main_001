@@ -22,7 +22,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.IOException;
 import java.net.URI;
@@ -49,9 +48,6 @@ public class PortfolioController {
 
         Portfolio response = portfolioService.createPortfolio(portfolio, postDto.getSkills(), representativeImg);
 
-
-        portfolioService.addSkills(portfolio,postDto.getSkills());
-
         URI location =
                 UriComponentsBuilder
                         .newInstance()
@@ -61,15 +57,12 @@ public class PortfolioController {
         return ResponseEntity.created(location).build();
     }
 
-
     @PostMapping("/img-upload")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity uploadImg(@RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
         List<String> imgUrl = portfolioService.uploadImage(images);
         return ResponseEntity.ok(imgUrl);
     }
-
-
 
     @DeleteMapping("/img-delete/{imgId}")
     public ResponseEntity deleteImg(@PathVariable Long imgId) {
@@ -121,20 +114,6 @@ public class PortfolioController {
         return new ResponseEntity<>(new SingleResponseDto<>(responseDto), HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity getPortfolios(@Positive @RequestParam int page,
-                                        @Positive @RequestParam int size,
-                                        @RequestParam(value = "sort", defaultValue = "createdAt") String sort) {
-        Page<Portfolio> pagePortfolios;
-        if (sort.equals("views")) {
-            pagePortfolios = portfolioService.findAllOrderByViewsDesc(page - 1, size);
-        } else {
-            pagePortfolios = portfolioService.findAllOrderByCreatedAtDesc(page - 1, size);
-        }
-        List<Portfolio> portfolios = pagePortfolios.getContent();
-        return new ResponseEntity<>(new MultiResponseDto<>(mapper.portfolioToPortfolioResponseDtos(portfolios), pagePortfolios), HttpStatus.OK);
-    }
-
     @GetMapping("/users/{user-id}")
     public ResponseEntity getPortfoliosByUser(
             @PathVariable("user-id") Long userId,
@@ -151,7 +130,7 @@ public class PortfolioController {
 
     @GetMapping("/search")
     public ResponseEntity searchPortfolios(
-            @RequestParam @NotNull String value,
+            @RequestParam(defaultValue = "") String value,
             @RequestParam(defaultValue = "userName") String category,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "1") @Positive int page,

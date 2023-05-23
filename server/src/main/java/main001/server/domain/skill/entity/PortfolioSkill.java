@@ -25,7 +25,6 @@ public class PortfolioSkill {
 
     public void deletePortfolioSkill() {
         this.getSkill().getPortfolioSkills().remove(this);
-        skill.decreaseCounting();
     }
 
     public static PortfolioSkill createPortfolioSkill( Skill skill) {
@@ -49,6 +48,5 @@ public class PortfolioSkill {
         if(!skill.getPortfolioSkills().contains(this)) {
             skill.getPortfolioSkills().add(this);
         }
-        skill.increaseCounting();
     }
 }
