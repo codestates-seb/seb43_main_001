@@ -59,14 +59,15 @@ public class PortfolioService {
         }
         portfolio.setUser(verifiedUser.get());
 
+        List<PortfolioSkill> portfolioSkillList = skillService.createPortfolioSkillList(skills);
+        for(PortfolioSkill ps : portfolioSkillList) {
+            portfolio.addSkill(ps);
+        }
+
         RepresentativeAttachment attachment = uploadThumbnail(portfolio, representativeImg);
         representativeImageRepository.save(attachment);
 
-        Portfolio saved = portfolioRepository.save(portfolio);
-
-        addSkills(saved, skills);
-
-        return saved;
+        return portfolioRepository.save(portfolio);
     }
 
     private RepresentativeAttachment uploadThumbnail(Portfolio portfolio, MultipartFile representativeImg) throws IOException {
@@ -108,10 +109,14 @@ public class PortfolioService {
             updateRepresentativeImage(portfolioId, null);
         }
 
-        Portfolio saved = portfolioRepository.save(findPortfolio);
-        addSkills(saved, skills);
+        findPortfolio.clearSkills();
 
-        return saved;
+        List<PortfolioSkill> portfolioSkillList = skillService.createPortfolioSkillList(skills);
+        for(PortfolioSkill ps : portfolioSkillList) {
+            findPortfolio.addSkill(ps);
+        }
+
+        return portfolioRepository.save(findPortfolio);
     }
 
     public Portfolio findPortfolio(long portfolioId) {
@@ -122,22 +127,6 @@ public class PortfolioService {
         return (List<Portfolio>) portfolioRepository.findAll();
     }
 
-//    public Page<Portfolio> findAllOrderByViewsDesc(int page, int size, Sort.Direction direction) {
-//        return portfolioRepository.findAll(PageRequest.of(page, size, direction, "views"));
-//    }
-//
-//    public Page<Portfolio> findAllOrderByCreatedAtDesc(int page, int size, Sort.Direction direction) {
-//        return portfolioRepository.findAll(PageRequest.of(page, size, direction, "createdAt"));
-//    }
-
-
-//    public Page<Portfolio> findAllOrderByViewsDesc(int page, int size) {
-//        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "viewCount")));
-//    }
-//
-//    public Page<Portfolio> findAllOrderByCreatedAtDesc(int page, int size) {
-//        return portfolioRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")));
-//    }
     public void deletePortfolio(long portfolioId) {
         Portfolio portfolio = findVerifiedPortfolio(portfolioId);
         User user = portfolio.getUser();
@@ -236,6 +225,8 @@ public class PortfolioService {
             response = portfolioRepository.findByUserName(value, pageable);
         } else if (category.equals("title")) {
             response = portfolioRepository.findByTitle(value, pageable);
+        } else if (category.equals("skill")) {
+            response = portfolioRepository.findBySkillName(value,pageable);
         } else {
             throw new BusinessLogicException(ExceptionCode.SEARCH_CONDITION_MISMATCH);
         }
@@ -244,23 +235,6 @@ public class PortfolioService {
             throw new BusinessLogicException(ExceptionCode.PORTFOLIO_NOT_SEARCHED);
         }
         return response;
-    }
-
-    public void addSkills(Portfolio portfolio, List<String> skills) {
-        for(int i = portfolio.getSkills().size()-1; i>=0; i--) {
-            portfolio.deleteSkill(portfolio.getSkills().get(i));
-        }
-
-        if(skills==null) {
-            throw new BusinessLogicException(ExceptionCode.SKILL_NOT_EXIST);
-        }
-
-        skills.stream()
-                .map(name -> {
-                    return PortfolioSkill.createPortfolioSkill(
-                            skillService.findById(name.replace(" ","").toUpperCase()));
-                })
-                .forEach(portfolio::addSkill);
     }
 
     /**
@@ -287,5 +261,4 @@ public class PortfolioService {
 
         portfolioRepository.save(verifiedPortfolio);
     }
-
 }

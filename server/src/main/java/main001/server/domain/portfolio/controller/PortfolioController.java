@@ -81,7 +81,6 @@ public class PortfolioController {
         patchDto.setPortfolioId(portfolioId);
         Portfolio portfolio = mapper.portfolioPatchDtoToPortfolio(patchDto);
 
-
         Portfolio response = portfolioService.updatePortfolio(portfolio, portfolioId, patchDto.getSkills(), representativeImg);
 
         return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response)), HttpStatus.OK);

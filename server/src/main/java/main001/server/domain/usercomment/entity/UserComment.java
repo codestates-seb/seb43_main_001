@@ -24,6 +24,8 @@ public class UserComment extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    private boolean confidential;
+
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;
