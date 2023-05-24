@@ -24,19 +24,19 @@ public class Portfolio extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long portfolioId;
 
-    @Column(length = 500, nullable = false)
+    @Column(length= 50, nullable = false)
     private String title;
 
-    @Column(length = 500)
+    @Column(columnDefinition = "TINYTEXT")
     private String gitLink;
 
-    @Column(length = 500)
+    @Column(columnDefinition = "TEXT")
     private String distributionLink;
 
-    @Column(length = 500, nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String description; // 프로젝트 소개글
 
-    @Column(length = 55000)
+    @Column(columnDefinition = "LONGTEXT")
     private String content; //프로젝트 설명
 
     @Column(columnDefinition = "integer default 0", nullable = false)
