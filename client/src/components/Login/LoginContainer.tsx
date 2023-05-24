@@ -71,7 +71,7 @@ function LoginContainer() {
         {passwordError ? <S.ErrorMessage>8자 이상 입력하셔야 합니다</S.ErrorMessage> : null}
         <S.LoginButton type='submit'>로그인</S.LoginButton>
         <S.NewAccount>
-          이미 계정이 없으신가요? <strong onClick={() => routeTo('/Signup')}>회원가입</strong>
+          계정이 없으신가요? <strong onClick={() => routeTo('/Signup')}>회원가입</strong>
         </S.NewAccount>
         <hr />
         <span className='sns__title'>SNS 로그인</span>
