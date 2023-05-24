@@ -19,10 +19,17 @@ export const Banner = styled.section`
     font-weight: 700;
   }
 
+  h2 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 500;
+  }
+
   p {
     margin-bottom: 55px;
-    font-size: 20px;
+    font-size: 14px;
     font-weight: 400;
+    word-break: keep-all;
   }
 
   @media ${({ theme }) => theme.breakpoints.TABLETMIN} {

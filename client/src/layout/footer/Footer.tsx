@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useRouter } from '../../hooks/useRouter';
 import * as S from './Footer.style';
 import HelpModal from './HelpModal';
+import { Logo } from '../../components/common/icons';
 
 function Footer() {
   const { routeTo } = useRouter();
@@ -19,7 +20,9 @@ function Footer() {
     <>
       <HelpModal isVisible={isVisible} />
       <S.FooterWrapper>
-        <S.Logo>Logo</S.Logo>
+        <S.Logo>
+          <Logo />
+        </S.Logo>
         <S.Info>
           <span onClick={handleModal}>문의하기</span>
           <span onClick={handleClick}>서비스 소개</span>

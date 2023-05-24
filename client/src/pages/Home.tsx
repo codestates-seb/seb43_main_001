@@ -77,6 +77,8 @@ function Home() {
                     name={item.name}
                     skills={item.skills}
                     representativeImgUrl={item.representativeImgUrl}
+                    profileImg={item.profileImg}
+                    likes={item.likesCount}
                   />
                 )),
               )
@@ -86,11 +88,11 @@ function Home() {
         {/* TODO: 수정 필요함*/}
         {hasNextPortfolio && isPortfolioFetching && <Loading />}
         {!isPortfolioFetching && !isPortfoliosError && !hasNextPortfolio && (
-          <div>여기가 마지막이에요.</div>
+          <p>여기가 마지막이에요.</p>
         )}
-        {PortfolioData?.pages.length === 0 && <div>포트폴리오가 없습니다.</div>}
+        {PortfolioData?.pages.length === 0 && <p>포트폴리오가 없습니다.</p>}
         {!hasNextPortfolio && isPortfolioFetching && <Loading />}
-        {ErrorInfo?.response?.status === 404 && <div>검색 결과가 없습니다.</div>}
+        {ErrorInfo?.response?.status === 404 && <p>검색 결과가 없습니다.</p>}
         <ArrowUp />
       </S.ContentWrapper>
     </S.Container>

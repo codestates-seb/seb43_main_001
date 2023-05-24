@@ -187,9 +187,9 @@ export const PortfolioAPI = {
     size: string,
     sort: string,
   ): Promise<GetPortfolioPage> => {
-    console.log('정렬 요청');
+    console.log('정렬 요청', sort);
     const sortPortfolio = await tokenClient.get(
-      `/portfolios?page=${page}&size=${size}&sort=${sort}`,
+      `/portfolios/search?page=${page}&size=${size}&sort=${sort}`,
     );
 
     return { ...sortPortfolio.data, currentPage: page };
