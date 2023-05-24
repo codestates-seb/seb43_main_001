@@ -1,17 +1,18 @@
 package main001.server.security.handler;
 
 import lombok.RequiredArgsConstructor;
+import main001.server.config.EnvConfig;
 import main001.server.domain.user.entity.User;
 import main001.server.domain.user.service.UserService;
 import main001.server.security.service.SecurityService;
 import main001.server.security.utils.CustomAuthorityUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,14 +43,14 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         if (userService.isExistOAuth2User(oauthId)) {
             User user = userService.findExistOAuth2User(oauthId);
             redirect(request, response, user);
-        } else if (email.equals("null") || email.isEmpty()) {
-            User savedUser = saveUser(email, oauthId, name, profileImg);
+        } else if (email.equals("null") || email.isBlank()) {
+            User savedUser = saveUser("undefined", oauthId, name, profileImg);
             long userId = savedUser.getUserId();
             String addemail = UriComponentsBuilder
                     .newInstance()
-                    .scheme("http")
-                    .host("localhost")
-                    .port(3000)
+                    .scheme(EnvConfig.getScheme())
+                    .host(EnvConfig.getBaseUrl())
+                    .port(EnvConfig.getBasePort())
                     .path("/addemail") // addemail 페이지로 이동
                     .queryParam("userId", userId)
                     .build()
@@ -82,10 +83,9 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
         return UriComponentsBuilder
                 .newInstance()
-                .scheme("http")
-                .host("localhost")
-                .port(3000) // 프론트 테스트
-//                .port(80) // 배포
+                .scheme(EnvConfig.getScheme())
+                .host(EnvConfig.getBaseUrl())
+                .port(EnvConfig.getBasePort())
                 .path("/") // 로그인 후 홈으로 이동
                 .queryParams(queryParams)
                 .build()

@@ -4,7 +4,12 @@ import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfoliocomment.dto.PortfolioCommentDto;
 import main001.server.domain.portfoliocomment.entity.PortfolioComment;
 import main001.server.domain.user.entity.User;
+import main001.server.domain.utils.CurrentUserIdFinder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Component
 public class PortfolioCommentMapper {
@@ -17,6 +22,8 @@ public class PortfolioCommentMapper {
         PortfolioComment portfolioComment = new PortfolioComment();
         portfolioComment.setContent(postDto.getContent());
 
+        portfolioComment.setDepth(postDto.getDepth());
+
         User user = new User();
         user.setUserId(postDto.getUserId());
         portfolioComment.setUser(user);
@@ -24,6 +31,15 @@ public class PortfolioCommentMapper {
         Portfolio portfolio = new Portfolio();
         portfolio.setPortfolioId(postDto.getPortfolioId());
         portfolioComment.setPortfolio(portfolio);
+
+        if(postDto.getParentCommentId()==null) {
+            portfolioComment.setParentComment(null);
+        }
+        else {
+            PortfolioComment parentComment = new PortfolioComment();
+            parentComment.setPortfolioCommentId(postDto.getParentCommentId());
+            portfolioComment.setParentComment(parentComment);
+        }
 
         return portfolioComment;
     }
@@ -38,30 +54,34 @@ public class PortfolioCommentMapper {
         portfolioComment.setPortfolioCommentId(patchDto.getPortfolioCommentId());
         portfolioComment.setContent(patchDto.getContent());
 
-        User user = new User();
-        user.setUserId(patchDto.getUserId());
-        portfolioComment.setUser(user);
-
-        Portfolio portfolio = new Portfolio();
-        portfolio.setPortfolioId(patchDto.getPortfolioId());
-        portfolioComment.setPortfolio(portfolio);
-
         return portfolioComment;
 
     }
 
     public PortfolioCommentDto.Response entityToResponse(PortfolioComment portfolioComment) {
-        PortfolioCommentDto.Response response = new PortfolioCommentDto.Response(
-                portfolioComment.getPortfolioCommentId(),
-                portfolioComment.getContent(),
-                portfolioComment.getUser().getUserId(),
-                portfolioComment.getUser().getName(),
-                portfolioComment.getUser().getProfileImg(),
-                portfolioComment.getPortfolio().getPortfolioId(),
-                portfolioComment.getCreatedAt(),
-                portfolioComment.getUpdatedAt(),
-                portfolioComment.getUser().isAuth()
-        );
+
+        PortfolioCommentDto.Response response =  PortfolioCommentDto.Response.builder()
+                .portfolioCommentId(portfolioComment.getPortfolioCommentId())
+                .content(portfolioComment.getContent())
+                .userId(portfolioComment.getUser().getUserId())
+                .userName(portfolioComment.getUser().getName())
+                .userProfileImg(portfolioComment.getUser().getProfileImg())
+                .portfolioId(portfolioComment.getPortfolio().getPortfolioId())
+                .rootId(portfolioComment.getRootComment()==null ?
+                        null:portfolioComment.getRootComment().getPortfolioCommentId())
+                .parentId(portfolioComment.getParentComment()==null ?
+                        null:portfolioComment.getParentComment().getPortfolioCommentId())
+                .depth(portfolioComment.getDepth())
+                .createdAt(portfolioComment.getCreatedAt())
+                .updatedAt(portfolioComment.getUpdatedAt())
+                .auth(portfolioComment.getUser().isAuth())
+                .build();
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId();
+
+        if (currentUserId != null && currentUserId.equals(response.getUserId())) {
+            response.setAuth(true);
+        }
+
         return response;
     }
 }

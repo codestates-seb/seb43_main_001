@@ -3,6 +3,7 @@ package main001.server.domain.usercomment.mapper;
 import main001.server.domain.user.entity.User;
 import main001.server.domain.usercomment.dto.UserCommentDto;
 import main001.server.domain.usercomment.entity.UserComment;
+import main001.server.domain.utils.CurrentUserIdFinder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -61,6 +62,13 @@ public class UserCommentMapper {
                 userComment.getUpdatedAt(),
                 userComment.getUser().isAuth()
         );
+
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId();
+
+        if (currentUserId != null && currentUserId.equals(response.getWriterId())) {
+            response.setAuth(true);
+        }
+
         return response;
     }
 }

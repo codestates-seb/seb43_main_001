@@ -26,8 +26,6 @@ public class PortfolioDto {
         private String description;
 
         @NotBlank(message = "설명을 작성해주세요.")
-        @Lob
-        @Column(length = 55000)
         private String content;
 
         private List<String> skills;
@@ -51,9 +49,6 @@ public class PortfolioDto {
         @NotBlank(message = "소개글을 작성해주세요.")
         private String description;
 
-
-        @Lob
-        @Column(length = 55000)
         @NotBlank(message = "설명을 작성해주세요.")
         private String content;
 
@@ -76,7 +71,7 @@ public class PortfolioDto {
         private long portfolioId;
         private long userId;
         private String name;
-        private String userProfileImg;
+        private String profileImg;
         private String title;
         private String gitLink;
         private String distributionLink;
@@ -85,7 +80,7 @@ public class PortfolioDto {
 
         private String representativeImgUrl;
         private List<String> skills;
-        private int countLikes;
+        private int likesCount;
         private int viewCount;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;

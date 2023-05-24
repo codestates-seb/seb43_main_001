@@ -3,11 +3,9 @@ package main001.server.security.jwt;
 import lombok.*;
 import main001.server.audit.BaseTimeEntity;
 import main001.server.domain.user.entity.User;
-import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import java.util.Collection;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -22,6 +20,7 @@ public class RefreshToken extends BaseTimeEntity {
     private Long id;
     private String userIp;
     private String refreshToken;
+    private Date expiredDate;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")

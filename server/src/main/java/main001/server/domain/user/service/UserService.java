@@ -11,9 +11,9 @@ import main001.server.exception.BusinessLogicException;
 import main001.server.exception.ExceptionCode;
 import main001.server.security.jwt.JwtTokenizer;
 import main001.server.security.service.SecurityService;
-import main001.server.security.service.SecurityServiceImpl;
 import main001.server.security.utils.CustomAuthorityUtils;
 import org.springframework.data.domain.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -28,31 +28,43 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class UserService {
-    private final JwtTokenizer jwtTokenizer;
     private final UserRepository userRepository;
-//    private final PasswordEncoder passwordEncoder; // Security 적용 후 사용
-//
-    private final CustomAuthorityUtils authorityUtils;
-
     private final ProfileImgRepository profileImgRepository;
-
     private final S3Service s3Service;
-
     private final SecurityService securityService;
+    private final CustomAuthorityUtils authorityUtils;
+    private final JwtTokenizer jwtTokenizer;
+    private final PasswordEncoder passwordEncoder;
+
+    private final String DEFAULT_PROFILE_IMG = "https://main001-portfolio.s3.ap-northeast-2.amazonaws.com/default/default_profileImg.png";
 
     public User createUser(User user) {
         verifyExistEmail(user.getEmail());
 
-//        /**
-//         * 암호화된 비밀번호 설정
-//         */
-//        String encryptedPassword = passwordEncoder.encode(user.getPassword());
-//        user.setPassword(encryptedPassword);
-//
+        // 초기 권한 부여 설정
+        List<String> roles = authorityUtils.createRoles(user.getEmail());
+        user.setRoles(roles);
 
-        /**
-         * 초기 권한 부여 설정
-         */
+        if (user.getProfileImg() == null) {
+            user.setProfileImg(DEFAULT_PROFILE_IMG);
+        }
+
+        User savedUser = userRepository.save(user);
+        return savedUser;
+    }
+
+    public User joinUser(User user) {
+        verifyExistEmail(user.getEmail());
+
+        // 암호화된 비밀번호 설정
+        String encryptedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encryptedPassword);
+
+        if (user.getProfileImg() == null) {
+            user.setProfileImg(DEFAULT_PROFILE_IMG);
+        }
+
+        // 초기 권한 부여 설정
         List<String> roles = authorityUtils.createRoles(user.getEmail());
         user.setRoles(roles);
 
@@ -130,6 +142,10 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findByOauthId(oauthId);
         User findUser = optionalUser.orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+        if (findUser.getEmail().equals("null") || findUser.getEmail().isBlank()) {
+            deleteUser(findUser.getUserId());
+            throw new BusinessLogicException(ExceptionCode.EMAIL_NOT_EXIST);
+        }
         return findUser;
     }
 
@@ -160,6 +176,10 @@ public class UserService {
      * ProfileImg 업로드 기능
      */
     public String uploadProfileImg(MultipartFile profileImg, Long userId) throws IOException {
+        if (profileImg == null || userId == null) {
+            throw new BusinessLogicException(ExceptionCode.NOT_ALLOW_NULL_VALUE);
+        }
+
         User findUser = findVerifiedUser(userId);
 
         String profileImgUrl = s3Service.uploadFile(profileImg, "images");
@@ -170,8 +190,8 @@ public class UserService {
 
         profileImgRepository.save(profileImgAttachment);
 
+        profileImgRepository.deleteByUserId(null);
         return profileImgUrl;
-
     }
 
     public Long findByToken(String token) {

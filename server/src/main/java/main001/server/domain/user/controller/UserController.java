@@ -67,10 +67,10 @@ public class UserController {
                             description = "이미 존재하는 이메일입니다")}
     )
     @PostMapping("/signup")
-    public ResponseEntity join(@Valid @RequestBody UserDto.Post requestBody) {
+    public ResponseEntity signup(@Valid @RequestBody UserDto.Post requestBody) {
         User user = mapper.userPostToUser(requestBody);
 
-        User createdUser = userService.createUser(user);
+        User createdUser = userService.joinUser(user);
 
         URI location = UriCreator.createUri(USER_DEFAULT_URL, createdUser.getUserId());
 
@@ -101,23 +101,22 @@ public class UserController {
             }
     )
     @GetMapping("/{user-id}")
-    public ResponseEntity<UserDto.Response> getUser(@PathVariable("user-id") @Positive long userId, HttpServletRequest request) {
+    public ResponseEntity<UserDto.Response> getUser(@PathVariable("user-id") @Positive long userId) {
 
         User findUser = userService.findUser(userId);
 
-        return new ResponseEntity(new SingleResponseDto<>(mapper.userToUserResponse(findUser, request)), HttpStatus.OK);
+        return new ResponseEntity(new SingleResponseDto<>(mapper.userToUserResponse(findUser)), HttpStatus.OK);
     }
 
     @Operation(hidden = true)
     @GetMapping
     public ResponseEntity getUsers(@Positive @RequestParam(value = "page",defaultValue = "1") int page,
-                                   @Positive @RequestParam(value = "size",defaultValue = "15") int size,
-                                   HttpServletRequest request) {
+                                   @Positive @RequestParam(value = "size",defaultValue = "15") int size) {
         Page<User> pageUsers = userService.findUsers(page - 1, size);
         List<User> users = pageUsers.getContent();
 
         return new ResponseEntity<>(
-                new MultiResponseDto<>(mapper.usersToUserResponses(users, request), pageUsers), HttpStatus.OK
+                new MultiResponseDto<>(mapper.usersToUserResponses(users), pageUsers), HttpStatus.OK
         );
     }
 
@@ -145,12 +144,12 @@ public class UserController {
             }
     )
     @GetMapping("/{user-id}/profile")
-    public ResponseEntity getUserProfile(@PathVariable("user-id") @Positive long userId, HttpServletRequest request) {
+    public ResponseEntity getUserProfile(@PathVariable("user-id") @Positive long userId) {
 
         User findUser = userService.findUser(userId);
 
         return new ResponseEntity<>(
-                new SingleResponseDto<>(mapper.userToUserProfileResponse(findUser, request)), HttpStatus.OK
+                new SingleResponseDto<>(mapper.userToUserProfileResponse(findUser)), HttpStatus.OK
         );
     }
 
@@ -180,10 +179,9 @@ public class UserController {
     @PatchMapping("/{user-id}")
     public ResponseEntity patchUser(
             @PathVariable("user-id") @Positive long userId,
-            @Valid @RequestBody UserDto.Patch requestBody,
-            HttpServletRequest request) {
-        long currentUserId = CurrentUserIdFinder.getCurrentUserId(request);
-        if (currentUserId != userId) {
+            @Valid @RequestBody UserDto.Patch requestBody) {
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId();
+        if (currentUserId != null && currentUserId != userId) {
             throw new BusinessLogicException(ExceptionCode.INVALID_USER_STATUS);
         }
             requestBody.setUserId(userId);
@@ -191,7 +189,7 @@ public class UserController {
         User user = userService.updateUser(mapper.userPatchToUser(requestBody));
 
         return new ResponseEntity<>(
-                new SingleResponseDto<>(mapper.userToUserProfileResponse(user, request)), HttpStatus.OK);
+                new SingleResponseDto<>(mapper.userToUserProfileResponse(user)), HttpStatus.OK);
     }
 
     @PostMapping("/{user-id}/profile-img-upload")

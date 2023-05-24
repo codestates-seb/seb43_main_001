@@ -1,13 +1,11 @@
 package main001.server.domain.portfolio.mapper;
 
-import main001.server.domain.attachment.image.entity.ImageAttachment;
 import main001.server.domain.portfolio.dto.PortfolioDto;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.utils.CurrentUserIdFinder;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,17 +20,18 @@ public interface PortfolioMapper {
     @Mapping(target = "skills", ignore = true)
     Portfolio portfolioPatchDtoToPortfolio(PortfolioDto.Patch patchDto);
 
-    default PortfolioDto.Response portfolioToPortfolioResponseDto(Portfolio portfolio, HttpServletRequest request) {
+    default PortfolioDto.Response portfolioToPortfolioResponseDto(Portfolio portfolio) {
         if ( portfolio == null ) {
             return null;
         }
 
-        Long currentUserId = CurrentUserIdFinder.getCurrentUserId(request);
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId();
 
         PortfolioDto.Response response = PortfolioDto.Response.builder()
                 .portfolioId(portfolio.getPortfolioId())
                 .userId(portfolio.getUser().getUserId())
                 .name(portfolio.getUser().getName())
+                .profileImg(portfolio.getUser().getProfileImg())
                 .title(portfolio.getTitle())
                 .gitLink(portfolio.getGitLink())
                 .distributionLink(portfolio.getDistributionLink())
@@ -43,7 +42,7 @@ public interface PortfolioMapper {
                         .map(portfolioSkill -> portfolioSkill.getSkill().getName())
                         .collect(Collectors.toList()))
                 .viewCount(portfolio.getViewCount())
-                .countLikes(portfolio.getCountLikes())
+                .likesCount(portfolio.getLikesCount())
                 .createdAt(portfolio.getCreatedAt())
                 .updatedAt(portfolio.getUpdatedAt())
                 .isAuth(portfolio.getUser().isAuth())
@@ -56,16 +55,16 @@ public interface PortfolioMapper {
         return response;
     }
 
-    default List<PortfolioDto.Response> portfolioToPortfolioResponseDtos(List<Portfolio> portfolios, HttpServletRequest request) {
+    default List<PortfolioDto.Response> portfolioToPortfolioResponseDtos(List<Portfolio> portfolios) {
         if ( portfolios == null ) {
             return null;
         }
 
-        Long currentUserId = CurrentUserIdFinder.getCurrentUserId(request);
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId();
 
         List<PortfolioDto.Response> list = new ArrayList<>( portfolios.size() );
         portfolios.forEach(p -> {
-            PortfolioDto.Response response = portfolioToPortfolioResponseDto(p, request);
+            PortfolioDto.Response response = portfolioToPortfolioResponseDto(p);
             if(p.getUser().getUserId().equals(currentUserId)) {
                 response.setAuth(true);
             }

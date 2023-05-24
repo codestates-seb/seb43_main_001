@@ -4,17 +4,22 @@ import io.jsonwebtoken.*;
 import main001.server.config.EnvConfig;
 import main001.server.exception.BusinessLogicException;
 import main001.server.exception.ExceptionCode;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class CurrentUserIdFinder {
 
-    public static Long getCurrentUserId(HttpServletRequest request) {
-        String secretKey = EnvConfig.getSecretKey();
-
+    public static Long getCurrentUserId() {
         Integer userIdFromToken;
+
+        HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
+
+        String secretKey = EnvConfig.getSecretKey();
 
         String authorization = request.getHeader("Authorization");
 

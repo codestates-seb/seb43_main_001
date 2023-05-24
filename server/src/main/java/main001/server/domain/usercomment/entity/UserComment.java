@@ -21,7 +21,10 @@ public class UserComment extends BaseTimeEntity {
     private Long userCommentId;
 
     @NotBlank(message = "내용은 반드시 포함되어야 합니다.")
+    @Column(columnDefinition = "TEXT")
     private String content;
+
+    private boolean confidential;
 
     @ManyToOne
     @JoinColumn(name = "userId")

@@ -22,11 +22,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/portfolios")
@@ -48,9 +48,6 @@ public class PortfolioController {
 
         Portfolio response = portfolioService.createPortfolio(portfolio, postDto.getSkills(), representativeImg);
 
-
-        portfolioService.addSkills(portfolio,postDto.getSkills());
-
         URI location =
                 UriComponentsBuilder
                         .newInstance()
@@ -60,14 +57,12 @@ public class PortfolioController {
         return ResponseEntity.created(location).build();
     }
 
-
     @PostMapping("/img-upload")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity uploadImg(@RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
         List<String> imgUrl = portfolioService.uploadImage(images);
         return ResponseEntity.ok(imgUrl);
     }
-
 
     @DeleteMapping("/img-delete/{imgId}")
     public ResponseEntity deleteImg(@PathVariable Long imgId) {
@@ -81,19 +76,16 @@ public class PortfolioController {
         return ResponseEntity.ok(imageUrlList);
     }
 
-
     @PatchMapping("/{portfolio-id}")
     public ResponseEntity patchPortfolio(@PathVariable("portfolio-id") long portfolioId,
                                          @RequestPart PortfolioDto.Patch patchDto,
-                                         @RequestPart(value = "representativeImg", required = false) MultipartFile representativeImg,
-                                         HttpServletRequest request) throws IOException {
+                                         @RequestPart(value = "representativeImg", required = false) MultipartFile representativeImg) throws IOException {
         patchDto.setPortfolioId(portfolioId);
         Portfolio portfolio = mapper.portfolioPatchDtoToPortfolio(patchDto);
 
-
         Portfolio response = portfolioService.updatePortfolio(portfolio, portfolioId, patchDto.getSkills(), representativeImg);
 
-        return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response, request)), HttpStatus.OK);
+        return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response)), HttpStatus.OK);
     }
 
     @PatchMapping("/{portfolio-id}/views")
@@ -104,11 +96,11 @@ public class PortfolioController {
     @GetMapping("/{portfolio-id}")
     public ResponseEntity getPortfolio(@PathVariable("portfolio-id") Long portfolioId) {
 
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         String token = request.getHeader("Authorization");
 
         Portfolio portfolio = portfolioService.findPortfolio(portfolioId);
-        PortfolioDto.Response responseDto = mapper.portfolioToPortfolioResponseDto(portfolio, request);
+        PortfolioDto.Response responseDto = mapper.portfolioToPortfolioResponseDto(portfolio);
 
         if(token==null) {
             responseDto.setLikes(false);
@@ -121,44 +113,27 @@ public class PortfolioController {
         return new ResponseEntity<>(new SingleResponseDto<>(responseDto), HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity getPortfolios(@Positive @RequestParam int page,
-                                        @Positive @RequestParam int size,
-                                        @RequestParam(value = "sort", defaultValue = "createdAt") String sort,
-                                        HttpServletRequest request) {
-        Page<Portfolio> pagePortfolios;
-        if (sort.equals("views")) {
-            pagePortfolios = portfolioService.findAllOrderByViewsDesc(page - 1, size);
-        } else {
-            pagePortfolios = portfolioService.findAllOrderByCreatedAtDesc(page - 1, size);
-        }
-        List<Portfolio> portfolios = pagePortfolios.getContent();
-        return new ResponseEntity<>(new MultiResponseDto<>(mapper.portfolioToPortfolioResponseDtos(portfolios, request), pagePortfolios), HttpStatus.OK);
-    }
-
     @GetMapping("/users/{user-id}")
     public ResponseEntity getPortfoliosByUser(
             @PathVariable("user-id") Long userId,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "1") @Positive int page,
-            @RequestParam(defaultValue = "15") @Positive int size,
-            HttpServletRequest request) {
+            @RequestParam(defaultValue = "15") @Positive int size) {
         Page<Portfolio> portfolios = portfolioService.getPortfoliosByUser(userId, sortBy, page - 1, size);
 
         List<Portfolio> content = portfolios.getContent();
 
         return new ResponseEntity(
-                new MultiResponseDto<>(mapper.portfolioToPortfolioResponseDtos(content, request),portfolios), HttpStatus.OK);
+                new MultiResponseDto<>(mapper.portfolioToPortfolioResponseDtos(content),portfolios), HttpStatus.OK);
     }
 
     @GetMapping("/search")
     public ResponseEntity searchPortfolios(
-            @RequestParam @NotNull String value,
+            @RequestParam(defaultValue = "") String value,
             @RequestParam(defaultValue = "userName") String category,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "1") @Positive int page,
-            @RequestParam(defaultValue = "15") @Positive int size,
-            HttpServletRequest request)  {
+            @RequestParam(defaultValue = "15") @Positive int size)  {
 
         Page<Portfolio> portfoliosPage =
                 portfolioService.searchPortfolios(page - 1, size, category, sortBy, value);
@@ -166,7 +141,7 @@ public class PortfolioController {
         List<Portfolio> content = portfoliosPage.getContent();
 
         return new ResponseEntity<>(
-                new MultiResponseDto<>(mapper.portfolioToPortfolioResponseDtos(content, request),portfoliosPage),HttpStatus.OK);
+                new MultiResponseDto<>(mapper.portfolioToPortfolioResponseDtos(content),portfoliosPage),HttpStatus.OK);
     }
 
     @DeleteMapping("/{portfolio-id}")
