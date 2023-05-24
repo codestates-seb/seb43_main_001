@@ -70,39 +70,32 @@ export const TitleDowner = styled.div`
 export const Tags = styled.div`
   display: flex;
   padding: 1rem 0;
-  & > div {
-    margin-right: 0.8rem;
-  }
+  gap: 10px;
+  flex-wrap: wrap;
 `;
 
 export const Links = styled.div`
   display: flex;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
   & > a {
     margin-right: 0.5rem;
   }
 `;
 
 export const Link = styled.a<{ darkGrey?: boolean }>`
-  font-size: 0.7rem;
+  font-size: 1rem;
   border-radius: 5px;
   text-align: center;
-  padding: 0.8rem;
+  padding: 0.5rem 0.8rem;
   background-color: ${(props) => (props.darkGrey ? cardColor : subFontColor)};
   color: ${(props) => (props.darkGrey ? 'white' : 'black')};
   cursor: pointer;
-
-  @media ${(props) => props.theme.breakpoints.TABLETMIN} {
-    font-size: 1rem;
-  }
 `;
 
 export const YellowTagCutsom = styled(S.Tags)`
-  font-size: 0.7rem;
-  @media ${(props) => props.theme.breakpoints.TABLETMIN} {
-    font-size: 1rem;
-  }
+  font-size: 13px;
 `;
+
 // edit part
 export const UserInfoEdit = styled.div`
   display: flex;

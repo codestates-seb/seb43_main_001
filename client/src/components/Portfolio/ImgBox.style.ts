@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 import * as S from './TextBox.style';
-import { COLOR } from '../../constants';
+import { COLOR, MAX_SIZE } from '../../constants';
 import { SubmitBtn } from './PortfolioContainer.style';
 
 const { mainColor, subFontColor } = COLOR;
+
+const { content } = MAX_SIZE;
 
 export const ImgContainer = styled(S.TextContainer)`
   .title_container {
@@ -64,6 +66,7 @@ export const Preview = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
+  margin-top: 0.7rem;
 
   background-color: ${(props) => props.theme.themeStyle.inputColor};
 
@@ -81,32 +84,26 @@ export const ImgInput = styled.label`
   justify-content: center;
   align-items: center;
   font-size: 0.8rem;
+  font-weight: 500;
+  color: black;
   background-color: ${mainColor};
   border-radius: 10px;
-  font-weight: bold;
-  padding: 0.5rem;
-  color: black;
+  padding: 1rem 0.6rem;
+  height: 30px;
   margin-right: 0.5rem;
-  cursor: pointer;
-
   @media ${(props) => props.theme.breakpoints.TABLETMIN} {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    padding: 1.2rem 0.8rem;
+    height: 40px;
+  }
+
+  @media ${(props) => props.theme.breakpoints.DESKTOPMIN} {
+    max-width: ${content};
+    padding: 1.4rem 1rem;
+    font-size: 1.2rem;
   }
 `;
 export const RemoveBtn = styled(SubmitBtn)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.8rem;
   background-color: red;
-  border-radius: 10px;
-  font-weight: bold;
-  padding: 0.5rem;
   color: white;
-  margin-right: 0.5rem;
-  cursor: pointer;
-
-  @media ${(props) => props.theme.breakpoints.TABLETMIN} {
-    font-size: 1.1rem;
-  }
 `;

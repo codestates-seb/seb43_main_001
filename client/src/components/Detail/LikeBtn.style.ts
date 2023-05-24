@@ -13,7 +13,7 @@ type LikeBtnWrapperProps = {
 const { subFontColor } = COLOR;
 
 export const LikeBtnWrapper = styled.section<LikeBtnWrapperProps>`
-  display: flex;
+  /* display: flex;
   justify-content: center;
   align-items: center;
   width: 55px;
@@ -35,13 +35,25 @@ export const LikeBtnWrapper = styled.section<LikeBtnWrapperProps>`
     svg {
       color: ${(props) => (props.likes ? `${subFontColor}` : 'red')};
     }
-  }
+  } */
 `;
 
-export const LikeIcon = styled(RxHeartFilled)`
-  font-size: 40px;
+export const LikeIcon = styled(RxHeartFilled)<LikeBtnWrapperProps>`
+  width: 33px;
+  height: 33px;
+  position: fixed;
+  top: 50%;
+  right: 8%;
+  cursor: pointer;
+  z-index: 2;
+  color: ${(props) => (props.likes ? 'red' : `${subFontColor}`)};
+  &:active,
+  &:hover {
+    color: ${(props) => (props.likes ? `${subFontColor}` : 'red')};
+  }
 
   @media ${({ theme }) => theme.breakpoints.TABLETMIN} {
-    font-size: 33px;
+    width: 55px;
+    height: 55px;
   }
 `;

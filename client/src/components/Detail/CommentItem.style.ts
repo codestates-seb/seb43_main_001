@@ -9,9 +9,10 @@ const { subFontColor } = COLOR;
 export const Container = styled.section`
   position: relative;
   padding: 1rem;
-  border: 10;
   border-radius: 5px;
-  box-shadow: 0px 2px 2px ${subFontColor};
+  box-shadow: 0 0.3rem 0.3rem 0
+    ${(props) => (props.theme.value === 'light' ? subFontColor : 'white')};
+  background-color: ${({ theme }) => theme.themeStyle.cardColor};
 `;
 
 export const Update = styled.div`

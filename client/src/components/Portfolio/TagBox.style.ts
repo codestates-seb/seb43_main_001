@@ -33,20 +33,24 @@ export const TagEditor = styled.div`
 
     > .tag {
       width: auto;
-      height: 32px;
+      /* height: px; */
       display: flex;
       align-items: center;
       justify-content: center;
       color: black;
-      padding: 0 8px;
+      padding: 10px 8px;
       list-style: none;
       border-radius: 6px;
       margin: 0 8px 8px 0;
       background: ${mainColor};
       > .tag-close-icon {
         margin-left: 0.5rem;
+        font-size: 1.3rem;
         font-weight: bold;
         cursor: pointer;
+        @media ${(props) => props.theme.breakpoints.TABLETMIN} {
+          font-size: 1.8rem;
+        }
       }
     }
   }

@@ -73,13 +73,25 @@ function LoginContainer() {
         <S.NewAccount>
           이미 계정이 없으신가요? <strong onClick={() => routeTo('/Signup')}>회원가입</strong>
         </S.NewAccount>
+        <hr />
+        <span className='sns__title'>SNS 로그인</span>
+        <S.SnsLogin>
+          <OAuthBtn
+            logo={<RxGithubLogo />}
+            onClick={(e) => {
+              e.preventDefault();
+              GithubLoginHandler();
+            }}
+          ></OAuthBtn>
+          <OAuthBtn
+            logo={<FcGoogle />}
+            onClick={(e) => {
+              e.preventDefault();
+              GoogleLoginHandler();
+            }}
+          ></OAuthBtn>
+        </S.SnsLogin>
       </S.LoginForm>
-      <hr />
-      <span className='sns__title'>SNS 로그인</span>
-      <S.SnsLogin>
-        <OAuthBtn logo={<RxGithubLogo />} onClick={GithubLoginHandler}></OAuthBtn>
-        <OAuthBtn logo={<FcGoogle />} onClick={GoogleLoginHandler}></OAuthBtn>
-      </S.SnsLogin>
     </S.LoginLayout>
   );
 }

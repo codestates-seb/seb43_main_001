@@ -13,11 +13,9 @@ export const Wrapper = styled.section`
 `;
 export const Img = styled.img`
   width: 100%;
-  height: 300px;
+  height: 100%;
+  object-fit: cover;
   border-radius: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 export const IconSection = styled.div`

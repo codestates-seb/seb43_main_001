@@ -13,8 +13,8 @@ export const LoginLayout = styled.div`
   justify-content: center;
   flex-direction: column;
 
-  width: 70%;
-  margin: 0 auto;
+  /* width: 70%;
+  margin: 0 auto; */
 
   .sns__title {
     margin-top: 1.5rem;

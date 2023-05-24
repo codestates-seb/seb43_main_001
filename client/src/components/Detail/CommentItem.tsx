@@ -80,8 +80,8 @@ function CommentItem({
               <S.DelBtn onClick={handleConfirmDelete} />
               {!onEdit && <S.EditBtn onClick={() => setOnEdit(true)} />}
               {onEdit && (
-                <S.ConfirmBtnCircle>
-                  <S.ConfirmBtn className='confirm-icon' onClick={handleComfirm} />
+                <S.ConfirmBtnCircle onClick={handleComfirm}>
+                  <S.ConfirmBtn className='confirm-icon' />
                 </S.ConfirmBtnCircle>
               )}
             </S.Update>

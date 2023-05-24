@@ -17,7 +17,7 @@ export const TextareaBox = styled.textarea`
   height: 100px;
   border-radius: 10px;
   border: none;
-
+  height: 135px;
   box-shadow: 0 0.3rem 0.3rem 0
     ${(props) => (props.theme.value === 'light' ? subFontColor : 'none')};
   font-size: 0.8rem;

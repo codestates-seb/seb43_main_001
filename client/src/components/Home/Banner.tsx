@@ -27,7 +27,7 @@ function Banner() {
         추가할 수 있습니다. <br />
         포트폴리오를 검색하고 다른 개발자의 작업을 확인해보세요!
       </p> */}
-      <S.ShareButton onClick={handleClickButton}>공유하기</S.ShareButton>
+      <S.ShareButton onClick={handleClickButton}>프로젝트 공유하기</S.ShareButton>
     </S.Banner>
   );
 }

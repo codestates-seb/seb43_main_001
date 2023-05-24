@@ -11,8 +11,8 @@ export const Hamburger = styled.div`
 `;
 
 export const Menu = styled(RxHamburgerMenu)`
-  font-size: 3rem;
+  font-size: 2rem;
 `;
 export const Cancel = styled(RxCross1)`
-  font-size: 3rem;
+  font-size: 2rem;
 `;
