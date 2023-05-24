@@ -34,3 +34,6 @@ export function Sun() {
 export function Moon() {
   return <img src={process.env.PUBLIC_URL + '/assets/icon/moon.svg'} />;
 }
+export function Logo() {
+  return <img src={process.env.PUBLIC_URL + '/assets/logo/silmul_logo.svg'} alt='logo' />;
+}
