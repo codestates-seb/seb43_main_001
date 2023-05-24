@@ -40,7 +40,7 @@ public class PortfolioService {
     private final ImageAttachmentRepository imageAttachmentRepository;
     private final SkillService skillService;
 
-    private final String DEFAULT_IMAGE_URL = "https://main001-portfolio.s3.ap-northeast-2.amazonaws.com/default/default.jpg";
+    private final String DEFAULT_IMAGE_URL = "https://main001-portfolio.s3.ap-northeast-2.amazonaws.com/default/default.png";
     private final static String VIEWCOOKIENAME = "alreadyViewCookie";
 
     public Portfolio createPortfolio(Portfolio portfolio, List<String> skills, MultipartFile representativeImg) throws IOException{
@@ -204,12 +204,6 @@ public class PortfolioService {
         return imageUrlList;
     }
 
-//    public String getRepresentativeImageUrlList() {
-//        RepresentativeAttachment image =
-//
-//
-//        return imageUrlList;
-//    }
 
     @Transactional
     public void increaseViewCount(Long portfolioId) {
