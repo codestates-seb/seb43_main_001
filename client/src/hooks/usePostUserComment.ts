@@ -27,9 +27,13 @@ export const usePostUserComment = (userId: number) => {
       console.log('end');
     },
   });
-  const handlerPostUserComment = async (userId: number, content: string) => {
+  const handlerPostUserComment = async (
+    userId: number,
+    content: string,
+    userCommentStatus: 'PUBLIC' | 'PRIVATE',
+  ) => {
     if (writerId) {
-      postUserCommentMutation({ userId, writerId, content });
+      postUserCommentMutation({ userId, writerId, content, userCommentStatus });
     }
   };
   return { handlerPostUserComment };

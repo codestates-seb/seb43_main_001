@@ -319,11 +319,12 @@ export const UserCommentsAPI = {
     );
     return commentsToUserData.data.data;
   },
-  postUserComment: async ({ userId, writerId, content }: PostUserComment) => {
+  postUserComment: async ({ userId, writerId, content, userCommentStatus }: PostUserComment) => {
     return await tokenClient.post('/api/usercomments', {
       userId,
       writerId,
       content,
+      userCommentStatus,
     });
   },
   patchUserComment: async ({ userId, content, path, pathId, commentId }: PatchUserComment) => {
