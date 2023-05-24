@@ -107,6 +107,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, path, link }) => {
       {!onEdit && <S.TextBox>{data.content}</S.TextBox>}
       {link && <S.LinkIcon onClick={onClickHandler} />}
       <S.CommentUser>
+        {data.status === 'PRIVATE' && <S.SecretIcon />}
         <span>{date}</span>
         <S.ImgBox>
           <img src={data.userProfileImg || data.writerProfileImg} />
