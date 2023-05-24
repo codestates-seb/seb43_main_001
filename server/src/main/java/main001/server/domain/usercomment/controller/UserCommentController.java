@@ -36,14 +36,16 @@ public class UserCommentController {
     @GetMapping("/users/{user_id}")
     @ResponseStatus(HttpStatus.OK)
     public UserCommentDto.ResponseList getUserComments(@PathVariable("user_id") @Positive Long userId,
-            @RequestParam int page, @RequestParam int size) {
+                                                       @RequestParam(defaultValue = "1") @Positive int page,
+                                                       @RequestParam(defaultValue = "15") @Positive int size) {
         return userCommentService.findUserCommentsByUser(userId, page - 1, size);
     }
 
     @GetMapping("writers/{writers_id}")
     @ResponseStatus(HttpStatus.OK)
     public UserCommentDto.ResponseList getWriterComments(@PathVariable("writers_id") @Positive Long writerId,
-                                                         @RequestParam @Positive int page, @RequestParam @Positive int size) {
+                                                         @RequestParam(defaultValue = "1") @Positive int page,
+                                                         @RequestParam(defaultValue = "15") @Positive int size) {
         return userCommentService.findUserCommentsByWriter(writerId, page-1, size);
     }
 

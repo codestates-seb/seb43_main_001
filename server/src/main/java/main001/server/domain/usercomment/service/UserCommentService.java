@@ -8,6 +8,7 @@ import main001.server.domain.usercomment.entity.UserComment;
 import main001.server.domain.usercomment.entity.UserCommentStatus;
 import main001.server.domain.usercomment.mapper.UserCommentMapper;
 import main001.server.domain.usercomment.repository.UserCommentRepository;
+import main001.server.domain.utils.CurrentUserIdFinder;
 import main001.server.exception.BusinessLogicException;
 import main001.server.exception.ExceptionCode;
 import main001.server.response.PageInfo;
@@ -38,29 +39,39 @@ public class UserCommentService {
      */
     public UserCommentDto.Response createUserComment(UserCommentDto.Post postDto) {
         UserComment userComment = userCommentMapper.postToEntity(postDto);
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId();
+        if(!userComment.getWriter().getUserId().equals(currentUserId)) {
+            throw new BusinessLogicException(ExceptionCode.INVALID_USER_STATUS);
+        }
 
-        UserComment savedComment = userCommentRepository.save(setUserAndWriter(userComment));
+        userComment = userCommentRepository.save(setUserAndWriter(userComment));
 
-        return userCommentMapper.entityToResponse(savedComment);
+        return userCommentMapper.entityToResponse(userComment);
     }
 
     public UserCommentDto.Response updateUserComment(UserCommentDto.Patch patchDto) {
         UserComment userComment = findVerifiedUserComment(patchDto.getUserCommentId());
 
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId();
+        if(!userComment.getUser().getUserId().equals(currentUserId)) {
+            throw new BusinessLogicException(ExceptionCode.NO_PERMISSION_EDITING_POST);
+        }
+
         UserComment patch = userCommentMapper.patchToEntity(patchDto);
 
         userComment.setContent(patch.getContent());
 
-        UserComment savedComment = userCommentRepository.save(userComment);
+        userComment = userCommentRepository.save(userComment);
 
-        return userCommentMapper.entityToResponse(savedComment);
+        return userCommentMapper.entityToResponse(userComment);
     }
 
     @Transactional(readOnly = true)
     public UserCommentDto.ResponseList findUserCommentsByUser(Long userId, int page, int size) {
         User user = userService.findUser(userId);
+        Long currentUserId = CurrentUserIdFinder.getCurrentUserId();
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").ascending());
 
         Page<UserCommentDto.Response> usersPage = userCommentRepository
                 .findByUser(user,pageable)
