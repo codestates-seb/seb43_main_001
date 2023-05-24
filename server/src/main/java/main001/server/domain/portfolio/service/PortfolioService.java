@@ -206,9 +206,6 @@ public class PortfolioService {
 
         Page<Portfolio> response = portfolioRepository.findByUserUserId(userId, pageable);
 
-        if(response.getTotalElements()==0) {
-            throw new BusinessLogicException(ExceptionCode.PORTFOLIO_NOT_SEARCHED);
-        }
         return response;
     }
 
@@ -226,7 +223,7 @@ public class PortfolioService {
         } else if (category.equals("title")) {
             response = portfolioRepository.findByTitle(value, pageable);
         } else if (category.equals("skill")) {
-            response = portfolioRepository.findBySkillName(value,pageable);
+            response = portfolioRepository.findBySkillId(value,pageable);
         } else {
             throw new BusinessLogicException(ExceptionCode.SEARCH_CONDITION_MISMATCH);
         }

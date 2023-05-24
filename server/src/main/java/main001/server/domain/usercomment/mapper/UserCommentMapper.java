@@ -25,6 +25,8 @@ public class UserCommentMapper {
         writer.setUserId(postDto.getWriterId());
         userComment.setWriter(writer);
 
+        userComment.setUserCommentStatus(postDto.getUserCommentStatus());
+
         return userComment;
     }
 
@@ -51,22 +53,29 @@ public class UserCommentMapper {
     }
 
     public UserCommentDto.Response entityToResponse(UserComment userComment) {
-        UserCommentDto.Response response = new UserCommentDto.Response(
-                userComment.getUserCommentId(),
-                userComment.getUser().getUserId(),
-                userComment.getWriter().getUserId(),
-                userComment.getWriter().getName(),
-                userComment.getWriter().getProfileImg(),
-                userComment.getContent(),
-                userComment.getCreatedAt(),
-                userComment.getUpdatedAt(),
-                userComment.getUser().isAuth()
-        );
+        UserCommentDto.Response response = UserCommentDto.Response.builder()
+                .userCommentId(userComment.getUserCommentId())
+                .userId(userComment.getUser().getUserId())
+                .writerId(userComment.getWriter().getUserId())
+                .writerName(userComment.getWriter().getName())
+                .writerProfileImg(userComment.getWriter().getProfileImg())
+                .content(userComment.getContent())
+                .status(userComment.getUserCommentStatus())
+                .createdAt(userComment.getCreatedAt())
+                .updatedAt(userComment.getUpdatedAt())
+                .isAuth(userComment.getUser().isAuth())
+                .build();
 
         Long currentUserId = CurrentUserIdFinder.getCurrentUserId();
 
         if (currentUserId != null && currentUserId.equals(response.getWriterId())) {
             response.setAuth(true);
+        }
+        if(currentUserId != null &&
+                (currentUserId.equals(response.getUserId()) || currentUserId.equals(response.getWriterId()))) {
+            response.setDeletable(true);
+        } else {
+            response.setDeletable(false);
         }
 
         return response;
