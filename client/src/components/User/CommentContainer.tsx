@@ -19,7 +19,8 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
 
   const addHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    handlerPostUserComment(userId, content);
+    const userCommentStatus = secret ? 'PRIVATE' : 'PUBLIC';
+    handlerPostUserComment(userId, content, userCommentStatus);
     setContent('');
   };
   const contentChangeHandler = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -46,10 +47,10 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
             <>
               {UserComments.length > 0 ? (
                 <S.Comments CommentLen={UserComments.length}>
-                  {UserComments.map((ele) => (
+                  {UserComments.map((data) => (
                     <CommentItem
-                      key={ele.userCommentId}
-                      data={ele}
+                      key={data.userCommentId}
+                      data={data}
                       path='usercomments'
                       link={false}
                     />
@@ -98,10 +99,10 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
                 <>
                   {CommentsToUser.length > 0 ? (
                     <S.Comments CommentLen={CommentsToUser.length}>
-                      {CommentsToUser.map((ele) => (
+                      {CommentsToUser.map((data) => (
                         <CommentItem
-                          key={ele.userCommentId}
-                          data={ele}
+                          key={data.userCommentId}
+                          data={data}
                           path='usercomments'
                           link={true}
                         />
@@ -121,10 +122,10 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
                 <>
                   {CommentsToPortfolio.length > 0 ? (
                     <S.Comments CommentLen={CommentsToPortfolio.length}>
-                      {CommentsToPortfolio.map((ele) => (
+                      {CommentsToPortfolio.map((data) => (
                         <CommentItem
-                          key={ele.userCommentId}
-                          data={ele}
+                          key={data.userCommentId}
+                          data={data}
                           path='portfoliocomments'
                           link={true}
                         />

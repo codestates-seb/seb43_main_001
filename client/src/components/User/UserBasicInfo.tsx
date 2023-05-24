@@ -1,10 +1,7 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { YellowBtn } from '../common/Button.style';
-// import { user } from './mock';
+import { useDispatch } from 'react-redux';
 import * as S from './UserBasicInfo.style';
 import { setGit, setImg, setName } from '../../store/slice/editUserProfileSlice';
 import { useState } from 'react';
-import { RootState } from '../../store';
 import { UserProfileAPI } from '../../api/client';
 
 type UserBasicInfoProps = {
@@ -26,13 +23,9 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
 }) => {
   const dispatch = useDispatch();
   const { postUserImg } = UserProfileAPI;
-  const userEditInfo = useSelector((state: RootState) => {
-    return state.editUserProfile;
-  });
   const [photo, setPhoto] = useState<string>(profileImg);
   const [userName, setUserName] = useState<string>(name);
-  // ! : input에 null값을 넣지 않기 위해 editSlice의 정보 사용,(서버에서 처리해주면 기존값 사용해도 괜찮음)
-  const [userGit, setUserGit] = useState<string>(gitLink);
+  const [userGit, setUserGit] = useState<string>(gitLink ? gitLink : '');
   const [gradecolor, setGradecolor] = useState<string>('brown');
 
   const fileUploadHanlder = async (e: React.ChangeEvent<HTMLInputElement>) => {

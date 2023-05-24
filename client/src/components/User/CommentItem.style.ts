@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { RxCross2, RxPencil2, RxCheck, RxDoubleArrowRight } from 'react-icons/rx';
+import { RxCross2, RxPencil2, RxCheck, RxDoubleArrowRight, RxLockClosed } from 'react-icons/rx';
 import { COLOR } from '../../constants/index';
 const { subFontColor } = COLOR;
 
@@ -15,7 +15,6 @@ export const CommentItem = styled.li`
   background-color: ${({ theme }) => theme.themeStyle.cardColor};
   svg {
     font-size: 1.3rem;
-    cursor: pointer;
     &:hover {
       color: ${subFontColor};
     }
@@ -62,21 +61,26 @@ export const CommentUser = styled.div`
 `;
 
 export const DelBtn = styled(RxCross2)`
+  cursor: pointer;
   &:hover {
     color: red;
   }
 `;
-export const EditBtn = styled(RxPencil2)``;
+export const EditBtn = styled(RxPencil2)`
+  cursor: pointer;
+`;
 export const SubmitBtn = styled(RxCheck)`
   position: absolute;
   top: 10px;
   right: 10px;
+  cursor: pointer;
 `;
 export const LinkIcon = styled(RxDoubleArrowRight)`
   position: absolute;
   bottom: 30px;
   right: 10px;
   color: ${subFontColor};
+  cursor: pointer;
 `;
 export const DelText = styled.p`
   margin: 20px 0;
@@ -99,4 +103,9 @@ export const SelectBtns = styled.div`
 `;
 export const SecretText = styled.p`
   text-align: center;
+  margin-top: 20px;
+`;
+export const SecretIcon = styled(RxLockClosed)`
+  color: ${subFontColor};
+  cursor: auto;
 `;

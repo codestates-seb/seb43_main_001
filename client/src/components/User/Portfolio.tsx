@@ -52,15 +52,6 @@ const Portfolio: React.FC<IdProps> = ({ userId }) => {
     };
   }, [fetchNextUserPortfolios, hasNextUserPortfolios, getUserPortfoliosFetched]);
 
-  if (getUserPortfoliosError) {
-    return (
-      <>
-        <Sort setSortOption={setOrderName} />
-        <S.ErrorContainer>현재 작성된 포트폴리오가 없습니다.</S.ErrorContainer>
-      </>
-    );
-  }
-
   if (getUserPortfoliosLoading) {
     return (
       <>
@@ -74,25 +65,32 @@ const Portfolio: React.FC<IdProps> = ({ userId }) => {
 
   return (
     <>
-      <Sort setSortOption={setOrderName} />
-      <S.PortfolioContainer>
-        {UserPortfolios &&
-          UserPortfolios.pages.map((page) =>
-            page.data.map((data) => (
-              <Card
-                key={data.portfolioId}
-                representativeImgUrl={data.representativeImgUrl}
-                portfolioId={data.portfolioId}
-                description={data.description}
-                title={data.title}
-                views={data.viewCount}
-                skills={data.skills}
-                likes={data.likesCount}
-              />
-            )),
+      {UserPortfolios && (
+        <>
+          <Sort setSortOption={setOrderName} />
+          {UserPortfolios.pages[0].data.length === 0 ? (
+            <S.ErrorContainer>현재 작성된 포트폴리오가 없습니다.</S.ErrorContainer>
+          ) : (
+            <S.PortfolioContainer>
+              {UserPortfolios.pages.map((page) =>
+                page.data.map((data) => (
+                  <Card
+                    key={data.portfolioId}
+                    representativeImgUrl={data.representativeImgUrl}
+                    portfolioId={data.portfolioId}
+                    description={data.description}
+                    title={data.title}
+                    views={data.viewCount}
+                    skills={data.skills}
+                    likes={data.likesCount}
+                  />
+                )),
+              )}
+              <S.Target ref={targetRef} />
+            </S.PortfolioContainer>
           )}
-        <S.Target ref={targetRef} />
-      </S.PortfolioContainer>
+        </>
+      )}
     </>
   );
 };
