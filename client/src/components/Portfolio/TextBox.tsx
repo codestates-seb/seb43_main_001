@@ -17,6 +17,7 @@ const TextBox: React.FC<TextBoxProps> = ({ text, onChange, value, name }) => {
       <S.InputBox
         name={name}
         placeholder={text + '을(를) 입력해주세요'}
+        maxLength={name === 'title' ? 50 : 100}
         onChange={onChange}
         value={value}
       ></S.InputBox>

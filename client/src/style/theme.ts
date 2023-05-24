@@ -17,6 +17,7 @@ declare module 'styled-components' {
       toggleIconPosition: string;
       sortBorderColor: string;
       searchBarColor: string;
+      sectionBackgroundColor: string;
     };
     breakpoints: {
       TABLETMIN: string;
@@ -40,6 +41,7 @@ export const lightTheme: DefaultTheme = {
     toggleIconPosition: '5px',
     sortBorderColor: 'rgba(243, 243, 243, 0.8)',
     searchBarColor: 'rgba(243, 243, 243, 0.4)',
+    sectionBackgroundColor: '#F5F5F5',
   },
   breakpoints: {
     TABLETMIN: `screen and (min-width: ${SIZE.tablet})`,
@@ -62,6 +64,7 @@ export const darkTheme: DefaultTheme = {
     toggleIconPosition: '32px',
     sortBorderColor: 'rgba(243, 243, 243, 0.5)',
     searchBarColor: '#303030',
+    sectionBackgroundColor: '#303030',
   },
   breakpoints: {
     TABLETMIN: `screen and (min-width: ${SIZE.tablet})`,

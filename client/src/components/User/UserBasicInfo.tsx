@@ -135,18 +135,18 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
             )}
           </S.GitBtn>
         )}
-        <div>
+        {/* <div>
           <S.FollowrIcon />
           <span>123</span>
           <S.ViewIcon />
           <span>321</span>
-        </div>
+        </div> */}
       </S.TextBox>
-      {!auth && (
+      {/* {!auth && (
         <S.Buttons>
           <YellowBtn>Follow</YellowBtn>
         </S.Buttons>
-      )}
+      )} */}
     </S.BasicInfo>
   );
 };

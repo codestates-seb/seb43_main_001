@@ -23,6 +23,8 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, path, link }) => {
 
   const date = `${data.createdAt[0]}. ${data.createdAt[1]}. ${data.createdAt[2]}.`;
 
+  const [delConfirm, setDelConfirm] = useState(false);
+
   const onChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setEditText(e.currentTarget.value);
   };
@@ -42,6 +44,9 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, path, link }) => {
       commentId: data.userCommentId ? data.userCommentId : data.portfolioCommentId!,
       path,
     });
+  };
+  const delConfimHandler = () => {
+    setDelConfirm((prev) => !prev);
   };
   const onClickHandler = () => {
     if (path === 'usercomments') {
@@ -73,27 +78,42 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, path, link }) => {
     }
   }, [data, token]);
 
+  // 비밀글 체크가 되어있는 경우, 작성자 & 수령자(?)를 제외하곤 *********** 표시 혹은 댓글을 아예 미표시
+  // editText 부분이랑 CommentUser 부분만 ******* 으로 표시하는게 더 조건 걸기가 쉬울 것 같음.
+
   return (
     <S.CommentItem>
-      {(isAuth || isWriter) && <S.DelBtn onClick={deleteHandler} />}
-      {isWriter && !onEdit && <S.EditBtn onClick={() => setOnEdit(true)} />}
-      {onEdit && <S.SubmitBtn onClick={onSubmitHandler} />}
-      {onEdit ? (
-        <form>
-          <textarea ref={CommentRef} value={editText} onChange={onChangeHandler} />
-        </form>
+      {delConfirm ? (
+        <>
+          <S.DelText>해당 댓글을 삭제하시겠습니까?</S.DelText>
+          <S.SelectBtns>
+            <button onClick={deleteHandler}>삭제</button>
+            <button onClick={delConfimHandler}>취소</button>
+          </S.SelectBtns>
+        </>
       ) : (
-        <S.TextBox>{editText}</S.TextBox>
+        <>
+          {(isAuth || isWriter) && <S.DelBtn onClick={delConfimHandler} />}
+          {isWriter && !onEdit && <S.EditBtn onClick={() => setOnEdit(true)} />}
+          {onEdit && <S.SubmitBtn onClick={onSubmitHandler} />}
+          {onEdit ? (
+            <form>
+              <textarea ref={CommentRef} value={editText} onChange={onChangeHandler} />
+            </form>
+          ) : (
+            <S.TextBox>{editText}</S.TextBox>
+          )}
+          {/* 본인의 페이지 일 때는 표시하지 않기 */}
+          {link && <S.LinkIcon onClick={onClickHandler} />}
+          <S.CommentUser>
+            <span>{date}</span>
+            <S.ImgBox>
+              <img src={data.userProfileImg || data.writerProfileImg} />
+            </S.ImgBox>
+            <p>{data.writerName}</p>
+          </S.CommentUser>
+        </>
       )}
-      {/* 본인의 페이지 일 때는 표시하지 않기 */}
-      {link && <S.LinkIcon onClick={onClickHandler} />}
-      <S.CommentUser>
-        <span>{date}</span>
-        <S.ImgBox>
-          <img src={data.userProfileImg || data.writerProfileImg} />
-        </S.ImgBox>
-        <p>{data.writerName}</p>
-      </S.CommentUser>
     </S.CommentItem>
   );
 };

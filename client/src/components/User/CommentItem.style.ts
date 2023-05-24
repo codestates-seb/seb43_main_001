@@ -14,6 +14,9 @@ export const CommentItem = styled.li`
   svg {
     font-size: 1.3rem;
     cursor: pointer;
+    &:hover {
+      color: ${subFontColor};
+    }
   }
   textarea {
     height: 80px;
@@ -24,6 +27,11 @@ export const CommentItem = styled.li`
     background-color: ${({ theme }) => theme.themeStyle.cardColor};
     color: ${(props) => props.theme.themeStyle.fontColor};
     resize: none;
+  }
+  button {
+    &:hover {
+      color: ${subFontColor};
+    }
   }
 `;
 export const TextBox = styled.p`
@@ -52,7 +60,11 @@ export const CommentUser = styled.div`
   font-size: 0.8rem;
 `;
 
-export const DelBtn = styled(RxCross2)``;
+export const DelBtn = styled(RxCross2)`
+  &:hover {
+    color: red;
+  }
+`;
 export const EditBtn = styled(RxPencil2)``;
 export const SubmitBtn = styled(RxCheck)`
   position: absolute;
@@ -64,4 +76,23 @@ export const LinkIcon = styled(RxDoubleArrowRight)`
   bottom: 30px;
   right: 10px;
   color: ${subFontColor};
+`;
+export const DelText = styled.p`
+  margin: 20px 0;
+  text-align: center;
+`;
+export const SelectBtns = styled.div`
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  button {
+    color: ${(props) => props.theme.themeStyle.fontColor};
+    margin: 0 10px;
+    font-size: 0.9rem;
+  }
+  button:first-child {
+    &:hover {
+      color: red;
+    }
+  }
 `;

@@ -9,6 +9,7 @@ export const ModalBackground = styled.div<{ OnOff: boolean }>`
   top: 0;
   left: 0;
   z-index: 500;
+  color: black;
 `;
 export const ModalContainer = styled.div`
   width: 500px;
