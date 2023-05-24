@@ -7,9 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import java.net.URI;
 
 @RestController
 @Validated
@@ -21,8 +23,15 @@ public class UserCommentController {
 
     @PostMapping
     public ResponseEntity postUserComment(@RequestBody @Valid UserCommentDto.Post postDto) {
-        userCommentService.createUserComment(postDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        UserCommentDto.Response response = userCommentService.createUserComment(postDto);
+
+        URI location = UriComponentsBuilder
+                        .newInstance()
+                        .path("api/usercomments/{userComment-id}")
+                        .buildAndExpand(response.getUserCommentId())
+                        .toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     @PatchMapping("/{userComment_id}")

@@ -53,7 +53,7 @@ public class UserCommentService {
         UserComment userComment = findVerifiedUserComment(patchDto.getUserCommentId());
 
         Long currentUserId = CurrentUserIdFinder.getCurrentUserId();
-        if(!userComment.getUser().getUserId().equals(currentUserId)) {
+        if(!userComment.getWriter().getUserId().equals(currentUserId)) {
             throw new BusinessLogicException(ExceptionCode.NO_PERMISSION_EDITING_POST);
         }
 
@@ -71,7 +71,7 @@ public class UserCommentService {
         User user = userService.findUser(userId);
         Long currentUserId = CurrentUserIdFinder.getCurrentUserId();
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").ascending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
         Page<UserCommentDto.Response> usersPage = userCommentRepository
                 .findByUser(user,pageable)
@@ -92,7 +92,7 @@ public class UserCommentService {
     public UserCommentDto.ResponseList findUserCommentsByWriter(Long writerId, int page, int size) {
         User writer = userService.findUser(writerId);
 
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page,size,Sort.by("createdAt").descending());
 
         Page<UserCommentDto.Response> writersPage = userCommentRepository
                 .findByWriter(writer,pageable)

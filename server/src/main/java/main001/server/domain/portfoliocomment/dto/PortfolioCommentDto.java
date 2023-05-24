@@ -25,11 +25,11 @@ public class PortfolioCommentDto {
         @NotBlank
         private String content;
 
-        private int depth;
-
-        private Long rootCommentId;
-
-        private Long parentCommentId;
+//        private int depth;
+//
+//        private Long rootCommentId;
+//
+//        private Long parentCommentId;
     }
 
     @Getter
@@ -62,9 +62,9 @@ public class PortfolioCommentDto {
         private String userName;
         private String userProfileImg;
         private Long portfolioId;
-        private Long rootId;
-        private Long parentId;
-        private int depth;
+//        private Long rootId;
+//        private Long parentId;
+//        private int depth;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
         private boolean auth;
