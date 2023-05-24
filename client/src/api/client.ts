@@ -383,4 +383,11 @@ export const postEmail = async (email: string, userId: string) => {
     .then(() => LoginAPI.githubLogin());
 };
 
+// * : CheckEmail
+export const postCheckEmail = async (email: string) => {
+  return await tokenClient.post('/users/check-email', {
+    email,
+  });
+};
+
 export { tokenClient };

@@ -18,6 +18,7 @@ export const SignTitle = styled.div`
 `;
 
 export const SignInput = styled.input`
+  position: relative;
   width: 360px;
   height: 45px;
   border: 2px solid ${subFontColor};

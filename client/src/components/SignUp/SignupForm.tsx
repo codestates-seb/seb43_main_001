@@ -9,20 +9,33 @@ import { useState } from 'react';
 // custom Hook
 import { useRouter } from '../../hooks/useRouter';
 import { usePostUserSignUp } from '../../hooks/usePostUserSignUp';
+import { usePostCheckEmail } from '../../hooks/usePostCheckEmail';
+
+// toast
+import { toast } from 'react-toastify';
 
 function SignupForm() {
   const [userName, setUserName] = useState<string>('');
   const [userEmail, setUserEmail] = useState<string>('');
   const [userPassword, setUserPassword] = useState<string>('');
+  const [isEmailDupulicateChecked, setEmailDuplicateChecked] = useState<boolean>(false);
 
   const [nameError, setNameError] = useState<boolean>(false);
   const [passwordError, setPasswordError] = useState<boolean>(false);
 
   const { routeTo } = useRouter();
   const { postUserInfoSignUp } = usePostUserSignUp();
+  const { handleCheckEmail } = usePostCheckEmail();
+
+  const handleCheckDuplicateEmailClick = () => {
+    handleCheckEmail(userEmail);
+    setEmailDuplicateChecked(true);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (userEmail === '') setEmailDuplicateChecked(false);
+    if (!isEmailDupulicateChecked) return toast.info('이메일 중복 검사를 진행해주세요!');
     if (userName === '') setNameError(true);
     else setNameError(false);
     if (userPassword.length < 8) return setPasswordError(true);
@@ -30,7 +43,7 @@ function SignupForm() {
     postUserInfoSignUp({ name: userName, password: userPassword, email: userEmail });
   };
   return (
-    <>
+    <S.Container>
       <S.SignUpForm onSubmit={handleSubmit}>
         <S.Title>회원가입</S.Title>
         <SignInput
@@ -61,7 +74,10 @@ function SignupForm() {
           이미 계정이 있으신가요? <strong onClick={() => routeTo('/Login')}>로그인</strong>
         </S.AlreadySignUp>
       </S.SignUpForm>
-    </>
+      <S.checkDuplicateEmailButton nameError={nameError} onClick={handleCheckDuplicateEmailClick}>
+        중복 검사
+      </S.checkDuplicateEmailButton>
+    </S.Container>
   );
 }
 
