@@ -1,9 +1,6 @@
 package main001.server.domain.portfoliocomment.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import main001.server.response.PageInfo;
 
 import javax.validation.constraints.NotBlank;
@@ -17,7 +14,6 @@ public class PortfolioCommentDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Post {
-
         @NotNull
         @Positive
         private Long userId;
@@ -28,13 +24,18 @@ public class PortfolioCommentDto {
 
         @NotBlank
         private String content;
+
+        private int depth;
+
+        private Long rootCommentId;
+
+        private Long parentCommentId;
     }
 
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Patch {
-
         @Setter
         private Long portfolioCommentId;
 
@@ -48,9 +49,9 @@ public class PortfolioCommentDto {
 
         @NotBlank
         private String content;
-
     }
 
+    @Builder
     @Getter
     @Setter
     @AllArgsConstructor
@@ -61,6 +62,9 @@ public class PortfolioCommentDto {
         private String userName;
         private String userProfileImg;
         private Long portfolioId;
+        private Long rootId;
+        private Long parentId;
+        private int depth;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
         private boolean auth;

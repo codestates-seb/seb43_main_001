@@ -76,5 +76,6 @@ jwt:
 # redirect관련 uri
 uri:
   address:
+    scheme: ${BASE_SCHEME}
     url: ${BASE_URL}
     port: ${BASE_PORT}

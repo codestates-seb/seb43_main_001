@@ -9,6 +9,8 @@ import main001.server.domain.user.entity.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,6 +27,19 @@ public class PortfolioComment extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    private int depth;
+
+    @ManyToOne
+    @JoinColumn(name = "rootId")
+    private PortfolioComment rootComment;
+
+    @ManyToOne
+    @JoinColumn(name = "parentId")
+    private PortfolioComment parentComment;
+
+    @OneToMany(mappedBy = "parentComment",fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PortfolioComment> childComments = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;
@@ -32,10 +47,6 @@ public class PortfolioComment extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "portfolioId")
     private Portfolio portfolio;
-
-    @Enumerated(value = EnumType.STRING)
-    @Column(name = "status")
-    private PortfolioCommentStatus portfolioCommentStatus = PortfolioCommentStatus.COMMENT_REGISTERED;
 
     public void setUser(User user) {
         this.user = user;
@@ -48,6 +59,14 @@ public class PortfolioComment extends BaseTimeEntity {
         this.portfolio = portfolio;
         if(!this.getPortfolio().getAnswers().contains(this)) {
             this.getPortfolio().getAnswers().add(this);
+        }
+    }
+
+    public void setParentComment(PortfolioComment parentComment) {
+        this.parentComment = parentComment;
+
+        if(parentComment != null && !parentComment.getChildComments().contains(this)) {
+            parentComment.getChildComments().add(this);
         }
     }
 }

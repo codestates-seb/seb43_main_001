@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,12 +43,12 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         if (userService.isExistOAuth2User(oauthId)) {
             User user = userService.findExistOAuth2User(oauthId);
             redirect(request, response, user);
-        } else if (email.equals("null") || email.isEmpty()) {
-            User savedUser = saveUser(email, oauthId, name, profileImg);
+        } else if (email.equals("null") || email.isBlank()) {
+            User savedUser = saveUser("undefined", oauthId, name, profileImg);
             long userId = savedUser.getUserId();
             String addemail = UriComponentsBuilder
                     .newInstance()
-                    .scheme("http")
+                    .scheme(EnvConfig.getScheme())
                     .host(EnvConfig.getBaseUrl())
                     .port(EnvConfig.getBasePort())
                     .path("/addemail") // addemail 페이지로 이동
@@ -82,7 +83,7 @@ public class OAuth2UserSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 
         return UriComponentsBuilder
                 .newInstance()
-                .scheme("http")
+                .scheme(EnvConfig.getScheme())
                 .host(EnvConfig.getBaseUrl())
                 .port(EnvConfig.getBasePort())
                 .path("/") // 로그인 후 홈으로 이동
