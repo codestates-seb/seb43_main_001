@@ -20,20 +20,11 @@ export const CommentWrapper = styled.div`
 `;
 
 export const CommentShow = styled.div`
-  /* flex: 0 1 550px; */
   width: 100%;
   border: none;
   display: flex;
   flex-direction: column;
   gap: 15px;
-  /* box-shadow: 0px 2px 2px ${subFontColor}; */
-  /* overflow-y: auto;
-  ::-webkit-scrollbar {
-    width: 5px;
-  }
-  ::-webkit-scrollbar-thumb {
-    background-color: ${(props) => props.theme.themeStyle.fontColor};
-  } */
 `;
 
 export const CommentForm = styled.form`

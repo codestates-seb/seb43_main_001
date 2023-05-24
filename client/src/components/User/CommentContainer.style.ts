@@ -29,8 +29,7 @@ export const CommentAdd = styled.form`
     padding: 10px;
     border-radius: 10px;
     border: 0;
-    box-shadow: 0 1px 0.3rem 0
-      ${(props) => (props.theme.value === 'light' ? subFontColor : 'none')};
+    box-shadow: 0 1px 0.3rem 0 ${(props) => (props.theme.value === 'light' ? subFontColor : 'none')};
     position: relative;
     z-index: 5;
     outline: none;
@@ -72,7 +71,7 @@ export const Secret = styled.label`
     background-color: white;
   }
   input:checked {
-    background-image: url('https://img.icons8.com/?size=512&id=27&format=png');
+    background-image: url('https://img.icons8.com/?size=512&id=5576&format=png');
     background-repeat: no-repeat;
     background-size: cover;
   }
