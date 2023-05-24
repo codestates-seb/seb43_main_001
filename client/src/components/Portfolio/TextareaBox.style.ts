@@ -14,7 +14,7 @@ export const Title = styled.span`
 `;
 
 export const TextareaBox = styled.textarea`
-  height: 80px;
+  height: 100px;
   border-radius: 10px;
   border: none;
 
