@@ -34,7 +34,7 @@ public class User extends BaseTimeEntity {
     @Column(length = 50, unique = true)
     private String oauthId;
 
-    @Column(length = 20)
+    @Column(columnDefinition = "TINYTEXT")
     private String password;
 
     @Column(length = 20)
