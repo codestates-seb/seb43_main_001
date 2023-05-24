@@ -44,7 +44,12 @@ export const Logo = styled.div`
   width: 30%;
   font-size: 2rem;
   font-weight: 900;
+  margin-top: 8px;
   cursor: pointer;
+  img {
+    width: 55px;
+    height: 55px;
+  }
 `;
 
 export const SignUp = styled.span`

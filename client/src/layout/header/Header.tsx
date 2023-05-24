@@ -23,6 +23,9 @@ import { getUserIdFromAccessToken } from '../../utils/getUserIdFromAccessToken';
 // api
 import { UserProfileAPI } from '../../api/client';
 
+// logo
+import { Logo } from '../../components/common/icons';
+
 // *: header 컴포넌트
 function Header() {
   const { routeTo } = useRouter();
@@ -67,7 +70,9 @@ function Header() {
 
   return (
     <S.Header>
-      <S.Logo onClick={handleLogoClick}>Logo</S.Logo>
+      <S.Logo onClick={handleLogoClick}>
+        <Logo />
+      </S.Logo>
       {openNav && <NavLink setOpenNav={setOpenNav} />}
       <S.ButtonContainer>
         <Toggle />
