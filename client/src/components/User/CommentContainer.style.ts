@@ -8,7 +8,7 @@ export const CommentContainer = styled.div`
 `;
 export const Comments = styled.ul<{ CommentLen: number }>`
   width: 100%;
-  height: ${(props) => (props.CommentLen <= 3 ? `${props.CommentLen * 135}px` : '390px')};
+  height: ${(props) => (props.CommentLen <= 3 ? `${props.CommentLen * 130}px` : '390px')};
   padding: 0 2px;
   overflow: scroll;
   -ms-overflow-style: none;
