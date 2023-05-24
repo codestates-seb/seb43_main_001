@@ -142,6 +142,10 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findByOauthId(oauthId);
         User findUser = optionalUser.orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
+        if (findUser.getEmail().equals("null") || findUser.getEmail().isBlank()) {
+            deleteUser(findUser.getUserId());
+            throw new BusinessLogicException(ExceptionCode.EMAIL_NOT_EXIST);
+        }
         return findUser;
     }
 
