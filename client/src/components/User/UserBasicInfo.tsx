@@ -22,7 +22,6 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
   name,
   profileImg,
   gitLink,
-  auth,
   grade,
 }) => {
   const dispatch = useDispatch();
@@ -30,11 +29,10 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
   const userEditInfo = useSelector((state: RootState) => {
     return state.editUserProfile;
   });
-  const { name: editName, profileImg: editProfileImg, gitLink: editGitLink } = userEditInfo;
-  const [photo, setPhoto] = useState<string>(editProfileImg);
-  const [userName, setUserName] = useState<string>(editName);
+  const [photo, setPhoto] = useState<string>(profileImg);
+  const [userName, setUserName] = useState<string>(name);
   // ! : input에 null값을 넣지 않기 위해 editSlice의 정보 사용,(서버에서 처리해주면 기존값 사용해도 괜찮음)
-  const [userGit, setUserGit] = useState<string>(editGitLink);
+  const [userGit, setUserGit] = useState<string>(gitLink);
   const [gradecolor, setGradecolor] = useState<string>('brown');
 
   const fileUploadHanlder = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,6 +55,9 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.currentTarget;
     if (name === 'name') {
+      if (value.length >= 9) {
+        value.slice(0, 9);
+      }
       setUserName(value);
       dispatch(setName(value));
     } else {
@@ -103,7 +104,7 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
           {onEdit ? (
             <S.EditName>
               Name
-              <input onChange={inputChangeHandler} value={userName} name='name' />
+              <input onChange={inputChangeHandler} value={userName} name='name' maxLength={9} />
             </S.EditName>
           ) : (
             <S.UserName>

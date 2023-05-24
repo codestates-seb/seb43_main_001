@@ -99,7 +99,8 @@ export const Buttons = styled.div`
   right: 3%;
   bottom: 0;
 `;
-export const GithubIcon = styled(RxGithubLogo)``;
+export const GithubIcon = styled(RxGithubLogo)`
+`;
 export const ViewIcon = styled(IoMdEye)`
   margin-left: 8px;
 `;
