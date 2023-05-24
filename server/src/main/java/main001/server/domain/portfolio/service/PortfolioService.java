@@ -59,7 +59,7 @@ public class PortfolioService {
         }
         portfolio.setUser(verifiedUser.get());
 
-        RepresentativeAttachment attachment = extracted(portfolio, representativeImg);
+        RepresentativeAttachment attachment = uploadThumbnail(portfolio, representativeImg);
         representativeImageRepository.save(attachment);
 
         Portfolio saved = portfolioRepository.save(portfolio);
@@ -69,29 +69,23 @@ public class PortfolioService {
         return saved;
     }
 
-    private RepresentativeAttachment extracted(Portfolio portfolio, MultipartFile representativeImg) throws IOException {
+    private RepresentativeAttachment uploadThumbnail(Portfolio portfolio, MultipartFile representativeImg) throws IOException {
+        RepresentativeAttachment attachment;
         if (representativeImg != null && !representativeImg.isEmpty()) {
             // 이미지가 첨부된 경우에 대한 처리
             String representativeImgUrl = s3Service.uploadFile(representativeImg, "images");
-            RepresentativeAttachment representativeAttachment = new RepresentativeAttachment(representativeImgUrl);
-            representativeAttachment.setPortfolio(portfolio);
-
-            portfolio.setRepresentativeAttachment(representativeAttachment);
-
-            return representativeAttachment;
+            attachment = new RepresentativeAttachment(representativeImgUrl);
         } else {
             // 이미지가 첨부되지 않은 경우에 대한 처리
             String defaultImageUrl = DEFAULT_IMAGE_URL;
-            RepresentativeAttachment representativeAttachment = new RepresentativeAttachment(defaultImageUrl);
-            representativeAttachment.setPortfolio(portfolio);
-
-            portfolio.setRepresentativeAttachment(representativeAttachment);
-
-            return representativeAttachment;
+            attachment = new RepresentativeAttachment(defaultImageUrl);
         }
+        attachment.setPortfolio(portfolio);
+        portfolio.setRepresentativeAttachment(attachment);
+        return attachment;
     }
 
-    public Portfolio updatePortfolio(Portfolio portfolio,Long portfolioId,  List<String> skills, MultipartFile representativeImg) throws IOException{
+    public Portfolio updatePortfolio(Portfolio portfolio, Long portfolioId,  List<String> skills, MultipartFile representativeImg) throws IOException{
         Portfolio findPortfolio = findVerifiedPortfolio(portfolio.getPortfolioId());
         User user = portfolio.getUser();
         Optional<User> verifiedUser = userRepository.findById(user.getUserId());
@@ -175,19 +169,8 @@ public class PortfolioService {
             representativeImageRepository.delete(currentImageAttachment);
         }
 
-        RepresentativeAttachment newImageAttachment = null;
-        if (representativeImg != null && representativeImg.getSize() > 0) {
-            String imgUrl = s3Service.uploadFile(representativeImg, "images");
-            newImageAttachment = new RepresentativeAttachment(imgUrl);
-        } else {
-            // 이미지가 첨부되지 않은 경우에 대한 처리
-            String defaultImageUrl = DEFAULT_IMAGE_URL;
-            newImageAttachment = new RepresentativeAttachment(defaultImageUrl);
-        }
+        representativeImageRepository.save(uploadThumbnail(portfolio, representativeImg));
 
-        newImageAttachment.setPortfolio(portfolio);
-        portfolio.setRepresentativeAttachment(newImageAttachment);
-        representativeImageRepository.save(newImageAttachment);
     }
 
 

@@ -39,8 +39,6 @@ public class PortfolioController {
     private final PortfolioMapper mapper;
     private final LikesService likesService;
 
-    private final ImageAttachmentRepository imageAttachmentRepository;
-
     @PostMapping
     public ResponseEntity postPortfolio(@Valid @RequestPart PortfolioDto.Post postDto,
                                         @RequestPart(value = "representativeImg", required = false) MultipartFile representativeImg) throws IOException {
