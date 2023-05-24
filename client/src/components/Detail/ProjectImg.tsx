@@ -3,11 +3,11 @@ import * as S from './ProjectImg.style';
 type ProjectImgProps = {
   representativeImgUrl: string;
   viewCount: number;
-  countLikes: number;
+  likesCount: number;
 };
 
 // 상세 페이지 포트폴리오 섬네일 이미지를 표시하는 컴포넌트
-function ProjectImg({ representativeImgUrl, viewCount, countLikes }: ProjectImgProps) {
+function ProjectImg({ representativeImgUrl, viewCount, likesCount }: ProjectImgProps) {
   return (
     <S.Wrapper>
       <S.Img src={representativeImgUrl} />
@@ -18,7 +18,7 @@ function ProjectImg({ representativeImgUrl, viewCount, countLikes }: ProjectImgP
         </div>
         <div className='like-icon'>
           <S.LikeIcon />
-          <span>{countLikes}</span>
+          <span>{likesCount}</span>
         </div>
       </S.IconSection>
     </S.Wrapper>
