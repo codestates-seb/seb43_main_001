@@ -26,8 +26,6 @@ public class PortfolioDto {
         private String description;
 
         @NotBlank(message = "설명을 작성해주세요.")
-        @Lob
-        @Column(length = 55000)
         private String content;
 
         private List<String> skills;
@@ -51,9 +49,6 @@ public class PortfolioDto {
         @NotBlank(message = "소개글을 작성해주세요.")
         private String description;
 
-
-        @Lob
-        @Column(length = 55000)
         @NotBlank(message = "설명을 작성해주세요.")
         private String content;
 

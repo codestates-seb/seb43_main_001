@@ -24,6 +24,7 @@ public class PortfolioComment extends BaseTimeEntity {
     private Long portfolioCommentId;
 
     @NotBlank(message = "내용은 반드시 포함되어야 합니다.")
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     private int depth;

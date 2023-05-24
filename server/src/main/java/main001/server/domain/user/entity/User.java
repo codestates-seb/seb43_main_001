@@ -34,19 +34,19 @@ public class User extends BaseTimeEntity {
     @Column(length = 50, unique = true)
     private String oauthId;
 
-    @Column(length = 100)
+    @Column(length = 20)
     private String password;
 
     @Column(length = 20)
     private String name;
 
-    @Column
+    @Column(length = 100)
     private String profileImg;
 
-    @Column(length = 500)
+    @Column(columnDefinition = "TINYTEXT")
     private String gitLink;
 
-    @Column(length = 500)
+    @Column(columnDefinition = "TINYTEXT")
     private String blogLink;
 
     @Enumerated(value = EnumType.STRING)
@@ -56,7 +56,7 @@ public class User extends BaseTimeEntity {
     @Enumerated(value = EnumType.STRING)
     private JobStatus jobStatus;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "TEXT")
     private String about;
 
     private boolean auth = false;
