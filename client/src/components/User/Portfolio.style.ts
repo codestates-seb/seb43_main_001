@@ -10,12 +10,15 @@ export const PortfolioContainer = styled.div`
   overflow: scroll;
   -ms-overflow-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  grid-auto-columns: minmax(316px, 316px);
-  gap: 40px;
+  gap: 20px;
+  grid-template-columns: repeat(1, 1fr);
   align-content: start;
   ::-webkit-scrollbar {
     display: none;
+  }
+
+  @media ${({ theme }) => theme.breakpoints.TABLETMIN} {
+    grid-template-columns: repeat(2, 1fr);
   }
 `;
 export const PortfolioBtns = styled.div`
