@@ -78,14 +78,16 @@ const Portfolio: React.FC<IdProps> = ({ userId }) => {
       <S.PortfolioContainer>
         {UserPortfolios &&
           UserPortfolios.pages.map((page) =>
-            page.data.map((ele) => (
+            page.data.map((data) => (
               <Card
-                key={ele.portfolioId}
-                portfolioId={ele.portfolioId}
-                description={ele.description}
-                title={ele.title}
-                views={ele.viewCount}
-                skills={ele.skills}
+                key={data.portfolioId}
+                representativeImgUrl={data.representativeImgUrl}
+                portfolioId={data.portfolioId}
+                description={data.description}
+                title={data.title}
+                views={data.viewCount}
+                skills={data.skills}
+                likes={data.likesCount}
               />
             )),
           )}

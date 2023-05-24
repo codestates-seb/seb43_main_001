@@ -25,6 +25,8 @@ export type GetUserPortfolio = {
   skills: string[];
   createdAt: number[];
   updatedAt: number[];
+  representativeImgUrl: string;
+  likesCount: number;
 };
 
 export type GetUserPortfolioPage = {

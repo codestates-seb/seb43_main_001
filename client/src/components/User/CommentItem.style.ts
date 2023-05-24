@@ -8,7 +8,9 @@ export const CommentItem = styled.li`
   padding-bottom: 40px;
   margin: 10px 0;
   border-radius: 10px;
-  box-shadow: 0px 2px 2px ${subFontColor};
+  /* box-shadow: 0px 2px 2px ${subFontColor}; */
+  box-shadow: 0 0.3rem 0.3rem 0
+    ${(props) => (props.theme.value === 'light' ? subFontColor : 'none')};
   position: relative;
   background-color: ${({ theme }) => theme.themeStyle.cardColor};
   svg {
@@ -19,10 +21,9 @@ export const CommentItem = styled.li`
     }
   }
   textarea {
-    height: 80px;
     width: 100%;
     border-radius: 10px;
-    border: 0;
+    height: 2rem;
     outline: none;
     background-color: ${({ theme }) => theme.themeStyle.cardColor};
     color: ${(props) => props.theme.themeStyle.fontColor};
@@ -95,4 +96,7 @@ export const SelectBtns = styled.div`
       color: red;
     }
   }
+`;
+export const SecretText = styled.p`
+  text-align: center;
 `;

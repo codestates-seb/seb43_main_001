@@ -15,6 +15,7 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
   const [category, setCategory] = useState(true);
   const [content, setContent] = useState('');
   const { handlerPostUserComment } = usePostUserComment(userId);
+  const [secret, setSecret] = useState(false);
 
   const addHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -63,10 +64,20 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
           )}
           <S.CommentAdd onSubmit={addHandler}>
             <label htmlFor='Comment'></label>
-            <textarea id='Comment' value={content} onChange={contentChangeHandler} placeholder='유저에게 댓글을 남겨보세요!' />
+            <textarea
+              id='Comment'
+              value={content}
+              onChange={contentChangeHandler}
+              placeholder='유저에게 댓글을 남겨보세요!'
+            />
             <S.Secret htmlFor='secret'>
               <span>비밀글</span>
-              <input type='checkbox' id='secret' />
+              <input
+                type='checkbox'
+                id='secret'
+                checked={secret}
+                onChange={() => setSecret((prev) => !prev)}
+              />
             </S.Secret>
             <button type='submit'>입력</button>
           </S.CommentAdd>

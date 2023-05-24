@@ -76,12 +76,12 @@ const UserInfo: React.FC<IdProps> = ({ userId }) => {
 
   // * : 유저가 정보를 수정할 때, 현재 기본값을 받아오기 위해 실행
   const editHandler = () => {
-    setOnEdit(true);
     dispatch(setName(UserProfile?.name));
     dispatch(setImg(UserProfile?.profileImg));
     dispatch(setAbout(UserProfile?.about));
     dispatch(setJobStatus(UserProfile?.jobStatus));
     dispatch(setBlog(UserProfile?.blogLink));
+    setOnEdit(true);
   };
 
   const { UserProfile, getUserProfileError } = useGetUserProfile(userId);

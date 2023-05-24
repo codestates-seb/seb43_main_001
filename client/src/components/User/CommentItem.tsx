@@ -21,6 +21,8 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, path, link }) => {
   const { handlePatchUserComment } = usePatchUserComment(data.userId, data.portfolioId!);
   const { handlerDeleteUserComment } = useDeleteComment(data.userId, data.portfolioId!);
 
+  const secret = false;
+
   const date = `${data.createdAt[0]}. ${data.createdAt[1]}. ${data.createdAt[2]}.`;
 
   const [delConfirm, setDelConfirm] = useState(false);
@@ -39,6 +41,10 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, path, link }) => {
     });
     setOnEdit(false);
   };
+  const onCancelHandler = () => {
+    setEditText(data.content);
+    setOnEdit(false);
+  };
   const deleteHandler = async () => {
     handlerDeleteUserComment({
       commentId: data.userCommentId ? data.userCommentId : data.portfolioCommentId!,
@@ -55,6 +61,15 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, path, link }) => {
       routeTo(`/Detail/${data.portfolioId}`);
     }
   };
+
+  const onEditHandler = () => {
+    setOnEdit(true);
+    CommentRef.current?.focus();
+  };
+
+  useEffect(() => {
+    CommentRef.current?.focus();
+  }, [onEdit]);
 
   // TODO : Auth 적용
   // ! : 임시 코드. 서버에서 auth 받아오면 지울 것.
@@ -93,25 +108,30 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, path, link }) => {
         </>
       ) : (
         <>
-          {(isAuth || isWriter) && <S.DelBtn onClick={delConfimHandler} />}
-          {isWriter && !onEdit && <S.EditBtn onClick={() => setOnEdit(true)} />}
+          {(isAuth || isWriter) && !onEdit && <S.DelBtn onClick={delConfimHandler} />}
+          {isWriter && !onEdit && <S.EditBtn onClick={onEditHandler} />}
+          {onEdit && <S.DelBtn onClick={onCancelHandler} />}
           {onEdit && <S.SubmitBtn onClick={onSubmitHandler} />}
           {onEdit ? (
             <form>
               <textarea ref={CommentRef} value={editText} onChange={onChangeHandler} />
             </form>
           ) : (
-            <S.TextBox>{editText}</S.TextBox>
+            <S.TextBox>{data.content}</S.TextBox>
           )}
           {/* 본인의 페이지 일 때는 표시하지 않기 */}
           {link && <S.LinkIcon onClick={onClickHandler} />}
-          <S.CommentUser>
-            <span>{date}</span>
-            <S.ImgBox>
-              <img src={data.userProfileImg || data.writerProfileImg} />
-            </S.ImgBox>
-            <p>{data.writerName}</p>
-          </S.CommentUser>
+          {secret ? (
+            <></>
+          ) : (
+            <S.CommentUser>
+              <span>{date}</span>
+              <S.ImgBox>
+                <img src={data.userProfileImg || data.writerProfileImg} />
+              </S.ImgBox>
+              <p>{data.writerName}</p>
+            </S.CommentUser>
+          )}
         </>
       )}
     </S.CommentItem>
