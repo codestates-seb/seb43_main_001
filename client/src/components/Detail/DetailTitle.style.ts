@@ -22,14 +22,12 @@ const CommonStlye = css`
   padding: 10px 0.5rem;
   @media ${(props) => props.theme.breakpoints.TABLETMIN} {
     padding: 10px 1rem;
-    /* flex-direction: row; */
   }
 `;
 
 // upper section
 export const TitleUpper = styled.div`
   ${CommonStlye}
-  align-items:center;
 `;
 
 export const ProjectTitle = styled.p`
@@ -48,8 +46,9 @@ export const UserInfo = styled.div`
   align-items: start;
 `;
 
-export const userName = styled.div`
+export const userName = styled.p`
   font-size: 1rem;
+  margin-top: 0.6rem;
   @media ${(props) => props.theme.breakpoints.TABLETMIN} {
     font-size: 1.4rem;
   }
@@ -59,7 +58,7 @@ export const userImg = styled.img`
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  margin-right: 1rem;
+  margin-right: 0.7rem;
   cursor: pointer;
 `;
 

@@ -52,7 +52,7 @@ function Detail() {
           <ProjectImg
             representativeImgUrl={PortfolioInfo.representativeImgUrl}
             viewCount={PortfolioInfo.viewCount}
-            countLikes={PortfolioInfo.countLikes}
+            likesCount={PortfolioInfo.likesCount}
           />
           <Description description={PortfolioInfo.description} />
           <ProjectContent content={PortfolioInfo.content} />

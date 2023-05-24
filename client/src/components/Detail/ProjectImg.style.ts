@@ -27,7 +27,20 @@ export const IconSection = styled.div`
   right: 15px;
   bottom: 15px;
   span {
-    margin-left: 5px;
+    color: black;
+    font-size: 5px;
+    margin-left: 3px;
+    margin-bottom: 3px;
+  }
+  .view-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .like-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 `;
 

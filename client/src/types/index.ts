@@ -127,7 +127,7 @@ export type GetPortfolio = {
   createdAt: string;
   representativeImgUrl: string;
   likes: boolean;
-  countLikes: number;
+  likesCount: number;
   profileImg: string;
 };
 
