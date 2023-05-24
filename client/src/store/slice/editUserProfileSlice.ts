@@ -28,7 +28,6 @@ const editUserProfileSlice = createSlice({
       state.name = action.payload;
     },
     setImg: (state, action) => {
-      console.log(action.payload);
       state.profileImg = action.payload;
     },
     setAbout: (state, action) => {

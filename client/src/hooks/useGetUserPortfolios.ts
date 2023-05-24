@@ -24,9 +24,7 @@ export const useGetUserPortfolios = (userId: number, size: string, sortOption: s
         return lastPage.currentPage + 1;
       }
     },
-    retry: (failureCount) => {
-      return failureCount < 1;
-    },
+    retry: false,
   });
   return {
     getUserPortfoliosLoading,
