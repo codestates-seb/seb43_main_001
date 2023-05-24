@@ -12,8 +12,20 @@ export const Container = styled.section`
   flex-direction: column;
   justify-content: center;
   font-size: 3rem;
-  padding: 2rem;
+  margin-top: 5rem;
   img {
     max-width: 100%;
+  }
+  .quill {
+    & > div {
+      background-color: ${(props) => props.theme.themeStyle.backgroundColor};
+      border: none;
+    }
+    margin-top: 1rem;
+    border: none !important;
+    & p {
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
   }
 `;

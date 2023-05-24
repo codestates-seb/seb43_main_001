@@ -16,8 +16,8 @@ export const LikeBtnWrapper = styled.section<LikeBtnWrapperProps>`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 55px;
-  height: 55px;
+  width: 45px;
+  height: 45px;
   position: fixed;
   top: 50%;
   right: 8%;

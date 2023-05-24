@@ -41,6 +41,14 @@ function Comment() {
   return (
     <S.Container>
       <S.CommentWrapper>
+        <S.CommentForm onSubmit={handleSubmit}>
+          <S.CommentArea
+            placeholder='Enter your comment here'
+            value={content}
+            onChange={handleCommentChange}
+          />
+          <S.YellowBtnCustom>COMMENT</S.YellowBtnCustom>
+        </S.CommentForm>
         {PortfoliocommentLoading ? (
           <Loading />
         ) : (
@@ -76,14 +84,6 @@ function Comment() {
             )}
           </S.CommentShow>
         )}
-        <S.CommentForm onSubmit={handleSubmit}>
-          <S.CommentArea
-            placeholder='Enter your comment here'
-            value={content}
-            onChange={handleCommentChange}
-          />
-          <S.YellowBtnCustom>COMMENT</S.YellowBtnCustom>
-        </S.CommentForm>
       </S.CommentWrapper>
     </S.Container>
   );

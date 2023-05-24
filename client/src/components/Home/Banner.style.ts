@@ -50,11 +50,6 @@ export const Banner = styled.section`
 `;
 
 export const ShareButton = styled(YellowBtn)`
-  @media ${({ theme }) => theme.breakpoints.TABLETMIN} {
-    height: 45px;
-  }
-
-  @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
-    height: 50px;
-  }
+  width: 180px;
+  height: 60px;
 `;

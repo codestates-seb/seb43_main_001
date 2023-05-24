@@ -100,6 +100,7 @@ export const Buttons = styled.div`
   bottom: 0;
 `;
 export const GithubIcon = styled(RxGithubLogo)`
+  color: ${(props) => props.theme.themeStyle.fontColor};
 `;
 export const ViewIcon = styled(IoMdEye)`
   margin-left: 8px;

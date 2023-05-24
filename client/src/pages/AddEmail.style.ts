@@ -12,8 +12,7 @@ export const PageTitle = styled.span`
   align-items: center;
   text-align: center;
   font-size: 1.5rem;
-  margin-bottom: 40px;
-  margin-top: 40px;
+  margin-bottom: 25px;
   font-weight: bold;
   @media ${(props) => props.theme.breakpoints.TABLETMIN} {
     font-size: 1.8rem;

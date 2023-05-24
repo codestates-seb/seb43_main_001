@@ -1,7 +1,7 @@
 import * as S from './CommentItem.style';
 
 // react hooks
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 // custom Hooks
 import { usePatchPortfolioComment } from '../../hooks/usePatchPortfolioComment';
@@ -32,6 +32,7 @@ function CommentItem({
   const [onEdit, setOnEdit] = useState<boolean>(false);
   const [delConfirm, setDelConfirm] = useState<boolean>(false);
   const [editInput, setEditInput] = useState<string>(content);
+  const EditRef = useRef<HTMLTextAreaElement>(null);
   const createdYear = createdAt[0];
   const createdMon = createdAt[1];
   const createdDay = createdAt[2];
@@ -48,10 +49,9 @@ function CommentItem({
   );
 
   const handleComfirm = () => {
-    patchCommentAction(editInput);
     setOnEdit(false);
+    patchCommentAction(editInput);
   };
-
   const handleEditArea = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setEditInput(event.target.value);
   };
@@ -62,32 +62,41 @@ function CommentItem({
   const handleConfirmDelete = () => {
     setDelConfirm((pre) => !pre);
   };
+  const handleConfirmCancelEdit = () => {
+    setEditInput(content);
+    setOnEdit(false);
+  };
+  const handleEdit = () => {
+    setOnEdit(true);
+    EditRef.current?.focus();
+  };
+
+  useEffect(() => {
+    EditRef.current?.focus();
+  }, [onEdit]);
 
   return (
     <S.Container>
       {delConfirm ? (
-        <>
+        <S.ConfirmDeleteSection>
           <S.DelText>해당 댓글을 삭제하시겠습니까?</S.DelText>
           <S.SelectBtns>
             <button onClick={handleDelete}>삭제</button>
             <button onClick={handleConfirmDelete}>취소</button>
           </S.SelectBtns>
-        </>
+        </S.ConfirmDeleteSection>
       ) : (
         <>
           {auth ? (
             <S.Update>
-              <S.DelBtn onClick={handleConfirmDelete} />
-              {!onEdit && <S.EditBtn onClick={() => setOnEdit(true)} />}
-              {onEdit && (
-                <S.ConfirmBtnCircle>
-                  <S.ConfirmBtn className='confirm-icon' onClick={handleComfirm} />
-                </S.ConfirmBtnCircle>
-              )}
+              <S.DelBtn onClick={onEdit ? handleConfirmCancelEdit : handleConfirmDelete} />
+              {!onEdit && <S.EditBtn onClick={handleEdit} />}
+              {onEdit && <S.ConfirmBtn className='confirm-icon' onClick={handleComfirm} />}
             </S.Update>
           ) : null}
           {onEdit ? (
             <S.EditArea
+              ref={EditRef}
               placeholder='Enter your comment here'
               value={editInput}
               onChange={handleEditArea}

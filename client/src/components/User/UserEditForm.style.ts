@@ -42,6 +42,9 @@ export const DeleteBtn = styled.button`
   left: 85%;
   font-size: 0.8rem;
   color: ${subFontColor};
+  &:hover {
+    color: red;
+  }
 `;
 export const EditSelect = styled.select`
   width: 100%;

@@ -14,7 +14,7 @@ function LikeBtn({ likes, portfolioId }: LikeBtnProps) {
   return (
     <>
       {likeBtnLoading ? null : (
-        <S.LikeBtnWrapper onClick={handleLikeBtnClick} likes={likes}>
+        <S.LikeBtnWrapper likes={likes} onClick={handleLikeBtnClick}>
           <S.LikeIcon />
         </S.LikeBtnWrapper>
       )}

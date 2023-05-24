@@ -5,7 +5,7 @@ export const Container = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 30px;
+  gap: 25px;
 `;
 
 export const DescriptionTitle = styled.p`
