@@ -34,9 +34,9 @@ public class SecurityController {
 
     @PatchMapping("/addemail")
     public ResponseEntity addEmail(@Positive @RequestParam(value = "userId") Long userId,
-                                   @Valid @RequestBody UserDto.PatchEmail requestBody) {
+                                   @Valid @RequestBody UserDto.InputEmail requestBody) {
         requestBody.setUserId(userId);
-        User user = userService.updateEmail(mapper.userPatchEmailToUser(requestBody));
+        User user = userService.updateEmail(mapper.userInputEmailToUser(requestBody));
 
         return new ResponseEntity<>(
                 new SingleResponseDto<>(mapper.userToUserProfileResponse(user)), HttpStatus.OK);

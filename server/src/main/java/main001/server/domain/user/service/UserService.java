@@ -161,6 +161,14 @@ public class UserService {
     }
 
     /**
+     * Email 중복 조회 기능
+     */
+    public boolean isExistEmail(String email) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        return optionalUser.isPresent();
+    }
+
+    /**
      * AddEmail 기능
      */
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
