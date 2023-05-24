@@ -11,6 +11,8 @@ import EditPortfolio from './pages/EditPortfolio';
 import AddEmail from './pages/AddEmail';
 import NotFound from './pages/NotFound';
 import SignUp from './pages/SignUp';
+import About from './pages/About';
+
 // layout
 import GeneralLayout from './layout/GeneraLayout';
 
@@ -59,6 +61,10 @@ export const routers: RemixRouter = createBrowserRouter([
         path: '/SignUp',
         element: <SignUp />,
         loader: preventLoginPage,
+      },
+      {
+        path: '/About',
+        element: <About />,
       },
     ],
   },
