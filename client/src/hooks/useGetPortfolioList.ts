@@ -1,5 +1,4 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
 
 import { PortfolioAPI } from '../api/client';
 import { GetPortfolioPage, SortOption, PageParam } from '../types/index';

@@ -8,7 +8,6 @@ type SearchProps = {
 
 function Search({ setValue, setCategory, handleSearch }: SearchProps) {
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
     setValue(e.target.value);
   };
 

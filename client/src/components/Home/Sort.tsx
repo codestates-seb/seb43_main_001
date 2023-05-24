@@ -15,7 +15,7 @@ function Sort({ setSortOption }: SortProps) {
       case '최신순':
         return 'createdAt';
       case '추천순':
-        return 'recommend'; // ! 구현중
+        return 'likes'; // ! 구현중
       case '조회순':
         return 'views';
       default:

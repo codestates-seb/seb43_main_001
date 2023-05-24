@@ -173,7 +173,7 @@ export type DeletePortfolioComment = {
 };
 
 // Sort
-export type SortOption = 'createdAt' | 'recommend' | 'views';
+export type SortOption = 'createdAt' | 'likes' | 'views';
 
 // Infinite Query PageParam
 export type PageParam = {

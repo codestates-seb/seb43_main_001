@@ -18,9 +18,14 @@ export const FooterWrapper = styled.footer`
   z-index: 100;
 `;
 
-export const Logo = styled.strong`
-  font-size: 13px;
-  font-weight: 700;
+export const Logo = styled.div`
+  width: 20px;
+  height: 20px;
+
+  img {
+    width: 20px;
+    height: auto;
+  }
 `;
 
 export const Info = styled.div`
