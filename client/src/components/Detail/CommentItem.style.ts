@@ -68,7 +68,7 @@ export const EditArea = styled.textarea`
 `;
 
 const CommonIconStyle = css`
-  font-size: 1.3rem;
+  font-size: 1.5rem;
 `;
 
 export const DelBtn = styled(RxCross2)`
@@ -84,9 +84,23 @@ export const EditBtn = styled(RxPencil2)`
     color: ${subFontColor};
   }
 `;
-export const ComfirmBtn = styled(RxCheck)`
-  ${CommonIconStyle}
+export const ConfirmBtnCircle = styled.div`
+  border: 1px solid black;
+  border-radius: 50%;
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 13px;
+  right: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  &:hover {
+    border-color: ${subFontColor};
+    .confirm-icon {
+      color: ${subFontColor};
+    }
+  }
+`;
+export const ConfirmBtn = styled(RxCheck)`
+  ${CommonIconStyle}
 `;

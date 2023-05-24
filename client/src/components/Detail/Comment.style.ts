@@ -20,12 +20,12 @@ export const CommentWrapper = styled.div`
 `;
 
 export const CommentShow = styled.div`
-  flex: 0 1 350px;
+  flex: 0 1 550px;
   width: 100%;
   border: 0;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
   box-shadow: 0px 2px 2px ${subFontColor};
   overflow-y: auto;
   ::-webkit-scrollbar {

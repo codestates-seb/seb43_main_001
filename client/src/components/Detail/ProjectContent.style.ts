@@ -11,7 +11,7 @@ export const Container = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: center;
-
+  font-size: 3rem;
   padding: 2rem;
   img {
     max-width: 100%;

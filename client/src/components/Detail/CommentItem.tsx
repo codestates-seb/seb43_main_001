@@ -55,7 +55,10 @@ function CommentItem({
   const handleEditArea = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setEditInput(event.target.value);
   };
-
+  const handleDelete = () => {
+    handleOnClickDeleteBtn();
+    setDelConfirm((pre) => !pre);
+  };
   const handleConfirmDelete = () => {
     setDelConfirm((pre) => !pre);
   };
@@ -66,7 +69,7 @@ function CommentItem({
         <>
           <S.DelText>해당 댓글을 삭제하시겠습니까?</S.DelText>
           <S.SelectBtns>
-            <button onClick={handleOnClickDeleteBtn}>삭제</button>
+            <button onClick={handleDelete}>삭제</button>
             <button onClick={handleConfirmDelete}>취소</button>
           </S.SelectBtns>
         </>
@@ -76,7 +79,11 @@ function CommentItem({
             <S.Update>
               <S.DelBtn onClick={handleConfirmDelete} />
               {!onEdit && <S.EditBtn onClick={() => setOnEdit(true)} />}
-              {onEdit && <S.ComfirmBtn onClick={handleComfirm} />}
+              {onEdit && (
+                <S.ConfirmBtnCircle>
+                  <S.ConfirmBtn className='confirm-icon' onClick={handleComfirm} />
+                </S.ConfirmBtnCircle>
+              )}
             </S.Update>
           ) : null}
           {onEdit ? (
