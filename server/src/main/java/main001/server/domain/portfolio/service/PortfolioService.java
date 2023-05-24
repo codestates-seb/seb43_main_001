@@ -40,7 +40,7 @@ public class PortfolioService {
     private final ImageAttachmentRepository imageAttachmentRepository;
     private final SkillService skillService;
 
-    private final String DEFAULT_IMAGE_URL = "https://main001-portfolio.s3.ap-northeast-2.amazonaws.com/default/default.jpg";
+    private final String DEFAULT_IMAGE_URL = "https://main001-portfolio.s3.ap-northeast-2.amazonaws.com/default/default.png";
     private final static String VIEWCOOKIENAME = "alreadyViewCookie";
 
     public Portfolio createPortfolio(Portfolio portfolio, List<String> skills, MultipartFile representativeImg) throws IOException{
@@ -64,32 +64,26 @@ public class PortfolioService {
             portfolio.addSkill(ps);
         }
 
-        RepresentativeAttachment attachment = extracted(portfolio, representativeImg);
+        RepresentativeAttachment attachment = uploadThumbnail(portfolio, representativeImg);
         representativeImageRepository.save(attachment);
 
         return portfolioRepository.save(portfolio);
     }
 
-    private RepresentativeAttachment extracted(Portfolio portfolio, MultipartFile representativeImg) throws IOException {
+    private RepresentativeAttachment uploadThumbnail(Portfolio portfolio, MultipartFile representativeImg) throws IOException {
+        RepresentativeAttachment attachment;
         if (representativeImg != null && !representativeImg.isEmpty()) {
             // 이미지가 첨부된 경우에 대한 처리
             String representativeImgUrl = s3Service.uploadFile(representativeImg, "images");
-            RepresentativeAttachment representativeAttachment = new RepresentativeAttachment(representativeImgUrl);
-            representativeAttachment.setPortfolio(portfolio);
-
-            portfolio.setRepresentativeAttachment(representativeAttachment);
-
-            return representativeAttachment;
+            attachment = new RepresentativeAttachment(representativeImgUrl);
         } else {
             // 이미지가 첨부되지 않은 경우에 대한 처리
             String defaultImageUrl = DEFAULT_IMAGE_URL;
-            RepresentativeAttachment representativeAttachment = new RepresentativeAttachment(defaultImageUrl);
-            representativeAttachment.setPortfolio(portfolio);
-
-            portfolio.setRepresentativeAttachment(representativeAttachment);
-
-            return representativeAttachment;
+            attachment = new RepresentativeAttachment(defaultImageUrl);
         }
+        attachment.setPortfolio(portfolio);
+        portfolio.setRepresentativeAttachment(attachment);
+        return attachment;
     }
 
     public Portfolio updatePortfolio(Portfolio portfolio, Long portfolioId,  List<String> skills, MultipartFile representativeImg) throws IOException{
@@ -164,19 +158,8 @@ public class PortfolioService {
             representativeImageRepository.delete(currentImageAttachment);
         }
 
-        RepresentativeAttachment newImageAttachment = null;
-        if (representativeImg != null && representativeImg.getSize() > 0) {
-            String imgUrl = s3Service.uploadFile(representativeImg, "images");
-            newImageAttachment = new RepresentativeAttachment(imgUrl);
-        } else {
-            // 이미지가 첨부되지 않은 경우에 대한 처리
-            String defaultImageUrl = DEFAULT_IMAGE_URL;
-            newImageAttachment = new RepresentativeAttachment(defaultImageUrl);
-        }
+        representativeImageRepository.save(uploadThumbnail(portfolio, representativeImg));
 
-        newImageAttachment.setPortfolio(portfolio);
-        portfolio.setRepresentativeAttachment(newImageAttachment);
-        representativeImageRepository.save(newImageAttachment);
     }
 
 
@@ -210,12 +193,6 @@ public class PortfolioService {
         return imageUrlList;
     }
 
-//    public String getRepresentativeImageUrlList() {
-//        RepresentativeAttachment image =
-//
-//
-//        return imageUrlList;
-//    }
 
     @Transactional
     public void increaseViewCount(Long portfolioId) {

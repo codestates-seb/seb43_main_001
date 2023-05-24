@@ -52,7 +52,7 @@ public class UserDto {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class PatchEmail {
+    public static class InputEmail {
         private long userId;
         @Email(message = "올바른 이메일 양식이 아닙니다.")
         private String email;

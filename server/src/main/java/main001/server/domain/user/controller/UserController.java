@@ -192,14 +192,6 @@ public class UserController {
                 new SingleResponseDto<>(mapper.userToUserProfileResponse(user)), HttpStatus.OK);
     }
 
-    @PostMapping("/{user-id}/profile-img-upload")
-    public ResponseEntity uploadProfileImg(@PathVariable("user-id") @Positive long userId,
-                                           @RequestPart(value = "profileImg")MultipartFile profileImg) throws IOException {
-        String profileImgUrl = userService.uploadProfileImg(profileImg, userId);
-
-        return ResponseEntity.ok(profileImgUrl);
-    }
-
     @Operation(
             summary = "회원 탈퇴",
             description = "회원 정보가 db에서 삭제되며, 회원이 활동한 모든 내용은 즉시 삭제",
@@ -225,5 +217,19 @@ public class UserController {
         userService.deleteUser(userId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/{user-id}/profile-img-upload")
+    public ResponseEntity uploadProfileImg(@PathVariable("user-id") @Positive long userId,
+                                           @RequestPart(value = "profileImg")MultipartFile profileImg) throws IOException {
+        String profileImgUrl = userService.uploadProfileImg(profileImg, userId);
+
+        return ResponseEntity.ok(profileImgUrl);
+    }
+
+    @PostMapping("/check-email")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean checkEmail(@RequestBody UserDto.InputEmail requestBody) {
+        return userService.isExistEmail(requestBody.getEmail());
     }
 }
