@@ -25,11 +25,11 @@ public class PortfolioCommentDto {
         @NotBlank
         private String content;
 
-        private int depth;
-
-        private Long rootCommentId;
-
-        private Long parentCommentId;
+//        private int depth;
+//
+//        private Long rootCommentId;
+//
+//        private Long parentCommentId;
     }
 
     @Getter

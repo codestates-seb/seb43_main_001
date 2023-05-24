@@ -8,9 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -23,8 +25,16 @@ public class PortfolioCommentController {
 
     @PostMapping
     public ResponseEntity postPortfolioComment(@RequestBody @Valid PortfolioCommentDto.Post postDto) {
-        portfolioCommentService.createPortfolioComment(postDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        PortfolioCommentDto.Response response = portfolioCommentService.createPortfolioComment(postDto);
+
+        URI location =
+                UriComponentsBuilder
+                        .newInstance()
+                        .path("api/portfoliocomments/{portfolioComment-id}")
+                        .buildAndExpand(response.getPortfolioCommentId())
+                        .toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     @PatchMapping("/{portfolioComment_id}")
@@ -56,11 +66,5 @@ public class PortfolioCommentController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePortfolioComment(@PathVariable("portfolioComment_id") @Positive Long portfolioCommentId) {
         portfolioCommentService.deletePortfolioComment(portfolioCommentId);
-    }
-
-    @GetMapping("/test/{portfolioComment_id}")
-    @ResponseStatus(HttpStatus.OK)
-    public List<PortfolioCommentDto.Response> test(@PathVariable("portfolioComment_id") @Positive Long portfolioCommentId) {
-        return portfolioCommentService.testList(portfolioCommentId);
     }
 }

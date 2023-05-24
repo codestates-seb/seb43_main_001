@@ -27,18 +27,18 @@ public class PortfolioComment extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    private int depth;
-
-    @ManyToOne
-    @JoinColumn(name = "rootId")
-    private PortfolioComment rootComment;
-
-    @ManyToOne
-    @JoinColumn(name = "parentId")
-    private PortfolioComment parentComment;
-
-    @OneToMany(mappedBy = "parentComment",fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PortfolioComment> childComments = new ArrayList<>();
+//    private int depth;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "rootId")
+//    private PortfolioComment rootComment;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "parentId")
+//    private PortfolioComment parentComment;
+//
+//    @OneToMany(mappedBy = "parentComment",fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<PortfolioComment> childComments = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "userId")
@@ -62,11 +62,11 @@ public class PortfolioComment extends BaseTimeEntity {
         }
     }
 
-    public void setParentComment(PortfolioComment parentComment) {
-        this.parentComment = parentComment;
-
-        if(parentComment != null && !parentComment.getChildComments().contains(this)) {
-            parentComment.getChildComments().add(this);
-        }
-    }
+//    public void setParentComment(PortfolioComment parentComment) {
+//        this.parentComment = parentComment;
+//
+//        if(parentComment != null && !parentComment.getChildComments().contains(this)) {
+//            parentComment.getChildComments().add(this);
+//        }
+//    }
 }
