@@ -50,7 +50,7 @@ public class PortfolioCommentController {
     @ResponseStatus(HttpStatus.OK)
     public PortfolioCommentDto.ResponseList getPortfolioCommentsByWriter(@PathVariable("user_id") @Positive Long userId,
                                                                          @RequestParam(defaultValue = "1") @Positive int page,
-                                                                         @RequestParam(defaultValue = "15") @Positive int size) {
+                                                                         @RequestParam(defaultValue = "10") @Positive int size) {
         return portfolioCommentService.findPortfolioCommentsByWriter(userId, page - 1, size);
     }
 
@@ -58,7 +58,7 @@ public class PortfolioCommentController {
     @ResponseStatus(HttpStatus.OK)
     public PortfolioCommentDto.ResponseList getPortfolioCommentsByPortfolio(@PathVariable("portfolio_id") @Positive Long portfolioId,
                                                                             @RequestParam(defaultValue = "1") @Positive int page,
-                                                                            @RequestParam(defaultValue = "15") @Positive int size) {
+                                                                            @RequestParam(defaultValue = "10") @Positive int size) {
         return portfolioCommentService.findPortfolioCommentsByPortfolio(portfolioId, page - 1, size);
     }
 

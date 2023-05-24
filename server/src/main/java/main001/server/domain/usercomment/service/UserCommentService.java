@@ -92,7 +92,7 @@ public class UserCommentService {
     public UserCommentDto.ResponseList findUserCommentsByWriter(Long writerId, int page, int size) {
         User writer = userService.findUser(writerId);
 
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page,size,Sort.by("createdAt").descending());
 
         Page<UserCommentDto.Response> writersPage = userCommentRepository
                 .findByWriter(writer,pageable)

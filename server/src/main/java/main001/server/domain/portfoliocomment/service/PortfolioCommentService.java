@@ -121,7 +121,7 @@ public class PortfolioCommentService {
     public PortfolioCommentDto.ResponseList findPortfolioCommentsByWriter(Long userId, int page, int size) {
         User user = userService.findUser(userId);
 
-        Pageable pageable = PageRequest.of(page, size,Sort.by("createdAt").ascending());
+        Pageable pageable = PageRequest.of(page, size,Sort.by("createdAt").descending());
 
         Page<PortfolioCommentDto.Response> portfoliosPage =
                 portfolioCommentRepository.findByUser(user,pageable)

@@ -31,7 +31,9 @@ public class LikesService {
     }
 
     public void like(String token, Long portfolioId) {
-        if(findExistLikes(token, portfolioId)) {
+        if(token == null){
+            throw new BusinessLogicException(ExceptionCode.TOKEN_NOT_EXIST);
+        } else if(findExistLikes(token, portfolioId)) {
             throw new BusinessLogicException(ExceptionCode.LIKES_EXIST);
         }
         Long userId = userService.findByToken(token);
@@ -49,7 +51,9 @@ public class LikesService {
     }
 
     public void unlike(String token, Long portfolioId) {
-        if(!findExistLikes(token, portfolioId)) {
+        if(token == null){
+            throw new BusinessLogicException(ExceptionCode.TOKEN_NOT_EXIST);
+        } else if(!findExistLikes(token, portfolioId)) {
             throw new BusinessLogicException(ExceptionCode.LIKES_NOT_EXIST);
         }
 
