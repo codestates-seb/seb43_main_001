@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { RxEnvelopeClosed, RxFontBold, RxIdCard } from 'react-icons/rx';
 
 export const DetailInfo = styled.div`
+  margin-bottom: 10px;
   svg {
     font-size: 1.3rem;
   }
