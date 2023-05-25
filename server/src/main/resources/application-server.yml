@@ -64,6 +64,7 @@ server:
   servlet:
     encoding:
       force-response: true
+  port: 80
 
 mail:
   address:
