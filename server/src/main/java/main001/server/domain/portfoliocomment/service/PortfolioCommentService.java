@@ -5,9 +5,7 @@ import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.service.PortfolioService;
 import main001.server.domain.portfoliocomment.dto.PortfolioCommentDto;
 import main001.server.domain.portfoliocomment.entity.PortfolioComment;
-import main001.server.domain.portfoliocomment.entity.PortfolioCommentRelation;
 import main001.server.domain.portfoliocomment.mapper.PortfolioCommentMapper;
-import main001.server.domain.portfoliocomment.repository.PortfolioCommentRelationRepository;
 import main001.server.domain.portfoliocomment.repository.PortfolioCommentRepository;
 import main001.server.domain.user.entity.User;
 import main001.server.domain.user.service.UserService;
@@ -22,11 +20,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -35,7 +30,6 @@ public class PortfolioCommentService {
 
     private final PortfolioCommentMapper portfolioCommentMapper;
     private final PortfolioCommentRepository portfolioCommentRepository;
-    private final PortfolioCommentRelationRepository relationRepository;
     private final UserService userService;
     private final PortfolioService portfolioService;
 
