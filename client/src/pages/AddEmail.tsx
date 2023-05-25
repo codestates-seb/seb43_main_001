@@ -40,6 +40,11 @@ const AddEmail: React.FC = () => {
   // 이메일 추가 함수
   const handlePostEmail = async () => {
     // 이메일
+
+    if (!isEmailDupulicateChecked) {
+      toast.error('중복 확인을 진행해주세요');
+    }
+
     if (userId) {
       try {
         const res = await postEmail(email.value, userId);
@@ -77,15 +82,16 @@ const AddEmail: React.FC = () => {
       ) : (
         <S.AddEmailLayout>
           <S.PageTitle>추가적으로 이메일을 등록해주세요</S.PageTitle>
-          <TextBox text={'이메일'} {...email} />
-
+          <div className='email__check'>
+            <TextBox text={'이메일'} {...email} />
+            <S.checkDuplicateEmailButton onClick={handleCheckDuplicateEmailClick}>
+              중복 검사
+            </S.checkDuplicateEmailButton>
+          </div>
           <S.ButtonContainer>
             <S.caution>*작성 완료 후 이메일은 수정이 불가합니다</S.caution>
-            {isEmailDupulicateChecked ? (
-              <S.SubmitBtn onClick={handlePostEmail}>작성 완료</S.SubmitBtn>
-            ) : (
-              <S.SubmitBtn onClick={handleCheckDuplicateEmailClick}>중복 검사</S.SubmitBtn>
-            )}
+
+            <S.SubmitBtn onClick={handlePostEmail}>작성 완료</S.SubmitBtn>
           </S.ButtonContainer>
         </S.AddEmailLayout>
       )}
