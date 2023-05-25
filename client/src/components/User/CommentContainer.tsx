@@ -5,6 +5,8 @@ import { useGetUserComments } from '../../hooks/useGetUserComment';
 import { useGetCommentsToPortfolio } from '../../hooks/useGetCommentsToPortfolio';
 import { useGetCommentsToUser } from '../../hooks/useGetCommentsToUser';
 import { usePostUserComment } from '../../hooks/usePostUserComment';
+import { toast } from 'react-toastify';
+import { useAppSelector } from '../../hooks/reduxHook';
 
 type CommentProps = {
   userId: number;
@@ -17,8 +19,15 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
   const { handlerPostUserComment } = usePostUserComment(userId);
   const [secret, setSecret] = useState(false);
 
+  const isLogin = useAppSelector((state) => state.login.isLogin);
+
   const addHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!isLogin) {
+      return toast.error('로그인 후 진행해주세요.');
+    }
+
     const userCommentStatus = secret ? 'PRIVATE' : 'PUBLIC';
     handlerPostUserComment(userId, content, userCommentStatus);
     setContent('');
