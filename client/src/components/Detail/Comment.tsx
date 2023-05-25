@@ -102,7 +102,7 @@ function Comment() {
           <S.NavBtn onClick={firstPage} disabled={isPreviousData || page === 1}>
             &lt;&lt;
           </S.NavBtn>
-          {pageArray.map((pageNumber) => (
+          {(pageArray ?? []).map((pageNumber) => (
             <CommentPageBtn
               key={pageNumber}
               pageNumber={pageNumber}

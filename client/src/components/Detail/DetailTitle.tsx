@@ -79,7 +79,7 @@ function DetailTitle({
           })}
         </S.Links>
         <S.Tags>
-          {skills.map((tag, idx) => {
+          {(skills ?? []).map((tag, idx) => {
             return <S.YellowTagCutsom key={idx}>{tag}</S.YellowTagCutsom>;
           })}
         </S.Tags>
