@@ -28,14 +28,12 @@ function Comment() {
     Number(portfolioId!),
     page,
   );
-  console.log('aaaa', PortfolioCommentData);
-  const { postCommentAction } = usePostPortfolioComment(Number(portfolioId));
+  const { postCommentAction } = usePostPortfolioComment(Number(portfolioId), page);
 
   // page info
   const pageArray = Array(PortfolioCommentData?.pageInfo.totalPages)
     .fill(0)
     .map((_, index) => index + 1);
-  console.log(pageArray);
 
   const lastPage = () => setPage(PortfolioCommentData?.pageInfo.totalPages || 1);
 
@@ -92,6 +90,7 @@ function Comment() {
                     portfolioId={portfolioId}
                     auth={auth}
                     userProfileImg={userProfileImg}
+                    page={page}
                   />
                 );
               },

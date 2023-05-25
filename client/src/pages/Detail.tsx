@@ -15,16 +15,11 @@ import { IncreasePageView } from '../utils/IncreasePageView';
 // react-router-dom
 import { useParams } from 'react-router-dom';
 
-// common component
-import Loading from '../components/common/Loading';
-
 function Detail() {
   const { portfolioId } = useParams();
   const { getPortfolioLoading, PortfolioInfo } = useGetPortfolio(Number(portfolioId));
 
   IncreasePageView(Number(portfolioId));
-
-  console.log(PortfolioInfo);
 
   if (getPortfolioLoading) {
     return (

@@ -221,7 +221,6 @@ export const PortfolioCommentAPI = {
         page,
       },
     });
-    console.log('commentdata', commentData.data);
     return commentData.data;
   },
   postPortfolioComment: async ({ userId, portfolioId, content }: PostPortfolioComment) => {
@@ -352,10 +351,8 @@ export const UserCommentsAPI = {
 export const PortfolioLikeBtn = {
   updateLikes: async ({ portfolioId, likes }: LikeBtn) => {
     if (likes) {
-      console.log('delete');
       await tokenClient.delete(`/portfolios/likes/${portfolioId}`);
     } else {
-      console.log('post');
       await tokenClient.post(`/portfolios/likes/${portfolioId}`);
     }
   },

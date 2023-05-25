@@ -9,8 +9,8 @@ export const PageBtn = styled.button`
   background-color: ${subFontColor};
   color: black;
   margin: 0 0.3rem;
-  padding: 0 0.5rem;
-  font-size: 1.4rem;
+  padding: 0 0.6rem;
+  font-size: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;

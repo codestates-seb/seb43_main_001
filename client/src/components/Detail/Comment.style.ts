@@ -73,10 +73,6 @@ export const Nav = styled.nav`
 `;
 
 export const NavBtn = styled.button`
-  /* width: 30px;
-  border-radius: 8px;
-  background-color: ${mainColor};
-  color: black; */
   font-size: 1.4rem;
   margin: 0 1.5rem;
   color: ${(props) => props.theme.themeStyle.fontColor};

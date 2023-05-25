@@ -12,18 +12,17 @@ type usePatchPortfolioCommentParams = {
   portfolioId: number;
 };
 
-export const usePatchPortfolioComment = ({
-  portfolioCommentId,
-  userId,
-  portfolioId,
-}: usePatchPortfolioCommentParams) => {
+export const usePatchPortfolioComment = (
+  { portfolioCommentId, userId, portfolioId }: usePatchPortfolioCommentParams,
+  page: number,
+) => {
   const queryClient = useQueryClient();
 
   const { mutate: PatchComment } = useMutation({
     mutationFn: patchPortfolioComment,
     onSuccess: () => {
       // setqueryDAta[comment,protido.id];
-      queryClient.invalidateQueries(['comment', portfolioId], { exact: true });
+      queryClient.invalidateQueries(['comment', portfolioId, page], { exact: true });
     },
     onError: (error) => {
       console.log(error);
