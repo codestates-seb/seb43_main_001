@@ -170,6 +170,14 @@ export type GetPortfolioCommentById = {
   auth: boolean;
 };
 
+export type PortfolioCommentData = {
+  data: GetPortfolioCommentById[];
+  pageInfo: {
+    totalElements: number;
+    totalPages: number;
+  };
+};
+
 export type DeletePortfolioComment = {
   portfolioCommentId: number;
 };

@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 
 // types
 import {
-  GetPortfolioCommentById,
+  PortfolioCommentData,
   GetPortfolio,
   GetPortfolioPage,
   PostPortfolioComment,
@@ -217,9 +217,14 @@ export const PortfolioAPI = {
 };
 
 export const PortfolioCommentAPI = {
-  getPortfolioComment: async (portfolioId: number): Promise<GetPortfolioCommentById[]> => {
-    const commentData = await tokenClient.get(`/api/portfoliocomments/portfolios/${portfolioId}`);
-    return commentData.data.data;
+  getPortfolioComment: async (portfolioId: number, page: number): Promise<PortfolioCommentData> => {
+    const commentData = await tokenClient.get(`/api/portfoliocomments/portfolios/${portfolioId}`, {
+      params: {
+        page,
+      },
+    });
+    console.log('commentdata', commentData.data);
+    return commentData.data;
   },
   postPortfolioComment: async ({ userId, portfolioId, content }: PostPortfolioComment) => {
     return await tokenClient.post('/api/portfoliocomments', {

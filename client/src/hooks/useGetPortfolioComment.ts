@@ -2,21 +2,29 @@
 import { useQuery } from '@tanstack/react-query';
 
 // types
-import { GetPortfolioCommentById } from '../types/index';
+import { PortfolioCommentData } from '../types/index';
 
 // api
 import { PortfolioCommentAPI } from '../api/client';
 
 const { getPortfolioComment } = PortfolioCommentAPI;
 
-export const useGetPortfolioComment = (portfolioId: number) => {
+export const useGetPortfolioComment = (portfolioId: number, page: number) => {
   const {
     isLoading: PortfoliocommentLoading,
-    isError: PortfoliocommentError,
     data: PortfolioCommentData,
-  } = useQuery<GetPortfolioCommentById[], Error>({
-    queryKey: ['comment', portfolioId],
-    queryFn: () => getPortfolioComment(portfolioId),
+    isFetching: PortfolioCommentFetching,
+    isPreviousData,
+  } = useQuery<PortfolioCommentData, Error>({
+    queryKey: ['comment', portfolioId, page],
+    queryFn: () => getPortfolioComment(portfolioId, page),
+    keepPreviousData: true,
+    retry: false,
   });
-  return { PortfoliocommentLoading, PortfoliocommentError, PortfolioCommentData };
+  return {
+    PortfoliocommentLoading,
+    PortfolioCommentData,
+    PortfolioCommentFetching,
+    isPreviousData,
+  };
 };

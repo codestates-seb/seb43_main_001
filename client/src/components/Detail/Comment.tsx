@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 // react component
 import CommentItem from './CommentItem';
 import Loading from '../common/Loading';
+import CommentPageBtn from './CommentPageBtn';
 
 // custom hooks
 import { useGetPortfolioComment } from '../../hooks/useGetPortfolioComment';
@@ -19,14 +20,28 @@ import { useParams } from 'react-router-dom';
 // 상세 페이지 포트폴리오 댓글 컴포넌트
 function Comment() {
   const [content, setContent] = useState<string>('');
+  const [page, setPage] = useState<number>(1);
 
   const { portfolioId } = useParams();
 
-  const { PortfoliocommentLoading, PortfolioCommentData } = useGetPortfolioComment(
+  const { PortfoliocommentLoading, PortfolioCommentData, isPreviousData } = useGetPortfolioComment(
     Number(portfolioId!),
+    page,
   );
+  console.log('aaaa', PortfolioCommentData);
   const { postCommentAction } = usePostPortfolioComment(Number(portfolioId));
 
+  // page info
+  const pageArray = Array(PortfolioCommentData?.pageInfo.totalPages)
+    .fill(0)
+    .map((_, index) => index + 1);
+  console.log(pageArray);
+
+  const lastPage = () => setPage(PortfolioCommentData?.pageInfo.totalPages || 1);
+
+  const firstPage = () => setPage(1);
+
+  // hanlder
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     postCommentAction(Number(portfolioId), content);
@@ -37,7 +52,6 @@ function Comment() {
     setContent(event.target.value);
   };
 
-  // !: data가 없을 때 어떻게 표시되는지 꼭 확인해야 한다.
   return (
     <S.Container>
       <S.CommentWrapper>
@@ -53,7 +67,7 @@ function Comment() {
           <Loading />
         ) : (
           <S.CommentShow>
-            {(PortfolioCommentData ?? []).map(
+            {(PortfolioCommentData?.data ?? []).map(
               (
                 {
                   userId,
@@ -84,6 +98,24 @@ function Comment() {
             )}
           </S.CommentShow>
         )}
+        <S.Nav>
+          <S.NavBtn onClick={firstPage} disabled={isPreviousData || page === 1}>
+            &lt;&lt;
+          </S.NavBtn>
+          {pageArray.map((pageNumber) => (
+            <CommentPageBtn
+              key={pageNumber}
+              pageNumber={pageNumber}
+              setPage={setPage}
+            ></CommentPageBtn>
+          ))}
+          <S.NavBtn
+            onClick={lastPage}
+            disabled={isPreviousData || page === PortfolioCommentData?.pageInfo.totalPages}
+          >
+            &gt;&gt;
+          </S.NavBtn>
+        </S.Nav>
       </S.CommentWrapper>
     </S.Container>
   );

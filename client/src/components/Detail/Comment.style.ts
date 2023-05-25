@@ -3,7 +3,7 @@ import { COLOR } from '../../constants';
 
 // styled component
 import * as S from '../common/Button.style';
-const { subFontColor } = COLOR;
+const { subFontColor, mainColor } = COLOR;
 
 export const Container = styled.section`
   margin-top: 2rem;
@@ -63,4 +63,21 @@ export const YellowBtnCustom = styled(S.YellowBtn)`
   @media ${(props) => props.theme.breakpoints.TABLETMIN} {
     font-size: 1rem;
   }
+`;
+
+// nav section
+export const Nav = styled.nav`
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-around;
+`;
+
+export const NavBtn = styled.button`
+  /* width: 30px;
+  border-radius: 8px;
+  background-color: ${mainColor};
+  color: black; */
+  font-size: 1.4rem;
+  margin: 0 1.5rem;
+  color: ${(props) => props.theme.themeStyle.fontColor};
 `;
