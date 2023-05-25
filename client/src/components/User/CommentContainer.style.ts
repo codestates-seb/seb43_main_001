@@ -5,6 +5,7 @@ const { subFontColor, mainColor } = COLOR;
 export const CommentContainer = styled.div`
   padding: 10px;
   border-top: 1px double black;
+  margin-top: 20px;
 `;
 export const Comments = styled.ul<{ CommentLen: number }>`
   width: 100%;
