@@ -25,7 +25,7 @@ function Banner() {
         <S.ShareButton onClick={handleClickButton}>프로젝트 공유하기</S.ShareButton>
       </S.BannerContent>
       <S.BannerImg>
-        <img src='./assets/image/meeting.svg' alt='배경 일러스트' />
+        <img src='./assets/image/Meeting.svg' alt='배경 일러스트' />
       </S.BannerImg>
     </S.Banner>
   );

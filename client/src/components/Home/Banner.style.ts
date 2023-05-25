@@ -15,7 +15,7 @@ export const Banner = styled.section`
   @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
     flex-direction: row;
     gap: 120px;
-    height: 500px;
+    height: 515px;
     padding: 0 15px;
   }
 `;
@@ -66,7 +66,7 @@ export const ShareButton = styled(YellowBtn)`
 `;
 
 export const BannerImg = styled.div`
-  width: 300px;
+  max-width: 300px;
   height: auto;
 
   img {
@@ -75,6 +75,6 @@ export const BannerImg = styled.div`
   }
 
   @media ${({ theme }) => theme.breakpoints.TABLETMIN} {
-    width: 400px;
+    max-width: 400px;
   }
 `;
