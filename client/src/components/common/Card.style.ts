@@ -48,6 +48,7 @@ export const CardContentWrapper = styled.div`
     color: ${({ theme }) => theme.themeStyle.fontColor};
     font-size: 18px;
     font-weight: 700;
+    word-break: break-all;
     // 2줄 이상이면 말줄임
     overflow: hidden;
     text-overflow: ellipsis;
@@ -60,7 +61,6 @@ export const CardContentWrapper = styled.div`
     margin-bottom: 23px;
     color: ${({ theme }) => theme.themeStyle.cardFontColor};
     font-size: 13px;
-    word-break: keep-all;
 
     @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
       margin-bottom: 20px;

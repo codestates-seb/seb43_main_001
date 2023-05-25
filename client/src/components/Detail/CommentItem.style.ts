@@ -9,40 +9,75 @@ const { subFontColor } = COLOR;
 export const Container = styled.section`
   position: relative;
   padding: 1rem;
-  border: 10;
   border-radius: 5px;
-  box-shadow: 0px 2px 2px ${subFontColor};
+  box-shadow: 0 0.3rem 0.3rem 0
+    ${(props) => (props.theme.value === 'light' ? subFontColor : 'white')};
+  background-color: ${({ theme }) => theme.themeStyle.cardColor};
 `;
 
 export const Update = styled.div`
   display: flex;
 `;
 
+export const ConfirmDeleteSection = styled.div`
+  height: 100px;
+`;
+
+export const DelText = styled.p`
+  margin: 20px 0;
+  text-align: center;
+`;
+
+export const SelectBtns = styled.div`
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  button {
+    color: ${(props) => props.theme.themeStyle.fontColor};
+    margin: 0 10px;
+    font-size: 0.9rem;
+  }
+  button:first-child {
+    &:hover {
+      color: red;
+    }
+  }
+`;
+
 export const Content = styled.div`
   padding: 1.2rem;
-  font-weight: 700;
+  font-weight: 500;
 `;
 
 export const CreateAt = styled.div`
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  .comment-userImg {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin: 0 8px;
+  }
 `;
 
 export const EditArea = styled.textarea`
   width: 100%;
-  height: 100px;
-  border-radius: 4px;
+  /* height: 100px; */
   padding: 0.5rem;
   background-color: transparent;
-  border: 2px solid ${(props) => props.theme.themeStyle.inputBorderColor};
   color: ${(props) => props.theme.themeStyle.fontColor};
   resize: none;
+  &:focus {
+    outline: none;
+  }
 `;
 
 const CommonIconStyle = css`
-  font-size: 1.3rem;
+  font-size: 1.5rem;
+  cursor: pointer;
   &:hover {
-    color: red;
+    color: ${subFontColor};
   }
 `;
 
@@ -53,9 +88,10 @@ export const DelBtn = styled(RxCross2)`
 export const EditBtn = styled(RxPencil2)`
   ${CommonIconStyle}
 `;
-export const ComfirmBtn = styled(RxCheck)`
+
+export const ConfirmBtn = styled(RxCheck)`
   ${CommonIconStyle}
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 16px;
+  right: 16px;
 `;

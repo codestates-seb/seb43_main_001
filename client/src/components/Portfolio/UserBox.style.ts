@@ -28,6 +28,9 @@ export const UserBox = styled.div`
   margin-bottom: 1rem;
 `;
 
-export const UserImg = styled(S.UserImg)``;
+export const UserImg = styled(S.UserImg)`
+  width: 80px;
+  height: 80px;
+`;
 
-export const UserName = styled(S.UserName)`;`;
+export const UserName = styled(S.UserName)``;

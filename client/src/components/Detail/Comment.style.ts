@@ -3,7 +3,7 @@ import { COLOR } from '../../constants';
 
 // styled component
 import * as S from '../common/Button.style';
-const { subFontColor } = COLOR;
+const { subFontColor, mainColor } = COLOR;
 
 export const Container = styled.section`
   margin-top: 2rem;
@@ -20,25 +20,16 @@ export const CommentWrapper = styled.div`
 `;
 
 export const CommentShow = styled.div`
-  flex: 0 1 350px;
   width: 100%;
-  border: 0;
+  border: none;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  box-shadow: 0px 2px 2px ${subFontColor};
-  overflow-y: auto;
-  ::-webkit-scrollbar {
-    width: 5px;
-  }
-  ::-webkit-scrollbar-thumb {
-    background-color: ${(props) => props.theme.themeStyle.fontColor};
-  }
+  gap: 15px;
 `;
 
 export const CommentForm = styled.form`
   width: 100%;
-  margin-top: 1rem;
+  margin-bottom: 1.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -49,18 +40,40 @@ export const CommentArea = styled.textarea`
   height: 100px;
   padding: 10px;
   border-radius: 4px;
-  background-color: transparent;
-  border: 2px solid ${(props) => props.theme.themeStyle.inputBorderColor};
+  background-color: ${({ theme }) => theme.themeStyle.cardColor};
+  box-shadow: 0 0.3rem 0.3rem 0
+    ${(props) => (props.theme.value === 'light' ? subFontColor : 'white')};
   color: ${(props) => props.theme.themeStyle.fontColor};
   resize: none;
   margin-right: 0.5rem;
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const YellowBtnCustom = styled(S.YellowBtn)`
   font-size: 0.8rem;
   height: 100px;
-  border: 1px solid ${subFontColor};
+  box-shadow: 0 0.3rem 0.3rem 0
+    ${(props) => (props.theme.value === 'light' ? subFontColor : 'white')};
+
+  box-shadow: 0 0.3rem 0.3rem 0
+    ${(props) => (props.theme.value === 'light' ? subFontColor : 'none')};
+
   @media ${(props) => props.theme.breakpoints.TABLETMIN} {
     font-size: 1rem;
   }
+`;
+
+// nav section
+export const Nav = styled.nav`
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-around;
+`;
+
+export const NavBtn = styled.button`
+  font-size: 1.4rem;
+  margin: 0 1.5rem;
+  color: ${(props) => props.theme.themeStyle.fontColor};
 `;

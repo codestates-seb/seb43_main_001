@@ -5,6 +5,9 @@ const { mainColor, subFontColor } = COLOR;
 
 const { content } = MAX_SIZE;
 export const PortfolioLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
   width: 100%;
   margin: 5rem 0;
 
@@ -30,22 +33,22 @@ export const SubmitBtn = styled.button`
   justify-content: center;
   align-items: center;
   font-size: 0.8rem;
+  font-weight: 500;
   background-color: ${mainColor};
   border-radius: 10px;
-  font-weight: bold;
-  padding: 0.5rem;
+  padding: 1rem 0.6rem;
   height: 30px;
 
   @media ${(props) => props.theme.breakpoints.TABLETMIN} {
-    font-size: 1.1rem;
-
+    font-size: 1rem;
+    padding: 1.2rem 0.8rem;
     height: 40px;
   }
 
   @media ${(props) => props.theme.breakpoints.DESKTOPMIN} {
     max-width: ${content};
-
-    font-size: 1.5rem;
+    padding: 1.4rem 1rem;
+    font-size: 1.2rem;
   }
 `;
 

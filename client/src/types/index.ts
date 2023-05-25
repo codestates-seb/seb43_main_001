@@ -21,9 +21,18 @@ export type GetUserPortfolio = {
   distributionLink: string;
   description: string;
   content: string;
-  views: number;
+  viewCount: number;
+  skills: string[];
   createdAt: number[];
   updatedAt: number[];
+  representativeImgUrl: string;
+  likesCount: number;
+};
+
+export type GetUserPortfolioPage = {
+  currentPage: number;
+  data: GetUserPortfolio[];
+  pageInfo: PageInfo;
 };
 
 export type GetUserComment = {
@@ -33,6 +42,8 @@ export type GetUserComment = {
   createdAt: string;
   updatedAt: string;
   auth: boolean;
+  deletable: boolean;
+  status: 'PUBLIC' | 'PRIVATE';
 
   // 유저 댓글
   writerProfileImg?: string;
@@ -51,12 +62,13 @@ export type PostUserComment = {
   userId: number;
   writerId: number;
   content: string;
+  userCommentStatus: 'PUBLIC' | 'PRIVATE';
 };
 
 export type PatchUserProfile = {
   userId: number;
   name: string;
-  profileImg: File | null;
+  profileImg: string;
   gitLink: string;
   blogLink: string;
   jobStatus: string;
@@ -91,20 +103,19 @@ export type postDto = {
 
 export type PostPortfolio = {
   postDto: postDto;
-  representativeImg: File | null;
-  images?: File;
-  files?: File;
+  representativeImg?: File | null;
+  files?: File | null;
 };
 
 export type PatchPortfolio = {
   portfolioId: number;
   postDto: postDto;
-  representativeImg: File | null;
-  images?: File;
-  files?: File;
+  representativeImg?: File | null;
+  files?: File | null;
 };
 
 export type GetPortfolio = {
+  auth: boolean;
   portfolioId: number;
   userId: number;
   name: string;
@@ -115,11 +126,14 @@ export type GetPortfolio = {
   content: string;
   imgUrl: string;
   fileUrl: string;
-  views: number;
+  viewCount: number;
   skills: string[];
   updatedAt: string;
   createdAt: string;
-  representativeImgUrl: string | null;
+  representativeImgUrl: string;
+  likes: boolean;
+  likesCount: number;
+  profileImg: string;
 };
 
 type PageInfo = {
@@ -159,14 +173,41 @@ export type GetPortfolioCommentById = {
   auth: boolean;
 };
 
+export type PortfolioCommentData = {
+  data: GetPortfolioCommentById[];
+  pageInfo: {
+    totalElements: number;
+    totalPages: number;
+  };
+};
+
 export type DeletePortfolioComment = {
   portfolioCommentId: number;
 };
 
 // Sort
-export type SortOption = 'createdAt' | 'recommend' | 'views';
+export type SortOption = 'createdAt' | 'likes' | 'views';
 
 // Infinite Query PageParam
 export type PageParam = {
   pageParam?: number;
+};
+
+// LikesBtn
+export type LikeBtn = {
+  portfolioId: number;
+  likes: boolean;
+};
+
+// SignUp
+export type SignUp = {
+  email: string;
+  password: string;
+  name: string;
+};
+
+// Login
+export type Login = {
+  username: string;
+  password: string;
 };

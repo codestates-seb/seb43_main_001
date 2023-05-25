@@ -10,16 +10,16 @@ import LikeBtn from '../components/Detail/LikeBtn';
 
 // custom Hooks
 import { useGetPortfolio } from '../hooks/useGetPortfolio';
+import { IncreasePageView } from '../utils/IncreasePageView';
 
 // react-router-dom
 import { useParams } from 'react-router-dom';
 
-// common component
-import Loading from '../components/common/Loading';
-
 function Detail() {
   const { portfolioId } = useParams();
   const { getPortfolioLoading, PortfolioInfo } = useGetPortfolio(Number(portfolioId));
+
+  IncreasePageView(Number(portfolioId));
 
   if (getPortfolioLoading) {
     return (
@@ -32,18 +32,22 @@ function Detail() {
     <S.Container>
       {PortfolioInfo && (
         <>
-          <LikeBtn />
+          <LikeBtn likes={PortfolioInfo.likes} portfolioId={PortfolioInfo.portfolioId} />
           <DetailTitle
+            profileImg={PortfolioInfo.profileImg}
+            auth={PortfolioInfo.auth}
             userId={PortfolioInfo.userId}
             title={PortfolioInfo.title}
             name={PortfolioInfo.name}
             gitLink={PortfolioInfo.gitLink}
             distributionLink={PortfolioInfo.distributionLink}
             skills={PortfolioInfo.skills}
+            portfolioId={PortfolioInfo.portfolioId}
           />
           <ProjectImg
             representativeImgUrl={PortfolioInfo.representativeImgUrl}
-            views={PortfolioInfo.views}
+            viewCount={PortfolioInfo.viewCount}
+            likesCount={PortfolioInfo.likesCount}
           />
           <Description description={PortfolioInfo.description} />
           <ProjectContent content={PortfolioInfo.content} />

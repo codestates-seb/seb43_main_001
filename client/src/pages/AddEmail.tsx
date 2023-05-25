@@ -1,40 +1,100 @@
-import axios from 'axios';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { postEmail } from '../api/client';
+import { toast } from 'react-toastify';
+
 import TextBox from '../components/Portfolio/TextBox';
-import useInput from '../hooks/useInput';
 import * as S from './AddEmail.style';
 
-function AddEmail() {
+import useInput from '../hooks/useInput';
+import { useRouter } from '../hooks/useRouter';
+import { usePostCheckEmail } from '../hooks/usePostCheckEmail';
+import { useGetUserProfile } from '../hooks/useGetUserProfile';
+
+import Loading from '../components/common/Loading';
+
+const AddEmail: React.FC = () => {
+  const urlSearch = new URLSearchParams(location.search);
+  const userId = urlSearch.get('userId');
+  const { routeTo } = useRouter();
   const email = useInput('');
 
-  const postEmail = async () => {
-    // 이메일
-    const res = await axios.patch(
-      'http://ec2-43-201-157-191.ap-northeast-2.compute.amazonaws.com:8080/addemail?userId=1',
-      {
-        email: email.value,
-      },
-    );
+  const [isEmailDupulicateChecked, setEmailDuplicateChecked] = useState<boolean>(false);
 
-    window.location.assign(
-      'http://ec2-43-201-157-191.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/github',
-    );
+  //  UserProfile 받아오기
+  const { UserProfile, getUserProfileError, getUserProfileLoading } = useGetUserProfile(
+    Number(userId),
+  );
+  const { handleCheckEmail } = usePostCheckEmail();
 
-    console.log(res);
+  // 중복 체크 버튼
+  const handleCheckDuplicateEmailClick = () => {
+    const regex = new RegExp('[a-z0-9]+@[a-z]+.[a-z]{2,3}');
+    if (regex.test(email.value)) {
+      handleCheckEmail(email.value);
+      setEmailDuplicateChecked(true);
+    } else {
+      toast.error('이메일 형식을 지켜 입력해주세요');
+    }
   };
+
+  // 이메일 추가 함수
+  const handlePostEmail = async () => {
+    // 이메일
+
+    if (!isEmailDupulicateChecked) {
+      toast.error('중복 확인을 진행해주세요');
+    }
+
+    if (userId) {
+      try {
+        const res = await postEmail(email.value, userId);
+      } catch {
+        toast.error('이메일 변경에 실패했습니다');
+      }
+    }
+  };
+
+  // 유저정보가 있는지 확인
+  useEffect(() => {
+    // 유저id가 없을 경우
+    if (!userId) {
+      routeTo('/*');
+      toast.error('잘못된 경로입니다');
+    }
+    // 유저정보가 없을 때
+    if (getUserProfileError) {
+      routeTo('/');
+      toast.error('유저 정보가 존재하지 않습니다');
+    }
+    // // 유저의 아이디가 존재할 때
+    if (UserProfile && UserProfile.email !== 'undefined') {
+      routeTo('/');
+      toast.error('email이 등록된 유저입니다');
+    }
+  }, [getUserProfileError, UserProfile]);
 
   return (
     <S.AddEmailContainer>
-      <S.AddEmailLayout>
-        <S.PageTitle>추가적으로 이메일을 등록해주세요</S.PageTitle>
-        <TextBox text={'이메일'} {...email} />
-        <S.ButtonContainer>
-          <S.caution>*작성 완료 후 이메일은 수정이 불가합니다</S.caution>
-          <S.SubmitBtn onClick={postEmail}>작성 완료</S.SubmitBtn>
-        </S.ButtonContainer>
-      </S.AddEmailLayout>
+      {getUserProfileLoading ? (
+        <Loading />
+      ) : (
+        <S.AddEmailLayout>
+          <S.PageTitle>추가적으로 이메일을 등록해주세요</S.PageTitle>
+          <div className='email__check'>
+            <TextBox text={'이메일'} {...email} />
+            <S.checkDuplicateEmailButton onClick={handleCheckDuplicateEmailClick}>
+              중복 검사
+            </S.checkDuplicateEmailButton>
+          </div>
+          <S.ButtonContainer>
+            <S.caution>*작성 완료 후 이메일은 수정이 불가합니다</S.caution>
+
+            <S.SubmitBtn onClick={handlePostEmail}>작성 완료</S.SubmitBtn>
+          </S.ButtonContainer>
+        </S.AddEmailLayout>
+      )}
     </S.AddEmailContainer>
   );
-}
+};
 
 export default AddEmail;

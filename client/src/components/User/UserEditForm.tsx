@@ -6,6 +6,8 @@ import { RootState } from '../../store';
 import { useDeleteUserProfile } from '../../hooks/useDeleteUserProfile';
 import { useRouter } from '../../hooks/useRouter';
 import { logout } from '../../store/slice/loginSlice';
+import ConfirmationModal from '../common/ConfirmationModal';
+import { setOpen } from '../../store/slice/modalSlice';
 
 type UserEdit = {
   userId: number;
@@ -14,13 +16,13 @@ const UserEditForm: React.FC<UserEdit> = ({ userId }) => {
   const userEditInfo = useSelector((state: RootState) => {
     return state.editUserProfile;
   });
+  const { routeTo } = useRouter();
   const { about, blogLink, jobStatus } = userEditInfo;
 
   const dispatch = useDispatch();
   const [userAbout, setUserAbout] = useState(about);
   const [userBlogLink, setBlogLink] = useState(blogLink);
-  const { handlerDeleteUserProfile } = useDeleteUserProfile();
-  const { routeTo } = useRouter();
+  const { handlerDeleteUserProfile } = useDeleteUserProfile(userId);
 
   const aboutHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const target = e.currentTarget.value;
@@ -36,8 +38,10 @@ const UserEditForm: React.FC<UserEdit> = ({ userId }) => {
     const target = e.currentTarget.value;
     dispatch(setJobStatus(target));
   };
+  const onModalHandler = () => {
+    dispatch(setOpen(null));
+  };
   const deleteHandler = async () => {
-    // ! : 회원 탈퇴를 하는게 확실한지 확인창 띄우기(한번에 삭제까지 실행되지 않도록 해야 할 것 같음)
     handlerDeleteUserProfile(userId);
     dispatch(logout(null));
     routeTo('/');
@@ -72,9 +76,17 @@ const UserEditForm: React.FC<UserEdit> = ({ userId }) => {
           value={userBlogLink}
         />
       </label>
-      <button type='button' onClick={deleteHandler}>
+      <S.DeleteBtn type='button' onClick={onModalHandler}>
         회원 탈퇴
-      </button>
+      </S.DeleteBtn>
+      <ConfirmationModal
+        title='회원을 탈퇴하시겠습니까?'
+        text1='회원을 탈퇴하시면 입력한 모든 정보가 삭제되며,'
+        text2='복구할 수 없게 됩니다.'
+        text3='정말로 탈퇴하시겠습니까?'
+        onClickHandler={deleteHandler}
+        type='warning'
+      />
     </S.EditForm>
   );
 };

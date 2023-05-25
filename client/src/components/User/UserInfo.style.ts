@@ -2,6 +2,10 @@ import styled from 'styled-components';
 
 export const UserInfo = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   @media ${(props) => props.theme.breakpoints.DESKTOPMIN} {
     width: 35%;
   }

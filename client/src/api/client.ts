@@ -4,14 +4,18 @@ import axios from 'axios';
 // util
 import { getNewAccessToken } from '../utils/getAccessToken';
 
+// constant
+import { URL } from '../constants';
+
+import { toast } from 'react-toastify';
+
 // types
 import {
-  GetPortfolioCommentById,
+  PortfolioCommentData,
   GetPortfolio,
   GetPortfolioPage,
   PostPortfolioComment,
   PatchPortfolioComment,
-  GetUserPortfolio,
   GetUserProfile,
   GetUserComment,
   PatchUserProfile,
@@ -21,24 +25,23 @@ import {
   PostUserComment,
   PatchUserComment,
   DeleteUserComment,
+  LikeBtn,
+  GetUserPortfolioPage,
+  SignUp,
+  Login,
 } from '../types/index';
 
-const REFRESH_URL = ''; // refresh URL을 새롭게 추가를 해야 한다.
+const { refreshUrl } = URL;
 const tokenClient = axios.create({ baseURL: process.env.REACT_APP_API_URL });
-// *: 요청하는 상태에 따라서 무조건 토큰을 담아서 보낸다.
-
-const accessToken = localStorage.getItem('accessToken');
-const refreshToken = localStorage.getItem('refreshToken');
 
 tokenClient.interceptors.request.use((config) => {
-  // * :요청 헤더가 있으면 기존의 것을 반환하고 없으면 아래 처럼 새롭게 지정해준다.
-  // !login 상태가 아니면 그냥 일반 헤더 반환
-  // !login 상태면 아래와 같이 그냥 진행
+  const accessToken = localStorage.getItem('accessToken');
+  const refreshToken = localStorage.getItem('refreshToken');
+
   if (!config.headers || !accessToken) {
     return config;
   }
-  // REFRESH_URL 기준으로 분류 처리를
-  if (config.url === REFRESH_URL) {
+  if (config.url === refreshUrl) {
     config.headers.Authorization = `Bearer ${refreshToken}`;
   } else {
     config.headers.Authorization = `Bearer ${accessToken}`;
@@ -46,51 +49,88 @@ tokenClient.interceptors.request.use((config) => {
   return config;
 });
 
-// *: token을 사용하는 response 설정
 tokenClient.interceptors.response.use(
   (response) => {
     return response;
   },
   async (error) => {
     const originalRequest = error.config;
-    // !판단 기준은 state.login에 토큰이 있냐 없냐로 판별해라
-    // !로그인을 안 했을 때의 401은 그냥 reject(Promise)를 반환해라!
 
-    // Login 상태가 아닐 때는 그냥 error을 반환하는 형식
+    const accessToken = localStorage.getItem('accessToken');
+
     if (!accessToken && error.response.status === 401) {
+      toast.error('로그인 후 진행해주세요!');
       return Promise.reject(error);
     }
 
-    // originalRequest._retry은 재시도 여부를 나타낸다(계속 요청하는 loop를 방지하기 위해)
+    // error handling
+    if (error.response.status === 400) {
+      toast.error('잘못된 요청입니다');
+    } else if (error.response.status === 500) {
+      toast.error('에러가 발생했습니다. 잠시후 다시 시도해 주세요.');
+    } else if (error.response.status === 403) {
+      toast.error('로그인 후 진행해주세요!');
+    }
     if (error.response.status === 401 && originalRequest && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-        // refreshToken을 이용해 새로운 accessToken 발급
         const { accessToken } = await getNewAccessToken();
 
-        // 새롭게 발급 받은 accessToken을 로컬 스토리지에 저장하기
         localStorage.setItem('accessToken', accessToken);
+
         const newAccessToken = localStorage.getItem('accessToken');
-        // *:새롭게 받은 accessToken을 다시 기존의 요청 헤더 권한에 부여
+
         originalRequest.headers.authorization = `Bearer ${newAccessToken}`;
 
-        // 실패했던 원래 요청에 대해 다시 요청을 보낸다.
         return await axios(originalRequest);
       } catch (error) {
-        // refreshToken으로 accessToken 발급을 실패한 경우
-        console.log('Error in getNewAccessToken: ', error);
-        // 로그아웃 처리 등의 작업을 한다. 발급 실패를 했으니 어떻게 해야 하나?
-        // 에러 페이지로 전환을 해야 할까?
+        console.error(error);
       }
     }
     return Promise.reject(error);
   },
 );
 
-export const userAPI = {};
+export const userAPI = {
+  postSignUp: async ({ name, password, email }: SignUp) => {
+    return await tokenClient.post(
+      `/users/signup
+    `,
+      {
+        name,
+        password,
+        email,
+      },
+    );
+  },
+  postLogin: async ({ username, password }: Login) => {
+    const res = await tokenClient.post(
+      `/users/login
+    `,
+      {
+        username,
+        password,
+      },
+    );
+    return res;
+  },
+};
 
+// * : Portfolio
 export const PortfolioAPI = {
+  uploadImg: async (img: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('images', img);
+
+    const { data } = await tokenClient.post('/portfolios/img-upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return data[0];
+  },
+
   getPortfolio: async (portfolioId: number): Promise<GetPortfolio> => {
     const PortfolioData = await tokenClient.get(
       `${process.env.REACT_APP_API_URL}/portfolios/${portfolioId}`,
@@ -98,7 +138,7 @@ export const PortfolioAPI = {
     return PortfolioData.data.data;
   },
   postPortfolio: async (Portfolio: PostPortfolio): Promise<GetPortfolio> => {
-    const { postDto, representativeImg, images, files } = Portfolio;
+    const { postDto, representativeImg, files } = Portfolio;
 
     // 폼 데이터 형식 사용
     const formData = new FormData();
@@ -109,7 +149,6 @@ export const PortfolioAPI = {
 
     formData.append('postDto', Dto);
     if (representativeImg) formData.append('representativeImg', representativeImg);
-    if (images) formData.append('images', images);
     if (files) formData.append('files', files);
 
     return await tokenClient.post(`${process.env.REACT_APP_API_URL}/portfolios`, formData, {
@@ -119,7 +158,7 @@ export const PortfolioAPI = {
     });
   },
   patchPortfolio: async (Portfolio: PatchPortfolio): Promise<GetPortfolio> => {
-    const { portfolioId, postDto, representativeImg, images, files } = Portfolio;
+    const { portfolioId, postDto, representativeImg, files } = Portfolio;
 
     // 폼 데이터 형식 사용
     const formData = new FormData();
@@ -130,7 +169,6 @@ export const PortfolioAPI = {
 
     formData.append('patchDto', Dto);
     if (representativeImg) formData.append('representativeImg', representativeImg);
-    if (images) formData.append('images', images);
     if (files) formData.append('files', files);
 
     return await tokenClient.patch(
@@ -143,35 +181,49 @@ export const PortfolioAPI = {
       },
     );
   },
-  getAllPortfolio: async (page: number, size: string, sort: string): Promise<GetPortfolioPage> => {
-    const allPortfolio = await tokenClient.get(
-      `/portfolios?page=${page}&size=${size}&sort=${sort}`,
-    );
-    return { ...allPortfolio.data, currentPage: page };
-  },
-  getSearchPortfolio: async (
-    value: string,
+  getSortPortfolioList: async (
     page: number,
     size: string,
-    category: string,
     sort: string,
   ): Promise<GetPortfolioPage> => {
-    const allSearchPortfolio = await tokenClient.get(
-      `/search?value=${value}&page=${page}&size=${size}&category=${category}&sortBy=${sort}`,
+    const sortPortfolio = await tokenClient.get(
+      `/portfolios/search?page=${page}&size=${size}&sortBy=${sort}`,
     );
-    return { ...allSearchPortfolio.data, currentPage: page };
+
+    return { ...sortPortfolio.data, currentPage: page };
+  },
+  getSearchPortfolioList: async (
+    page: number,
+    size: string,
+    sort: string,
+    category: string,
+    value: string,
+  ): Promise<GetPortfolioPage> => {
+    const searchPortfolio = await tokenClient.get(
+      `/portfolios/search?value=${value}&page=${page}&size=${size}&category=${category}&sortBy=${sort}`,
+    );
+
+    return { ...searchPortfolio.data, currentPage: page };
+  },
+  portfolioViews: async (portfolioId: number) => {
+    return await tokenClient.patch(`/portfolios/${portfolioId}/views`);
+  },
+  deletePortfolio: async (portfolioId: number) => {
+    return await tokenClient.delete(`/portfolios/${portfolioId}`);
   },
 };
 
 export const PortfolioCommentAPI = {
-  getPortfolioComment: async (portfolioId: number): Promise<GetPortfolioCommentById[]> => {
-    const commentData = await tokenClient.get(
-      `${process.env.REACT_APP_API_URL}/api/portfoliocomments/portfolios/${portfolioId}`,
-    );
-    return commentData.data.data;
+  getPortfolioComment: async (portfolioId: number, page: number): Promise<PortfolioCommentData> => {
+    const commentData = await tokenClient.get(`/api/portfoliocomments/portfolios/${portfolioId}`, {
+      params: {
+        page,
+      },
+    });
+    return commentData.data;
   },
   postPortfolioComment: async ({ userId, portfolioId, content }: PostPortfolioComment) => {
-    return await tokenClient.post(`${process.env.REACT_APP_API_URL}/api/portfoliocomments`, {
+    return await tokenClient.post('/api/portfoliocomments', {
       userId,
       portfolioId,
       content,
@@ -183,31 +235,34 @@ export const PortfolioCommentAPI = {
     portfolioId,
     content,
   }: PatchPortfolioComment) => {
-    return await tokenClient.patch(
-      `${process.env.REACT_APP_API_URL}/api/portfoliocomments/${portfolioCommentId}`,
-      {
-        portfolioCommentId,
-        userId,
-        portfolioId,
-        content,
-      },
-    );
+    return await tokenClient.patch(`/api/portfoliocomments/${portfolioCommentId}`, {
+      portfolioCommentId,
+      userId,
+      portfolioId,
+      content,
+    });
   },
   deletePortfolioComment: async ({ portfolioCommentId }: DeletePortfolioComment) => {
-    return await tokenClient.delete(
-      `${process.env.REACT_APP_API_URL}/api/portfoliocomments/${portfolioCommentId}`,
-    );
+    return await tokenClient.delete(`/api/portfoliocomments/${portfolioCommentId}`);
   },
 };
 
 // * : UserComponent
 export const UserProfileAPI = {
   getUserProfile: async (userId: number): Promise<GetUserProfile> => {
-    // ! : 실제 사용을 할 때는 /users/1/profile
-    const userProfileData = await tokenClient.get(
-      `${process.env.REACT_APP_API_URL}/users/${userId}/profile`,
-    );
+    const userProfileData = await tokenClient.get(`/users/${userId}/profile`);
     return userProfileData.data.data;
+  },
+  postUserImg: async (userId: number, userImg: File) => {
+    // ! : 파일은 form 데이터로 전송
+    const profileImg = new FormData();
+    profileImg.append('profileImg', userImg);
+    const axiosConfig = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+    return await tokenClient.post(`/users/${userId}/profile-img-upload`, profileImg, axiosConfig);
   },
   patchUserProfile: async ({
     userId,
@@ -218,7 +273,7 @@ export const UserProfileAPI = {
     jobStatus,
     about,
   }: PatchUserProfile) => {
-    await tokenClient.patch(`${process.env.REACT_APP_API_URL}/users/${userId}`, {
+    await tokenClient.patch(`/users/${userId}`, {
       name,
       profileImg,
       gitLink,
@@ -228,51 +283,54 @@ export const UserProfileAPI = {
     });
   },
   deleteUserProfile: async (userId: number) => {
-    await tokenClient.delete(`${process.env.REACT_APP_API_URL}/users/${userId}`);
+    await tokenClient.delete(`/users/${userId}`);
   },
 };
 
 export const UserPortfolioAPI = {
-  getUserPortfolio: async (userId: number): Promise<GetUserPortfolio[]> => {
-    // ! : sort 기능 추가 필요(아직 테스트하지 못함)
+  getUserPortfolio: async (
+    userId: number,
+    sort: string,
+    page: number,
+    size: string,
+  ): Promise<GetUserPortfolioPage> => {
     const userPortfoliosData = await tokenClient.get(
-      `${process.env.REACT_APP_API_URL}/portfolios/${userId}/portfolios?sortBy=createdAt&page=1&size=15`,
+      `/portfolios/users/${userId}?page=${page}&size=${size}&sortBy=${sort}`,
     );
-    return userPortfoliosData.data.data;
+    return { ...userPortfoliosData.data, currentPage: page };
   },
 };
 
 export const UserCommentsAPI = {
   getUserComments: async (userId: number): Promise<GetUserComment[]> => {
     const userCommentsData = await tokenClient.get(
-      `${process.env.REACT_APP_API_URL}/api/usercomments/users/${userId}?page=1&size=10`,
+      `/api/usercomments/users/${userId}?page=1&size=10`,
     );
     return userCommentsData.data.data;
   },
   // * : 한 유저가 다른 사람의 포트폴리에 작성한 댓글
   getCommentsToPortfolio: async (userId: number): Promise<GetUserComment[]> => {
-    const commentsToPortfolioData = await tokenClient.get(
-      `${process.env.REACT_APP_API_URL}/api/portfoliocomments/users/${userId}`,
-    );
+    const commentsToPortfolioData = await tokenClient.get(`/api/portfoliocomments/users/${userId}`);
     return commentsToPortfolioData.data.data;
   },
   // * : 한 유저가 다른 사람에게 작성한 댓글
   getCommentsToUser: async (userId: number): Promise<GetUserComment[]> => {
     const commentsToUserData = await tokenClient.get(
-      `${process.env.REACT_APP_API_URL}/api/usercomments/writers/${userId}?page=1&size=10`,
+      `/api/usercomments/writers/${userId}?page=1&size=10`,
     );
     return commentsToUserData.data.data;
   },
-  postUserComment: async ({ userId, writerId, content }: PostUserComment) => {
-    return await tokenClient.post(`${process.env.REACT_APP_API_URL}/api/usercomments`, {
+  postUserComment: async ({ userId, writerId, content, userCommentStatus }: PostUserComment) => {
+    return await tokenClient.post('/api/usercomments', {
       userId,
       writerId,
       content,
+      userCommentStatus,
     });
   },
   patchUserComment: async ({ userId, content, path, pathId, commentId }: PatchUserComment) => {
     await tokenClient.patch(
-      `${process.env.REACT_APP_API_URL}/api/${path}/${commentId}`,
+      `/api/${path}/${commentId}`,
       path === 'usercomments'
         ? {
             userCommentId: commentId,
@@ -285,8 +343,51 @@ export const UserCommentsAPI = {
   },
   // ! : 전달되는게 어떤 id값인지 확인 필요
   deleteUserComment: async ({ commentId, path }: DeleteUserComment) => {
-    await tokenClient.delete(`${process.env.REACT_APP_API_URL}/api/${path}/${commentId}`);
+    await tokenClient.delete(`/api/${path}/${commentId}`);
   },
+};
+
+export const PortfolioLikeBtn = {
+  updateLikes: async ({ portfolioId, likes }: LikeBtn) => {
+    if (likes) {
+      await tokenClient.delete(`/portfolios/likes/${portfolioId}`);
+    } else {
+      await tokenClient.post(`/portfolios/likes/${portfolioId}`);
+    }
+  },
+};
+
+// * : Login
+export const LoginAPI = {
+  googleLogin: () => {
+    // 로그인 시도
+    window.location.assign(
+      'http://ec2-43-201-157-191.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/google',
+    );
+  },
+
+  githubLogin: () => {
+    // 로그인 시도
+    window.location.assign(
+      'http://ec2-43-201-157-191.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/github',
+    );
+  },
+};
+
+// * : AddEmail
+export const postEmail = async (email: string, userId: string) => {
+  return await axios
+    .patch(`${process.env.REACT_APP_API_URL}/addemail?userId=${userId}`, {
+      email: email,
+    })
+    .then(() => LoginAPI.githubLogin());
+};
+
+// * : CheckEmail
+export const postCheckEmail = async (email: string) => {
+  return await tokenClient.post('/users/check-email', {
+    email,
+  });
 };
 
 export { tokenClient };

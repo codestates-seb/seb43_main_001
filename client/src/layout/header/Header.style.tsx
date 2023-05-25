@@ -15,8 +15,8 @@ export const Header = styled.nav`
 `;
 
 export const UserImg = styled.img`
-  width: 50px;
-  height: 50px;
+  width: 35px;
+  height: 35px;
   margin-right: 1.2rem;
   border-radius: 50%;
   overflow: hidden;
@@ -41,12 +41,15 @@ export const ButtonContainer = styled.div`
 `;
 
 export const Logo = styled.div`
-  width: 30%;
-  font-size: 2rem;
-  font-weight: 900;
+  margin-top: 8px;
   cursor: pointer;
+  img {
+    width: 40px;
+    height: 40px;
+  }
 `;
 
 export const SignUp = styled.span`
   padding: 0 1.2rem;
+  cursor: pointer;
 `;

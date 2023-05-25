@@ -1,22 +1,17 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { PatchUserProfile } from '../types';
 import { UserProfileAPI } from '../api/client';
 
 const { patchUserProfile } = UserProfileAPI;
 
-export const usePatchUserProfile = () => {
+export const usePatchUserProfile = (userId: number) => {
+  const queryClient = useQueryClient();
   const { mutate: patchUserProfileMutation } = useMutation(patchUserProfile, {
-    onMutate: () => {
-      console.log('onMutate');
-    },
-    onError: (e) => {
-      console.log(e);
+    onError: (error) => {
+      console.error(error);
     },
     onSuccess: (data) => {
-      console.log(data, 'success');
-    },
-    onSettled: () => {
-      console.log('end');
+      queryClient.invalidateQueries(['userProfile', userId]);
     },
   });
   const handlerPatchProfile = async ({

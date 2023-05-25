@@ -5,9 +5,12 @@ const { subFontColor, mainColor } = COLOR;
 export const CommentContainer = styled.div`
   padding: 10px;
   border-top: 1px double black;
+  margin-top: 20px;
 `;
-export const Comments = styled.ul`
-  height: 300px;
+export const Comments = styled.ul<{ CommentLen: number }>`
+  width: 100%;
+  height: ${(props) => (props.CommentLen <= 3 ? `${props.CommentLen * 130}px` : '390px')};
+  padding: 0 2px;
   overflow: scroll;
   -ms-overflow-style: none;
   ::-webkit-scrollbar {
@@ -27,7 +30,7 @@ export const CommentAdd = styled.form`
     padding: 10px;
     border-radius: 10px;
     border: 0;
-    box-shadow: 0px 2px 2px ${subFontColor};
+    box-shadow: 0 1px 0.3rem 0 ${(props) => (props.theme.value === 'light' ? subFontColor : 'none')};
     position: relative;
     z-index: 5;
     outline: none;
@@ -42,10 +45,11 @@ export const CommentAdd = styled.form`
     padding: 10px 20px;
     text-align: right;
     position: relative;
-    bottom: 15px;
+    bottom: 18px;
     z-index: 0;
     font-size: 1rem;
-    box-shadow: 0px 2px 2px ${subFontColor};
+    box-shadow: 0 0.3rem 0.3rem 0
+      ${(props) => (props.theme.value === 'light' ? subFontColor : 'none')};
   }
 `;
 export const Secret = styled.label`
@@ -64,14 +68,13 @@ export const Secret = styled.label`
     height: 1.5rem;
     border-radius: 5px;
     margin-left: 5px;
-    border: 1px solid ${mainColor};
+    margin-top: 2px;
     background-color: white;
-    transition: all 0.5s;
   }
   input:checked {
-    border: 2px solid white;
-    background-color: ${mainColor};
-    transition: all 0.3s;
+    background-image: url('https://img.icons8.com/?size=512&id=5576&format=png');
+    background-repeat: no-repeat;
+    background-size: cover;
   }
 `;
 export const SelectBtn = styled.div`

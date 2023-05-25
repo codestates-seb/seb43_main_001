@@ -6,29 +6,27 @@ import { getUserIdFromAccessToken } from '../utils/getUserIdFromAccessToken';
 const { postUserComment } = UserCommentsAPI;
 
 export const usePostUserComment = (userId: number) => {
-  const token = useAppSelector((state) => state.login.accessToken);
+  const token = localStorage.getItem('accessToken');
   const isLogin = useAppSelector((state) => state.login.isLogin);
   const writerId = getUserIdFromAccessToken(isLogin, token);
 
   const queryClient = useQueryClient();
   const { mutate: postUserCommentMutation } = useMutation(postUserComment, {
-    onMutate: () => {
-      console.log('onMutate');
-    },
-    onError: (e) => {
-      console.log(e);
+    onError: (error) => {
+      console.error(error);
     },
     onSuccess: (data) => {
-      console.log(data, 'success');
       queryClient.invalidateQueries(['userComments', userId]);
-    },
-    onSettled: () => {
-      console.log('end');
+      queryClient.invalidateQueries(['commentsToUser', userId]);
     },
   });
-  const handlerPostUserComment = async (userId: number, content: string) => {
+  const handlerPostUserComment = async (
+    userId: number,
+    content: string,
+    userCommentStatus: 'PUBLIC' | 'PRIVATE',
+  ) => {
     if (writerId) {
-      postUserCommentMutation({ userId, writerId, content });
+      postUserCommentMutation({ userId, writerId, content, userCommentStatus });
     }
   };
   return { handlerPostUserComment };

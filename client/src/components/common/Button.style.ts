@@ -18,6 +18,6 @@ export const YellowBtn = styled.button`
   }
 
   @media ${(props) => props.theme.breakpoints.DESKTOPMIN} {
-    width: 122px;
+    width: 110px;
   }
 `;

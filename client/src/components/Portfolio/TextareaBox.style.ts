@@ -14,13 +14,25 @@ export const Title = styled.span`
 `;
 
 export const TextareaBox = styled.textarea`
-  height: 80px;
+  height: 100px;
   border-radius: 10px;
   border: none;
-
+  height: 135px;
   box-shadow: 0 0.3rem 0.3rem 0
     ${(props) => (props.theme.value === 'light' ? subFontColor : 'none')};
   font-size: 0.8rem;
   background-color: ${(props) => props.theme.themeStyle.inputColor};
   padding: 0.5rem;
+`;
+export const caution = styled.span`
+  color: red;
+  font-size: 0.5rem;
+  padding: 0.5rem;
+  font-weight: 500;
+  @media ${(props) => props.theme.breakpoints.TABLETMIN} {
+    font-size: 0.7rem;
+  }
+  @media ${(props) => props.theme.breakpoints.DESKTOPMIN} {
+    font-size: 0.9rem;
+  }
 `;

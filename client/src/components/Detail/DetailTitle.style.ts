@@ -22,43 +22,43 @@ const CommonStlye = css`
   padding: 10px 0.5rem;
   @media ${(props) => props.theme.breakpoints.TABLETMIN} {
     padding: 10px 1rem;
-    flex-direction: row;
   }
 `;
 
 // upper section
 export const TitleUpper = styled.div`
   ${CommonStlye}
-  align-items:center;
 `;
 
-export const ProjectTitle = styled.h1`
+export const ProjectTitle = styled.p`
   font-size: 1.4rem;
   font-weight: 700;
+  margin-bottom: 25px;
   @media ${(props) => props.theme.breakpoints.TABLETMIN} {
     font-size: 1.8rem;
   }
 `;
 
 export const UserInfo = styled.div`
+  width: 100%;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: row;
+  align-items: start;
 `;
 
-export const userName = styled.div`
+export const userName = styled.p`
   font-size: 1rem;
+  margin-top: 0.6rem;
   @media ${(props) => props.theme.breakpoints.TABLETMIN} {
     font-size: 1.4rem;
   }
 `;
 
-export const userImg = styled.div`
+export const userImg = styled.img`
   width: 50px;
   height: 50px;
-  border: 1px solid blue;
   border-radius: 50%;
-  margin-left: 1rem;
+  margin-right: 0.7rem;
   cursor: pointer;
 `;
 
@@ -70,39 +70,32 @@ export const TitleDowner = styled.div`
 export const Tags = styled.div`
   display: flex;
   padding: 1rem 0;
-  & > div {
-    margin-right: 0.8rem;
-  }
+  gap: 10px;
+  flex-wrap: wrap;
 `;
 
 export const Links = styled.div`
   display: flex;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
   & > a {
     margin-right: 0.5rem;
   }
 `;
 
 export const Link = styled.a<{ darkGrey?: boolean }>`
-  font-size: 0.7rem;
+  font-size: 1rem;
   border-radius: 5px;
   text-align: center;
-  padding: 0.8rem;
+  padding: 0.5rem 0.8rem;
   background-color: ${(props) => (props.darkGrey ? cardColor : subFontColor)};
   color: ${(props) => (props.darkGrey ? 'white' : 'black')};
   cursor: pointer;
-
-  @media ${(props) => props.theme.breakpoints.TABLETMIN} {
-    font-size: 1rem;
-  }
 `;
 
 export const YellowTagCutsom = styled(S.Tags)`
-  font-size: 0.7rem;
-  @media ${(props) => props.theme.breakpoints.TABLETMIN} {
-    font-size: 1rem;
-  }
+  font-size: 13px;
 `;
+
 // edit part
 export const UserInfoEdit = styled.div`
   display: flex;

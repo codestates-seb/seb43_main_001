@@ -1,4 +1,4 @@
-// style-component
+// styled-component
 import * as S from './Header.style';
 
 // react component
@@ -11,7 +11,7 @@ import NavLink from './NavLink';
 import { useRouter } from '../../hooks/useRouter';
 
 // react hooks
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // redux
 import { useAppSelector, useAppDispatch } from '../../hooks/reduxHook';
@@ -20,14 +20,32 @@ import { logout } from '../../store/slice/loginSlice';
 // util
 import { getUserIdFromAccessToken } from '../../utils/getUserIdFromAccessToken';
 
+// api
+import { UserProfileAPI } from '../../api/client';
+
+// logo
+import { Logo } from '../../components/common/icons';
+
 // *: header 컴포넌트
 function Header() {
   const { routeTo } = useRouter();
+  const { getUserProfile } = UserProfileAPI;
 
+  const [imgPath, setImgPath] = useState<string>('');
   const isLogin = useAppSelector((state) => state.login.isLogin);
-  const token = useAppSelector((state) => state.login.accessToken);
+  const token = localStorage.getItem('accessToken');
   const dispatch = useAppDispatch();
   const userId = getUserIdFromAccessToken(isLogin, token);
+
+  useEffect(() => {
+    if (isLogin) {
+      getUserProfile(userId!)
+        .then((response) => {
+          setImgPath(response.profileImg);
+        })
+        .catch((error) => console.error(error));
+    }
+  }, [isLogin]);
   const handleLogoClick = () => {
     routeTo('/');
   };
@@ -38,6 +56,9 @@ function Header() {
 
   const handleLogoutClick = () => {
     dispatch(logout(null));
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    routeTo('/');
   };
 
   const [openNav, setOpenNav] = useState<boolean>(false);
@@ -46,12 +67,11 @@ function Header() {
     routeTo(`/User/${userId}`);
   };
 
-  const imgPath =
-    'https://images.unsplash.com/photo-1488161628813-04466f872be2?crop=entropy&cs=srgb&fm=jpg&ixid=Mnw3MjAxN3wwfDF8c2VhcmNofDl8fHBlb3BsZXxlbnwwfHx8fDE2ODMwODA2MDQ&ixlib=rb-4.0.3&q=85&q=85&fmt=jpg&crop=entropy&cs=tinysrgb&w=450';
-
   return (
     <S.Header>
-      <S.Logo onClick={handleLogoClick}>Logo</S.Logo>
+      <S.Logo onClick={handleLogoClick}>
+        <Logo />
+      </S.Logo>
       {openNav && <NavLink setOpenNav={setOpenNav} />}
       <S.ButtonContainer>
         <Toggle />
@@ -62,7 +82,11 @@ function Header() {
         >
           {isLogin ? 'Logout' : 'Login'}
         </YellowBtn>
-        {isLogin ? null : <S.SignUp className='header-signup'>회원가입</S.SignUp>}
+        {isLogin ? null : (
+          <S.SignUp className='header-signup' onClick={() => routeTo('/SignUp')}>
+            회원가입
+          </S.SignUp>
+        )}
         <Hamburger openNav={openNav} setOpenNav={setOpenNav} />
       </S.ButtonContainer>
     </S.Header>

@@ -2,17 +2,17 @@ import React from 'react';
 import * as S from '../Portfolio/UserBox.style';
 
 type UserBoxProps = {
-  email: string;
+  name: string;
   profileImg: string;
 };
 
-const UserBox: React.FC<UserBoxProps> = ({ email, profileImg }) => {
+const UserBox: React.FC<UserBoxProps> = ({ name, profileImg }) => {
   return (
     <S.UserBox>
       <S.UserImg>
         <img src={profileImg} />
       </S.UserImg>
-      <span>{email}</span>
+      <span>{name}</span>
     </S.UserBox>
   );
 };

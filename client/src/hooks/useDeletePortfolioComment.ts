@@ -18,7 +18,7 @@ export const useDeleteProtfolioComment = (
     onSuccess: () => {
       // !: userId를 받아와서 invalidate를 하면 될 듯하다.
       queryClient.invalidateQueries(['commentsToPortfolio', userId], { exact: true });
-      queryClient.invalidateQueries(['comment', portfolioId], { exact: true });
+      queryClient.invalidateQueries(['comment', portfolioId]);
     },
   });
 

@@ -16,9 +16,17 @@ function Banner() {
 
   return (
     <S.Banner>
-      <h1>이름</h1>
-      <p>설명입니다설명입니다설명입니다설명입니다</p>
-      <S.ShareButton onClick={handleClickButton}>공유하기</S.ShareButton>
+      <S.BannerContent>
+        <h1>Silmul</h1>
+        <h2>
+          실력을 물어보자! <br />
+          개발자들의 포트폴리오 공유 플랫폼, 실물
+        </h2>
+        <S.ShareButton onClick={handleClickButton}>프로젝트 공유하기</S.ShareButton>
+      </S.BannerContent>
+      <S.BannerImg>
+        <img src='./assets/image/Meeting.svg' alt='배경 일러스트' />
+      </S.BannerImg>
     </S.Banner>
   );
 }

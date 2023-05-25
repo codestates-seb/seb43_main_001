@@ -3,21 +3,16 @@ import { UserProfileAPI } from '../api/client';
 
 const { deleteUserProfile } = UserProfileAPI;
 
-export const useDeleteUserProfile = () => {
-  // const queryClient = useQueryClient();
+export const useDeleteUserProfile = (userId: number) => {
+  const queryClient = useQueryClient();
   const { mutate: deleteUserProfileMutation } = useMutation(deleteUserProfile, {
-    onMutate: () => {
-      console.log('onMutate');
-    },
-    onError: (e) => {
-      console.log(e);
+    onError: (error) => {
+      console.error(error);
     },
     onSuccess: (data) => {
-      console.log(data, 'success');
-      // queryClient.invalidateQueries(['userProfile', userId]);
-    },
-    onSettled: () => {
-      console.log('end');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      queryClient.invalidateQueries(['userProfile', userId]);
     },
   });
   const handlerDeleteUserProfile = async (userId: number) => {

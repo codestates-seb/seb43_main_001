@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { RxGithubLogo, RxPerson } from 'react-icons/rx';
+import { RxGithubLogo, RxPerson, RxSketchLogo } from 'react-icons/rx';
 import { IoMdEye } from 'react-icons/io';
 
 import { COLOR } from '../../constants/index';
@@ -7,6 +7,7 @@ const { mainColor } = COLOR;
 
 export const BasicInfo = styled.div`
   margin-top: 30px;
+  width: 100%;
   position: relative;
   display: flex;
   align-items: flex-end;
@@ -42,6 +43,12 @@ export const EditImg = styled.label`
     display: none;
   }
 `;
+export const TextBox = styled.div`
+  width: -moz-calc(100% - 115px);
+  width: -webkit-calc(100% - 115px);
+  width: -o-calc(100% - 115px);
+  width: calc(100% - 115px);
+`;
 export const EditName = styled.label`
   width: 100%;
   display: flex;
@@ -67,6 +74,7 @@ export const UserImg = styled.div`
   }
   margin-right: 15px;
 `;
+export const UserNameBox = styled.div``;
 export const UserName = styled.p`
   font-weight: bold;
   font-size: 1.5rem;
@@ -80,6 +88,7 @@ export const EditGit = styled.label`
     border: 1px solid;
     border-radius: 5px;
     font-size: 1rem;
+    width: 100%;
   }
 `;
 
@@ -90,9 +99,15 @@ export const Buttons = styled.div`
   right: 3%;
   bottom: 0;
 `;
-export const GithubIcon = styled(RxGithubLogo)``;
+export const GithubIcon = styled(RxGithubLogo)`
+  color: ${(props) => props.theme.themeStyle.fontColor};
+`;
 export const ViewIcon = styled(IoMdEye)`
-  /* margin: 0 10px; */
   margin-left: 8px;
 `;
 export const FollowrIcon = styled(RxPerson)``;
+export const GradeIcon = styled(RxSketchLogo)<{ gradecolor: string }>`
+  color: ${(props) => props.gradecolor};
+  font-size: 1rem;
+  margin: 0;
+`;

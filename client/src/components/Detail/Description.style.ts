@@ -5,13 +5,17 @@ export const Container = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 25px;
 `;
 
 export const DescriptionTitle = styled.p`
-  font-size: 2rem;
-  font-weight: 800;
+  font-size: 1.5rem;
+  font-weight: 600;
 `;
 
-export const DescriptionText = styled.div`
+export const DescriptionText = styled.p`
+  margin-top: 1rem;
   font-size: 1.2rem;
+  display: flex;
+  justify-content: center;
 `;

@@ -9,17 +9,13 @@ const { subFontColor } = COLOR;
 
 export const Wrapper = styled.section`
   margin-top: 2rem;
-`;
-
-export const Img = styled.div`
   position: relative;
+`;
+export const Img = styled.img`
   width: 100%;
-  height: 300px;
-  background-color: grey;
+  height: 100%;
+  object-fit: cover;
   border-radius: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 export const IconSection = styled.div`
@@ -28,28 +24,41 @@ export const IconSection = styled.div`
   position: absolute;
   right: 15px;
   bottom: 15px;
-  span {
-    margin-left: 2px;
+  & span {
+    color: black;
+    font-size: 1rem;
+    margin-left: 3px;
+    margin-bottom: 3px;
+  }
+  .view-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .like-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 `;
 
 const CommonIconStyle = css`
   color: ${subFontColor};
-  font-size: 14px;
+  font-size: 2rem;
 `;
 
 export const ViewIcon = styled(IoMdEye)`
   ${CommonIconStyle}
-
+  font-size: 19px;
   @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
-    font-size: 19px;
+    font-size: 30px;
   }
 `;
 
 export const LikeIcon = styled(RxHeartFilled)`
   ${CommonIconStyle}
-
+  font-size: 15px;
   @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
-    font-size: 16px;
+    font-size: 24px;
   }
 `;
