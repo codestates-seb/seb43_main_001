@@ -86,7 +86,7 @@ public class PortfolioController {
         return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response)), HttpStatus.OK);
     }
 
-    @PatchMapping("/{portfolio-id}/views")
+    @GetMapping("/{portfolio-id}/views")
     public void increasePostViews(@PathVariable("portfolio-id") long portfolioId) {
         portfolioService.increaseViewCount(portfolioId);
     }
