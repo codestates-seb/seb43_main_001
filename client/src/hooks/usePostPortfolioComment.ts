@@ -12,7 +12,7 @@ import { PortfolioCommentAPI } from '../api/client';
 
 const { postPortfolioComment } = PortfolioCommentAPI;
 
-export const usePostPortfolioComment = (portfolioId: number) => {
+export const usePostPortfolioComment = (portfolioId: number, page: number) => {
   const token = localStorage.getItem('accessToken');
   const isLogin = useAppSelector((state) => state.login.isLogin);
 
@@ -24,7 +24,7 @@ export const usePostPortfolioComment = (portfolioId: number) => {
   const { mutate: postComment } = useMutation({
     mutationFn: postPortfolioComment,
     onSuccess: () => {
-      queryClient.invalidateQueries(['comment', portfolioId], { exact: true });
+      queryClient.invalidateQueries(['comment', portfolioId, page], { exact: true });
     },
     onError: (error) => {
       // *: error 헨들링 하기

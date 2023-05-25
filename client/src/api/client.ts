@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 
 // types
 import {
-  GetPortfolioCommentById,
+  PortfolioCommentData,
   GetPortfolio,
   GetPortfolioPage,
   PostPortfolioComment,
@@ -215,9 +215,13 @@ export const PortfolioAPI = {
 };
 
 export const PortfolioCommentAPI = {
-  getPortfolioComment: async (portfolioId: number): Promise<GetPortfolioCommentById[]> => {
-    const commentData = await tokenClient.get(`/api/portfoliocomments/portfolios/${portfolioId}`);
-    return commentData.data.data;
+  getPortfolioComment: async (portfolioId: number, page: number): Promise<PortfolioCommentData> => {
+    const commentData = await tokenClient.get(`/api/portfoliocomments/portfolios/${portfolioId}`, {
+      params: {
+        page,
+      },
+    });
+    return commentData.data;
   },
   postPortfolioComment: async ({ userId, portfolioId, content }: PostPortfolioComment) => {
     return await tokenClient.post('/api/portfoliocomments', {
@@ -347,10 +351,8 @@ export const UserCommentsAPI = {
 export const PortfolioLikeBtn = {
   updateLikes: async ({ portfolioId, likes }: LikeBtn) => {
     if (likes) {
-      console.log('delete');
       await tokenClient.delete(`/portfolios/likes/${portfolioId}`);
     } else {
-      console.log('post');
       await tokenClient.post(`/portfolios/likes/${portfolioId}`);
     }
   },

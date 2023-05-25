@@ -11,11 +11,23 @@ export const useLikeBtn = (portfolioId: number, likes: boolean) => {
 
   const { isLoading: likeBtnLoading, mutate: clickLikeBtn } = useMutation({
     mutationFn: updateLikes,
-    onSuccess: () => {
-      queryClient.invalidateQueries(['comment', portfolioId]);
+    onMutate: async (portfolioId) => {
+      await queryClient.cancelQueries({ queryKey: ['portfolio', portfolioId], exact: true });
+
+      const snapshotOfPreviousPortfolio = queryClient.getQueryData(['portfolio', portfolioId]);
+
+      queryClient.setQueryData(['portfolio', portfolioId], {
+        likes: !likes,
+      });
+      return {
+        snapshotOfPreviousPortfolio,
+      };
     },
-    onError: (error) => {
-      console.log(error);
+    onSuccess: () => {
+      queryClient.invalidateQueries(['portfolio', portfolioId]);
+    },
+    onError: (error, variable, snapshotOfPreviousPortfolio) => {
+      queryClient.setQueryData(['portfolio', portfolioId], snapshotOfPreviousPortfolio);
     },
   });
 

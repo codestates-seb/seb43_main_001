@@ -10,7 +10,6 @@ import { PortfolioAPI } from '../api/client';
 const { getPortfolio } = PortfolioAPI;
 
 export const useGetPortfolio = (portfolioId: number) => {
-  // ! 보통 데이터로 loading 여부를 판단한다. isError은 잘 사용 안 함
   const {
     isLoading: getPortfolioLoading,
     isError: getPortfolioError,

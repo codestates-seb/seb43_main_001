@@ -24,9 +24,9 @@ export const IconSection = styled.div`
   position: absolute;
   right: 15px;
   bottom: 15px;
-  span {
+  & span {
     color: black;
-    font-size: 5px;
+    font-size: 1rem;
     margin-left: 3px;
     margin-bottom: 3px;
   }
@@ -44,21 +44,21 @@ export const IconSection = styled.div`
 
 const CommonIconStyle = css`
   color: ${subFontColor};
-  font-size: 1rem;
+  font-size: 2rem;
 `;
 
 export const ViewIcon = styled(IoMdEye)`
   ${CommonIconStyle}
-
+  font-size: 19px;
   @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
-    font-size: 19px;
+    font-size: 30px;
   }
 `;
 
 export const LikeIcon = styled(RxHeartFilled)`
   ${CommonIconStyle}
-
+  font-size: 15px;
   @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
-    font-size: 16px;
+    font-size: 24px;
   }
 `;

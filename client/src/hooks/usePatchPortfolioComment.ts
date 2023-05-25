@@ -12,26 +12,23 @@ type usePatchPortfolioCommentParams = {
   portfolioId: number;
 };
 
-export const usePatchPortfolioComment = ({
-  portfolioCommentId,
-  userId,
-  portfolioId,
-}: usePatchPortfolioCommentParams) => {
+export const usePatchPortfolioComment = (
+  { portfolioCommentId, userId, portfolioId }: usePatchPortfolioCommentParams,
+  page: number,
+) => {
   const queryClient = useQueryClient();
 
   const { mutate: PatchComment } = useMutation({
     mutationFn: patchPortfolioComment,
     onSuccess: () => {
       // setqueryDAta[comment,protido.id];
-      // !: 옵션 추가 및 다른 것으로 수정해야 함!
-      queryClient.invalidateQueries(['comment', portfolioId], { exact: true });
+      queryClient.invalidateQueries(['comment', portfolioId, page], { exact: true });
     },
     onError: (error) => {
       console.log(error);
     },
   });
   const patchCommentAction = (content: string) => {
-    // !:Auth만 추가되면 굳이 분기처리를 안 해도 될듯!
     PatchComment({ portfolioCommentId, userId, portfolioId, content });
   };
 

@@ -16,6 +16,7 @@ type CommentItemProps = {
   portfolioId: number;
   auth: boolean;
   userProfileImg: string;
+  page: number;
 };
 
 // 상세 페이지 포트폴리오 댓글 아이템 컴포넌트
@@ -28,6 +29,7 @@ function CommentItem({
   portfolioId,
   auth,
   userProfileImg,
+  page,
 }: CommentItemProps) {
   const [onEdit, setOnEdit] = useState<boolean>(false);
   const [delConfirm, setDelConfirm] = useState<boolean>(false);
@@ -37,11 +39,14 @@ function CommentItem({
   const createdMon = createdAt[1];
   const createdDay = createdAt[2];
 
-  const { patchCommentAction } = usePatchPortfolioComment({
-    userId,
-    portfolioCommentId,
-    portfolioId,
-  });
+  const { patchCommentAction } = usePatchPortfolioComment(
+    {
+      userId,
+      portfolioCommentId,
+      portfolioId,
+    },
+    page,
+  );
   const { handleOnClickDeleteBtn } = useDeleteProtfolioComment(
     userId,
     portfolioId,
@@ -57,6 +62,7 @@ function CommentItem({
   };
   const handleDelete = () => {
     handleOnClickDeleteBtn();
+    setEditInput(content);
     setDelConfirm((pre) => !pre);
   };
   const handleConfirmDelete = () => {
@@ -67,6 +73,7 @@ function CommentItem({
     setOnEdit(false);
   };
   const handleEdit = () => {
+    setEditInput(content);
     setOnEdit(true);
     EditRef.current?.focus();
   };
