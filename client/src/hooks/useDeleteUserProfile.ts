@@ -10,6 +10,8 @@ export const useDeleteUserProfile = (userId: number) => {
       console.error(error);
     },
     onSuccess: (data) => {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
       queryClient.invalidateQueries(['userProfile', userId]);
     },
   });
