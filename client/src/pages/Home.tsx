@@ -30,7 +30,6 @@ function Home() {
     isPortfoliosError,
     isPortfolioFetching,
     ErrorInfo,
-    portfolioStatus,
     fetchNextPortfolio,
     hasNextPortfolio,
   } = useGetPortfolioList(sortOption, searchCategory, searchValue);
@@ -40,6 +39,7 @@ function Home() {
   }, [skillValue]);
 
   useAuth();
+
   useInfiniteScroll({
     targetRef,
     isPortfoliosError,
