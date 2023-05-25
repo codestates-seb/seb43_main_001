@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from './reduxHook';
 import { login } from '../store/slice/loginSlice';
+import { useRouter } from './useRouter';
 
 export function useAuth() {
   const dispatch = useAppDispatch();
   const isLogin = useAppSelector((state) => state.login.isLogin);
+  const { routeTo } = useRouter();
 
   useEffect(() => {
     if (!isLogin) {
@@ -18,6 +20,7 @@ export function useAuth() {
         dispatch(login({ accessToken, refreshToken }));
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
+        routeTo('/');
       }
     }
   }, []);

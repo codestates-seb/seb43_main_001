@@ -37,3 +37,7 @@ export const CardWrapper = styled.div`
 export const Target = styled.div`
   height: 1px;
 `;
+
+export const Alert = styled.p`
+  margin: 30px 0;
+`;
