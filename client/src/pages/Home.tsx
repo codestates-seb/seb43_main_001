@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import { useGetPortfolioList } from '../hooks/useGetPortfolioList';
 import { useAuth } from '../hooks/useAuth';
@@ -19,6 +19,7 @@ function Home() {
   const [sortOption, setSortOption] = useState<SortOption>('createdAt');
   const [category, setCategory] = useState('userName');
   const [value, setValue] = useState('');
+  const [skillValue, setSkillValue] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [searchCategory, setSearchCategory] = useState('');
 
@@ -34,6 +35,10 @@ function Home() {
     hasNextPortfolio,
   } = useGetPortfolioList(sortOption, searchCategory, searchValue);
 
+  useEffect(() => {
+    handleSearch();
+  }, [skillValue]);
+
   useAuth();
   useInfiniteScroll({
     targetRef,
@@ -44,7 +49,11 @@ function Home() {
   });
 
   const handleSearch = () => {
-    setSearchValue(value);
+    if (category === 'skill') {
+      setSearchValue(skillValue);
+    } else {
+      setSearchValue(value);
+    }
     setSearchCategory(category);
   };
 
@@ -53,15 +62,20 @@ function Home() {
       <Banner />
       <Sort setSortOption={setSortOption} />
       <S.ContentWrapper>
-        <Search setValue={setValue} setCategory={setCategory} handleSearch={handleSearch} />
-        {/* TODO: 수정 필요함 */}
+        <Search
+          setValue={setValue}
+          category={category}
+          setCategory={setCategory}
+          handleSearch={handleSearch}
+          setSkillValue={setSkillValue}
+        />
         {isPortfoliosError || isPortfolioFetching
           ? null
           : searchValue && (
-              <p>
+              <S.Alert>
                 총 <strong>{PortfolioData?.pages[0].pageInfo.totalElements}개</strong>의
                 포트폴리오를 찾았습니다.
-              </p>
+              </S.Alert>
             )}
         <S.CardWrapper>
           {PortfolioData
@@ -85,14 +99,13 @@ function Home() {
             : null}
           <S.Target ref={targetRef} />
         </S.CardWrapper>
-        {/* TODO: 수정 필요함*/}
         {hasNextPortfolio && isPortfolioFetching && <Loading />}
         {!isPortfolioFetching && !isPortfoliosError && !hasNextPortfolio && (
-          <p>여기가 마지막이에요.</p>
+          <S.Alert>여기가 마지막이에요.</S.Alert>
         )}
-        {PortfolioData?.pages.length === 0 && <p>포트폴리오가 없습니다.</p>}
+        {PortfolioData?.pages[0].data.length === 0 && <S.Alert>포트폴리오가 없습니다.</S.Alert>}
         {!hasNextPortfolio && isPortfolioFetching && <Loading />}
-        {ErrorInfo?.response?.status === 404 && <p>검색 결과가 없습니다.</p>}
+        {ErrorInfo?.response?.status === 404 && <S.Alert>검색 결과가 없습니다.</S.Alert>}
         <ArrowUp />
       </S.ContentWrapper>
     </S.Container>

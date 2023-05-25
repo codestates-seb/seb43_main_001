@@ -9,13 +9,12 @@ type SortProps = {
 function Sort({ setSortOption }: SortProps) {
   const [selectedButton, setSelectedButton] = useState('최신순');
 
-  // TODO: API 명세서 받으면 수정하기
   const getSortOption = (buttonName: string) => {
     switch (buttonName) {
       case '최신순':
         return 'createdAt';
       case '추천순':
-        return 'likes'; // ! 구현중
+        return 'likes';
       case '조회순':
         return 'views';
       default:
