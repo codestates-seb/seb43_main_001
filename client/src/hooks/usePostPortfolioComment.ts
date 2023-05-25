@@ -28,7 +28,6 @@ export const usePostPortfolioComment = (portfolioId: number, page: number) => {
     },
     onError: (error) => {
       // *: error 헨들링 하기
-      console.log(error);
     },
   });
   const postCommentAction = (portfolioId: number, content: string) => {

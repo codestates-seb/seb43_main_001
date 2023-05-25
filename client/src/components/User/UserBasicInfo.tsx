@@ -39,10 +39,9 @@ const UserBasicInfo: React.FC<UserBasicInfoProps> = ({
     reader.readAsDataURL(files);
     postUserImg(userId, files)
       .then((res) => {
-        console.log(res.data);
         dispatch(setImg(res.data));
       })
-      .catch((e) => console.log(e));
+      .catch((error) => console.error(error));
   };
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {

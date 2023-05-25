@@ -19,11 +19,10 @@ export const IncreasePageView = (portfolioId: number) => {
   const { mutate: increasePortfoiloView } = useMutation({
     mutationFn: portfolioViews,
     onSuccess: () => {
-      console.log('성공');
       queryClient.invalidateQueries(['portfolio', portfolioId]);
     },
     onError: (error) => {
-      console.log(error);
+      console.error(error);
     },
   });
 

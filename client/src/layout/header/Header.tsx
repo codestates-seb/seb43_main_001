@@ -43,10 +43,9 @@ function Header() {
         .then((response) => {
           setImgPath(response.profileImg);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     }
   }, [isLogin]);
-
   const handleLogoClick = () => {
     routeTo('/');
   };

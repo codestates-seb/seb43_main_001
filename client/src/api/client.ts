@@ -85,7 +85,7 @@ tokenClient.interceptors.response.use(
 
         return await axios(originalRequest);
       } catch (error) {
-        console.log('Error in getNewAccessToken: ', error);
+        console.error(error);
       }
     }
     return Promise.reject(error);
@@ -113,7 +113,6 @@ export const userAPI = {
         password,
       },
     );
-    console.log(res);
     return res;
   },
 };

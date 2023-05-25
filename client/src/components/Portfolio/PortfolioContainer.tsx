@@ -74,9 +74,6 @@ const PortfolioContainer: React.FC<PortfolioContainerProps> = ({
   // 수신 시 대표 이미지 파일 url
   const representativeImgUrl = PortfolioInfo ? PortfolioInfo.representativeImgUrl : null;
 
-  // const fileUrl = PortfolioInfo ? PortfolioInfo.fileUrl : '';
-
-  // input,textinput 값에 대한 변경
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
@@ -94,13 +91,9 @@ const PortfolioContainer: React.FC<PortfolioContainerProps> = ({
 
   // tag 추가 함수
   const addTags = (skill: string) => {
-    // const skill = event.currentTarget.value;
-
     if (portfolio.skills.includes(skill) || skill.length === 0) {
-      console.log('Fail!');
       return;
     }
-    // event.currentTarget.value = '';
     setPortfolio({
       ...portfolio,
       skills: [...portfolio.skills, skill],
@@ -109,14 +102,12 @@ const PortfolioContainer: React.FC<PortfolioContainerProps> = ({
 
   // content 조작 함수
   const handleContent = (e: any) => {
-    // console.log(e);
     setPortfolio({ ...portfolio, content: e });
   };
 
   // mutation을 이용한 서버 요청
   const { handlePatch } = usePatchPortfolio(Number(userId), Number(portfolioId));
   const { handlePost } = usePostPortfolio(Number(userId));
-  console.log(portfolio.skills);
   return (
     <S.PortfolioLayout>
       <UserBox name={name} profileImg={profileImg} />
