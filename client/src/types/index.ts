@@ -42,6 +42,8 @@ export type GetUserComment = {
   createdAt: string;
   updatedAt: string;
   auth: boolean;
+  deletable: boolean;
+  status: 'PUBLIC' | 'PRIVATE';
 
   // 유저 댓글
   writerProfileImg?: string;
@@ -60,6 +62,7 @@ export type PostUserComment = {
   userId: number;
   writerId: number;
   content: string;
+  userCommentStatus: 'PUBLIC' | 'PRIVATE';
 };
 
 export type PatchUserProfile = {
