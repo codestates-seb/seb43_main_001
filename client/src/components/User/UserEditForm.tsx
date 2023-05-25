@@ -44,8 +44,6 @@ const UserEditForm: React.FC<UserEdit> = ({ userId }) => {
   const deleteHandler = async () => {
     handlerDeleteUserProfile(userId);
     dispatch(logout(null));
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
     routeTo('/');
   };
   return (
