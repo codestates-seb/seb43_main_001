@@ -45,12 +45,11 @@ const Editor: React.FC<EditorProps> = ({ writeMode, content, setContent }) => {
       try {
         // 이미지 업로드
         const url = await PortfolioAPI.uploadImg(file);
-        console.log(url);
         const range = quillInstance.getSelection(true);
         quillInstance.insertEmbed(range.index, 'image', url);
         quillInstance.setSelection(range.index + 1);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
   };

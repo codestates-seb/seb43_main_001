@@ -20,7 +20,7 @@ export const useGetPortfolio = (portfolioId: number) => {
     queryFn: () => getPortfolio(portfolioId),
     onError: (error) => {
       // Error이면 에러 페이지로 보내버린다???
-      console.log('error', error);
+      console.error(error);
     },
     retry: 2,
   });

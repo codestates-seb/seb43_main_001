@@ -25,7 +25,7 @@ export const usePatchPortfolioComment = (
       queryClient.invalidateQueries(['comment', portfolioId, page], { exact: true });
     },
     onError: (error) => {
-      console.log(error);
+      console.error(error);
     },
   });
   const patchCommentAction = (content: string) => {

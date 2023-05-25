@@ -7,11 +7,8 @@ const { patchUserComment } = UserCommentsAPI;
 export const usePatchUserComment = (userId: number, portfolioId: number) => {
   const queryClient = useQueryClient();
   const { mutate: patchUserCommentMutation } = useMutation(patchUserComment, {
-    onMutate: () => {
-      console.log('onMutate');
-    },
-    onError: (e) => {
-      console.log(e);
+    onError: (error) => {
+      console.error(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['userComments', userId]);
@@ -20,9 +17,6 @@ export const usePatchUserComment = (userId: number, portfolioId: number) => {
       if (portfolioId) {
         queryClient.invalidateQueries(['comment', portfolioId]);
       }
-    },
-    onSettled: () => {
-      console.log('end');
     },
   });
   const handlePatchUserComment = async ({

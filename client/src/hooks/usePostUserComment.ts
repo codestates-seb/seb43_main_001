@@ -12,19 +12,12 @@ export const usePostUserComment = (userId: number) => {
 
   const queryClient = useQueryClient();
   const { mutate: postUserCommentMutation } = useMutation(postUserComment, {
-    onMutate: () => {
-      console.log('onMutate');
-    },
-    onError: (e) => {
-      console.log(e);
+    onError: (error) => {
+      console.error(error);
     },
     onSuccess: (data) => {
-      console.log(data, 'success');
       queryClient.invalidateQueries(['userComments', userId]);
       queryClient.invalidateQueries(['commentsToUser', userId]);
-    },
-    onSettled: () => {
-      console.log('end');
     },
   });
   const handlerPostUserComment = async (

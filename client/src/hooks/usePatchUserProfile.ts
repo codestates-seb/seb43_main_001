@@ -7,18 +7,11 @@ const { patchUserProfile } = UserProfileAPI;
 export const usePatchUserProfile = (userId: number) => {
   const queryClient = useQueryClient();
   const { mutate: patchUserProfileMutation } = useMutation(patchUserProfile, {
-    onMutate: () => {
-      console.log('onMutate');
-    },
-    onError: (e) => {
-      console.log(e);
+    onError: (error) => {
+      console.error(error);
     },
     onSuccess: (data) => {
-      console.log(data, 'success');
       queryClient.invalidateQueries(['userProfile', userId]);
-    },
-    onSettled: () => {
-      console.log('end');
     },
   });
   const handlerPatchProfile = async ({
