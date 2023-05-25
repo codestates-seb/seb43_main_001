@@ -61,15 +61,13 @@ const AddEmail: React.FC = () => {
       routeTo('/*');
       toast.error('잘못된 경로입니다');
     }
-
     // 유저정보가 없을 때
     if (getUserProfileError) {
       routeTo('/');
       toast.error('유저 정보가 존재하지 않습니다');
     }
-
-    // 유저의 아이디가 존재할 때
-    if (UserProfile && UserProfile.email) {
+    // // 유저의 아이디가 존재할 때
+    if (UserProfile && UserProfile.email !== 'undefined') {
       routeTo('/');
       toast.error('email이 등록된 유저입니다');
     }
