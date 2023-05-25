@@ -42,8 +42,7 @@ public class User extends BaseTimeEntity {
 
     private String address;
 
-    @Lob
-    @Column(columnDefinition = "TEXT")
+    @Column
     private String profileImg;
 
     @Column
