@@ -18,7 +18,7 @@ const Portfolio: React.FC<IdProps> = ({ userId }) => {
     hasNextUserPortfolios,
     getUserPortfoliosFetched,
     getUserPortfoliosLoading,
-  } = useGetUserPortfolios(userId, '6', `${orderName === 'recommend' ? 'likes' : orderName}`);
+  } = useGetUserPortfolios(userId, '6', orderName);
 
   const targetRef = useRef<HTMLDivElement | null>(null);
 
