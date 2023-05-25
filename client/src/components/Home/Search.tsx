@@ -1,49 +1,87 @@
+import { useState } from 'react';
 import * as S from './Search.style';
+import { skillList } from './skillsData';
 
 type SearchProps = {
   setValue: (value: string) => void;
+  category: string;
   setCategory: (option: string) => void;
   handleSearch: () => void;
+  setSkillValue: (skill: string) => void;
 };
 
-function Search({ setValue, setCategory, handleSearch }: SearchProps) {
+function Search({ setValue, category, setCategory, handleSearch, setSkillValue }: SearchProps) {
+  const [select, setSelect] = useState('userName');
+
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
 
-  const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.target.value);
+  const handleSelectCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCategory(e.target.value);
   };
 
-  // * 일치하는 검색어 없으면 404 에러 뜸
+  const handleSelectSkill = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSkillValue(e.target.value);
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSearch();
     }
   };
 
+  const handleClickList = (e: React.MouseEvent<HTMLLIElement>) => {
+    setSelect(e.currentTarget.id);
+    setCategory(e.currentTarget.id);
+  };
+
   return (
     <S.SearchWrapper>
       <S.InputWrapper>
-        <S.SearchIcon />
-        <S.Input
-          type='text'
-          placeholder='검색하기'
-          onChange={handleInput}
-          onKeyDown={handleKeyPress}
-        />
+        {category === 'skill' ? (
+          <S.SkillsSelect onChange={handleSelectSkill}>
+            <option value=''>-- 기술 스택을 선택하세요 --</option>
+            {skillList.map((skill, index) => {
+              return (
+                <option key={index} value={skill}>
+                  {skill}
+                </option>
+              );
+            })}
+          </S.SkillsSelect>
+        ) : (
+          <>
+            <S.SearchIcon />
+            <S.Input
+              type='text'
+              placeholder='검색하기'
+              onChange={handleInput}
+              onKeyDown={handleKeyPress}
+            />
+          </>
+        )}
       </S.InputWrapper>
       <S.Nav>
         <S.NavList>
-          <li>작성자</li>
-          <li>프로젝트</li>
-          <li>기술스택</li>
+          <li
+            id='userName'
+            className={select === 'userName' ? 'select' : ''}
+            onClick={handleClickList}
+          >
+            작성자
+          </li>
+          <li id='title' className={select === 'title' ? 'select' : ''} onClick={handleClickList}>
+            프로젝트
+          </li>
+          <li id='skill' className={select === 'skill' ? 'select' : ''} onClick={handleClickList}>
+            기술스택
+          </li>
         </S.NavList>
-        <S.Select name='search' id='search' onChange={handleSelect}>
+        <S.Select name='search' id='search' onChange={handleSelectCategory}>
           <option value='userName'>작성자</option>
           <option value='title'>프로젝트</option>
-          <option value='tech-stack'>기술스택</option>
+          <option value='skill'>기술스택</option>
         </S.Select>
         <S.ArrowDownIcon />
       </S.Nav>
