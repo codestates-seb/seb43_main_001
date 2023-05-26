@@ -1,5 +1,5 @@
 // react-query
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 // api
 import { PortfolioAPI } from '../api/client';
@@ -14,10 +14,12 @@ const { deletePortfolio } = PortfolioAPI;
 
 export const useDeletePortfolio = (portfolioId: number) => {
   const { routeTo } = useRouter();
+  const queryClient = useQueryClient();
 
   const { mutate: deletePortfolioAction } = useMutation({
     mutationFn: deletePortfolio,
     onSuccess: () => {
+      queryClient.invalidateQueries(['portfolioList']);
       toast.success('삭제되었습니다!');
       routeTo('/');
     },
