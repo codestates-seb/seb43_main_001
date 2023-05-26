@@ -27,8 +27,9 @@ export const usePatchPortfolio = (userId: number, portfolioId: number) => {
 
       queryClient.invalidateQueries(['userProfile', userId]);
       queryClient.invalidateQueries(['portfolio', portfolioId]);
-      queryClient.invalidateQueries(['userPortfolios', userId, 'createdAt ']);
-      queryClient.invalidateQueries(['portfolioList', 'createdAt ']);
+      queryClient.invalidateQueries(['userPortfolios', userId, 'createdAt']);
+      queryClient.invalidateQueries(['portfolioList', 'createdAt']);
+      queryClient.invalidateQueries(['portfolioList']);
 
       toast.success('성공적으로 작성되었습니다');
       return routeTo(`/Detail/${variables.portfolioId}`);
