@@ -15,11 +15,18 @@ import { IncreasePageView } from '../utils/IncreasePageView';
 // react-router-dom
 import { useParams } from 'react-router-dom';
 
+// redux
+import { useAppSelector } from '../hooks/reduxHook';
+
 function Detail() {
   const { portfolioId } = useParams();
   const { getPortfolioLoading, PortfolioInfo } = useGetPortfolio(Number(portfolioId));
-
+  const isLogin = useAppSelector((state) => state.login.isLogin);
   IncreasePageView(Number(portfolioId));
+
+  const year = PortfolioInfo?.createdAt[0];
+  const month = PortfolioInfo?.createdAt[1];
+  const day = PortfolioInfo?.createdAt[2];
 
   if (getPortfolioLoading) {
     return (
@@ -32,7 +39,9 @@ function Detail() {
     <S.Container>
       {PortfolioInfo && (
         <>
-          <LikeBtn likes={PortfolioInfo.likes} portfolioId={PortfolioInfo.portfolioId} />
+          {isLogin && (
+            <LikeBtn likes={PortfolioInfo.likes} portfolioId={PortfolioInfo.portfolioId} />
+          )}
           <DetailTitle
             profileImg={PortfolioInfo.profileImg}
             auth={PortfolioInfo.auth}
@@ -44,6 +53,7 @@ function Detail() {
             skills={PortfolioInfo.skills}
             portfolioId={PortfolioInfo.portfolioId}
           />
+          {`작성일: ${year}.${month}.${day}`}
           <ProjectImg
             representativeImgUrl={PortfolioInfo.representativeImgUrl}
             viewCount={PortfolioInfo.viewCount}
