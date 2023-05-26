@@ -6,8 +6,8 @@
 
 <p align="middle">실물(Silmul)은 개발자들을 위한 소통하는 포트폴리오 공유 플랫폼입니다. <br/> 실물(Silmul)에서는 프로젝트, 기술 및 경험을 포함하여 포트폴리오에 대한 세부 정보를 추가할 수 있습니다. <br/> 포트폴리오를 검색하고 다른 개발자의 작업을 확인해보세요. </p>
   
-[![Team Docs](https://img.shields.io/badge/-Team%20Docs-9cf)](https://www.notion.so/2fed913cd2a84487a5f060ee504eb2df?pvs=4)
-[![Silmul Docs](https://img.shields.io/badge/-Silmul%20Docs-ff69b4)](https://www.notion.so/Silmul-f8da3a8a800d4f25a16fc70ce67aea4c?pvs=4)
+<!-- [![Team Docs](https://img.shields.io/badge/-Team%20Docs-9cf)](https://www.notion.so/2fed913cd2a84487a5f060ee504eb2df?pvs=4)
+[![Silmul Docs](https://img.shields.io/badge/-Silmul%20Docs-ff69b4)](https://www.notion.so/Silmul-f8da3a8a800d4f25a16fc70ce67aea4c?pvs=4) -->
   
 </div>
 
@@ -18,7 +18,9 @@
 - `팀 명` : 공란 
 - `프로젝트명` : 실물(Silmul)
 - `프로젝트 기간` : 2023.04.28 - 2023.05.25
-- `배포 링크` : https://silmul.vercel.app
+- `배포 링크` : [silmul.vercel.app](https://silmul.vercel.app)
+- `팀 문서` :  [공란 팀 문서](https://www.notion.so/2fed913cd2a84487a5f060ee504eb2df?pvs=4)
+- `프로젝트 문서` : [실물(Silmul) 서비스 소개](https://www.notion.so/Silmul-f8da3a8a800d4f25a16fc70ce67aea4c?pvs=4)  
 
 <br/>
 
