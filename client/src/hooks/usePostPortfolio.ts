@@ -26,8 +26,9 @@ export const usePostPortfolio = (userId: number) => {
       // console.log('success', data, variables, context);
 
       queryClient.invalidateQueries(['userProfile', userId]);
-      queryClient.invalidateQueries(['userPortfolios', userId, 'createdAt ']);
-      queryClient.invalidateQueries(['portfolioList', 'createdAt ']);
+      queryClient.invalidateQueries(['userPortfolios', userId, 'createdAt']);
+      queryClient.invalidateQueries(['portfolioList', 'createdAt']);
+      queryClient.invalidateQueries(['portfolioList']);
 
       toast.success('성공적으로 작성되었습니다');
       return routeTo('/');
