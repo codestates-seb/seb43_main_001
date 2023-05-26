@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { GetPortfolioPage } from '../types/index';
+import { GetPortfolioPage, GetUserPortfolioPage } from '../types/index';
 import type { FetchNextPageOptions, InfiniteQueryObserverResult } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
@@ -10,7 +10,7 @@ type useInfiniteScrollProps = {
   hasNextPortfolio: boolean | undefined;
   fetchNextPortfolio: (
     options?: FetchNextPageOptions | undefined,
-  ) => Promise<InfiniteQueryObserverResult<GetPortfolioPage, AxiosError>>;
+  ) => Promise<InfiniteQueryObserverResult<GetPortfolioPage | GetUserPortfolioPage, AxiosError>>;
 };
 
 export function useInfiniteScroll({

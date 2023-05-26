@@ -1,18 +1,17 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-
 import { PortfolioAPI } from '../api/client';
+
 import { GetPortfolioPage, SortOption, PageParam } from '../types/index';
 import type { AxiosError } from 'axios';
 
-const { getSortPortfolioList, getSearchPortfolioList } = PortfolioAPI;
-
 export const useGetPortfolioList = (sortOption: SortOption, category: string, value: string) => {
+  const { getSortPortfolioList, getSearchPortfolioList } = PortfolioAPI;
+
   const {
     data: PortfolioData,
     isError: isPortfoliosError,
     isFetching: isPortfolioFetching,
     error: ErrorInfo,
-    status: portfolioStatus,
     fetchNextPage: fetchNextPortfolio,
     hasNextPage: hasNextPortfolio,
   } = useInfiniteQuery<GetPortfolioPage, AxiosError>({
@@ -38,7 +37,6 @@ export const useGetPortfolioList = (sortOption: SortOption, category: string, va
     isPortfoliosError,
     isPortfolioFetching,
     ErrorInfo,
-    portfolioStatus,
     fetchNextPortfolio,
     hasNextPortfolio,
   };

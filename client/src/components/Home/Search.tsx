@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import * as S from './Search.style';
 import { skillList } from './skillsData';
 
@@ -11,8 +10,6 @@ type SearchProps = {
 };
 
 function Search({ setValue, category, setCategory, handleSearch, setSkillValue }: SearchProps) {
-  const [select, setSelect] = useState('userName');
-
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
@@ -32,7 +29,6 @@ function Search({ setValue, category, setCategory, handleSearch, setSkillValue }
   };
 
   const handleClickList = (e: React.MouseEvent<HTMLLIElement>) => {
-    setSelect(e.currentTarget.id);
     setCategory(e.currentTarget.id);
   };
 
@@ -66,19 +62,19 @@ function Search({ setValue, category, setCategory, handleSearch, setSkillValue }
         <S.NavList>
           <li
             id='userName'
-            className={select === 'userName' ? 'select' : ''}
+            className={category === 'userName' ? 'select' : ''}
             onClick={handleClickList}
           >
             작성자
           </li>
-          <li id='title' className={select === 'title' ? 'select' : ''} onClick={handleClickList}>
+          <li id='title' className={category === 'title' ? 'select' : ''} onClick={handleClickList}>
             프로젝트
           </li>
-          <li id='skill' className={select === 'skill' ? 'select' : ''} onClick={handleClickList}>
+          <li id='skill' className={category === 'skill' ? 'select' : ''} onClick={handleClickList}>
             기술스택
           </li>
         </S.NavList>
-        <S.Select name='search' id='search' onChange={handleSelectCategory}>
+        <S.Select name='search' id='search' onChange={handleSelectCategory} value={category}>
           <option value='userName'>작성자</option>
           <option value='title'>프로젝트</option>
           <option value='skill'>기술스택</option>
