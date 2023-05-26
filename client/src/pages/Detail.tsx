@@ -35,7 +35,6 @@ function Detail() {
       </S.LoadingContainer>
     );
   }
-  console.log(PortfolioInfo);
   return (
     <S.Container>
       {PortfolioInfo && (
