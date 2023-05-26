@@ -1,19 +1,21 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { PageParam } from '../types';
+import { GetUserPortfolioPage, PageParam } from '../types';
 import { UserPortfolioAPI } from '../api/client';
+import { AxiosError } from 'axios';
 
 const { getUserPortfolio } = UserPortfolioAPI;
 
 export const useGetUserPortfolios = (userId: number, size: string, sortOption: string) => {
   const {
-    isLoading: getUserPortfoliosLoading,
-    isError: getUserPortfoliosError,
-    isFetched: getUserPortfoliosFetched,
     data: UserPortfolios,
+    isError: getUserPortfoliosError,
+    isFetching: getUserPortfoliosFetching,
+    error: ErrorInfo,
     status: userPortfoliosStatus,
     fetchNextPage: fetchNextUserPortfolios,
     hasNextPage: hasNextUserPortfolios,
-  } = useInfiniteQuery({
+    isLoading: getUserPortfolioLoading,
+  } = useInfiniteQuery<GetUserPortfolioPage, AxiosError>({
     queryKey: ['userPortfolios', userId, sortOption],
     queryFn: ({ pageParam = 1 }: PageParam) =>
       getUserPortfolio(userId, sortOption, pageParam, size),
@@ -27,12 +29,13 @@ export const useGetUserPortfolios = (userId: number, size: string, sortOption: s
     retry: false,
   });
   return {
-    getUserPortfoliosLoading,
-    getUserPortfoliosError,
-    getUserPortfoliosFetched,
     UserPortfolios,
+    getUserPortfoliosError,
+    getUserPortfoliosFetching,
+    ErrorInfo,
     userPortfoliosStatus,
     fetchNextUserPortfolios,
     hasNextUserPortfolios,
+    getUserPortfolioLoading,
   };
 };
