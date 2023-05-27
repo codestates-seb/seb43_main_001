@@ -1,3 +1,5 @@
+<br/>
+
 <div align=center>
 
 <img src="https://github.com/codestates-seb/seb43_main_001/assets/77181642/9f531d4a-1bcb-43af-816a-2a364e94cffb" alt="Silmul logo" width="120" height="120" />
@@ -19,8 +21,8 @@
 - `프로젝트명` : 실물(Silmul)
 - `프로젝트 기간` : 2023.04.28 - 2023.05.25
 - `배포 링크` : [silmul.vercel.app](https://silmul.vercel.app)
-- `팀 문서` :  [공란 팀 문서](https://www.notion.so/2fed913cd2a84487a5f060ee504eb2df?pvs=4)
-- `프로젝트 문서` : [실물(Silmul) 서비스 소개](https://www.notion.so/Silmul-f8da3a8a800d4f25a16fc70ce67aea4c?pvs=4)  
+- `팀 문서` :  [공란 팀 문서](https://silmul-docs.notion.site/2fed913cd2a84487a5f060ee504eb2df)
+- `프로젝트 문서` : [실물(Silmul) 서비스 소개](https://silmul-docs.notion.site/Silmul-f8da3a8a800d4f25a16fc70ce67aea4c)  
 
 <br/>
 
