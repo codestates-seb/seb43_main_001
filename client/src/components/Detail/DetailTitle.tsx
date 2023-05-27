@@ -40,7 +40,7 @@ function DetailTitle({
 }: DetailTileProps) {
   const dispatch = useAppDispatch();
 
-  const { handlePortfolioDelete } = useDeletePortfolio(portfolioId);
+  const { handlePortfolioDelete } = useDeletePortfolio(portfolioId, userId);
 
   const { routeTo } = useRouter();
 
