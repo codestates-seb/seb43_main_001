@@ -39,7 +39,7 @@
 |:---:|:---:|:---:|:---:|
 | 이호인(FE / 팀장) | 곽지현(FE) | 박윤환(FE) | 태강희(FE) |
 | [@rickyshu](https://github.com/rickyshu) | [@938938](https://github.com/938938) | [@yunhwan98](https://github.com/yunhwan98) | [@khkh0109](https://github.com/khkh0109) |
-|- 포트폴리오 상세페이지 <br> - 회원가입 페이지 <br> -헤더 컴포넌트(다크/라이트모드) <br> -tokenClient(api)| - 사용자 페이지 | - 로그인 페이지 및 상태관리 <br> - 이메일 추가 페이지 <br> - 포트폴리오 작성, 수정 페이지 | - 메인 피드 페이지 <br> - 서비스 소개 페이지 <br> - 404 페이지 |
+|- 포트폴리오 상세페이지 <br> - 회원가입 페이지 <br> -헤더 컴포넌트(다크/라이트모드) <br> -tokenClient(api)| - 사용자 페이지 | - 로그인 페이지 및 상태관리 <br> - 이메일 추가 페이지 <br> - 포트폴리오 작성, 수정 페이지 | - 메인 피드 페이지 <br> - 서비스 소개 페이지 <br> - 404 페이지 <br> - 푸터, 카드 컴포넌트 |
 
 |![avatar5](https://github.com/codestates-seb/seb43_main_001/assets/77181642/5f61c654-94fb-4d32-b814-5e5d861bfae4) |![avatar6](https://github.com/codestates-seb/seb43_main_001/assets/77181642/c5461422-ad1b-48bf-88b6-bef390d7719e)|![avatar7](https://github.com/codestates-seb/seb43_main_001/assets/77181642/7eeeaa23-276c-43f5-b3d3-85b0754b6d34) |
 |:---:|:---:|:---:|
