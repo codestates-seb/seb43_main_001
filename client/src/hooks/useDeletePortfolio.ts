@@ -12,7 +12,7 @@ import { useRouter } from './useRouter';
 
 const { deletePortfolio } = PortfolioAPI;
 
-export const useDeletePortfolio = (portfolioId: number) => {
+export const useDeletePortfolio = (portfolioId: number, userId: number) => {
   const { routeTo } = useRouter();
   const queryClient = useQueryClient();
 
@@ -20,6 +20,7 @@ export const useDeletePortfolio = (portfolioId: number) => {
     mutationFn: deletePortfolio,
     onSuccess: () => {
       queryClient.invalidateQueries(['portfolioList']);
+      queryClient.invalidateQueries(['userPortfolios', userId]);
       toast.success('삭제되었습니다!');
       routeTo('/');
     },
