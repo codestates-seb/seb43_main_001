@@ -53,12 +53,20 @@ function Detail() {
             skills={PortfolioInfo.skills}
             portfolioId={PortfolioInfo.portfolioId}
           />
-          {`작성일: ${year}.${month}.${day}`}
-          <ProjectImg
-            representativeImgUrl={PortfolioInfo.representativeImgUrl}
-            viewCount={PortfolioInfo.viewCount}
-            likesCount={PortfolioInfo.likesCount}
-          />
+          <S.CreateAndViews>
+            <p>{`작성일: ${year}.${month}.${day}`}</p>
+            <S.IconSection>
+              <div className='view-icon'>
+                <S.ViewIcon />
+                <span>{PortfolioInfo.viewCount}</span>
+              </div>
+              <div className='like-icon'>
+                <S.LikeIcon />
+                <span>{PortfolioInfo.likesCount}</span>
+              </div>
+            </S.IconSection>
+          </S.CreateAndViews>
+          <ProjectImg representativeImgUrl={PortfolioInfo.representativeImgUrl} />
           <Description description={PortfolioInfo.description} />
           <ProjectContent content={PortfolioInfo.content} />
           <Comment />

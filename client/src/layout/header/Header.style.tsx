@@ -41,8 +41,9 @@ export const ButtonContainer = styled.div`
 `;
 
 export const Logo = styled.div`
-  margin-top: 8px;
   cursor: pointer;
+  width: 40px;
+  height: 40px;
   img {
     width: 40px;
     height: 40px;
