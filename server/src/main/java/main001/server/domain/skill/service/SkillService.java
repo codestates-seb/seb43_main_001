@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -39,6 +40,26 @@ public class SkillService {
 
             result.add(portfolioSkill);
         }
+
+        return result;
+    }
+
+    public String findSkill(String skill) {
+        return findById(
+                skill.replace(" ","").toUpperCase())
+                .getSkillId();
+    }
+
+    public List<String> findAllSkills() {
+        List<Skill> skills = skillRepository.findAll();
+        List<String> response = convertSkillToString(skills);
+        return response;
+    }
+
+    private List<String> convertSkillToString(List<Skill> skills) {
+        List<String> result = skills.stream()
+                .map(skill -> skill.getName())
+                .collect(Collectors.toList());
 
         return result;
     }
