@@ -98,9 +98,11 @@ function Comment() {
           </S.CommentShow>
         )}
         <S.Nav>
-          <S.NavBtn onClick={firstPage} disabled={isPreviousData || page === 1}>
-            &lt;&lt;
-          </S.NavBtn>
+          {pageArray.length !== 0 ? (
+            <S.NavBtn onClick={firstPage} disabled={isPreviousData || page === 1}>
+              &lt;&lt;
+            </S.NavBtn>
+          ) : null}
           {(pageArray ?? []).map((pageNumber) => (
             <CommentPageBtn
               key={pageNumber}
@@ -108,12 +110,14 @@ function Comment() {
               setPage={setPage}
             ></CommentPageBtn>
           ))}
-          <S.NavBtn
-            onClick={lastPage}
-            disabled={isPreviousData || page === PortfolioCommentData?.pageInfo.totalPages}
-          >
-            &gt;&gt;
-          </S.NavBtn>
+          {pageArray.length !== 0 ? (
+            <S.NavBtn
+              onClick={lastPage}
+              disabled={isPreviousData || page === PortfolioCommentData?.pageInfo.totalPages}
+            >
+              &gt;&gt;
+            </S.NavBtn>
+          ) : null}
         </S.Nav>
       </S.CommentWrapper>
     </S.Container>

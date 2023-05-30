@@ -28,6 +28,9 @@ function SignupForm() {
   const { handleCheckEmail } = usePostCheckEmail();
 
   const handleCheckDuplicateEmailClick = () => {
+    if (userEmail === '') {
+      return toast.info('이메일을 입력해주세요!');
+    }
     handleCheckEmail(userEmail);
     setEmailDuplicateChecked(true);
   };
@@ -35,7 +38,10 @@ function SignupForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (userEmail === '') setEmailDuplicateChecked(false);
-    if (!isEmailDupulicateChecked) return toast.info('이메일 중복 검사를 진행해주세요!');
+    if (!isEmailDupulicateChecked && userEmail !== '') {
+      return toast.info('이메일 중복 검사를 진행해주세요!');
+    }
+    if (!isEmailDupulicateChecked) return;
     if (userName === '') setNameError(true);
     else setNameError(false);
     if (userPassword.length < 8) return setPasswordError(true);
@@ -54,13 +60,18 @@ function SignupForm() {
           setValue={setUserName}
         />
         {nameError ? <S.ErrorMessage>빈 문자는 제출할 수 없습니다</S.ErrorMessage> : null}
-        <SignInput
-          type={'email'}
-          name={'이메일'}
-          placeholder={'이메일을 입력하세요'}
-          value={userEmail}
-          setValue={setUserEmail}
-        />
+        <S.EmailWrapper>
+          <SignInput
+            type={'email'}
+            name={'이메일'}
+            placeholder={'이메일을 입력하세요'}
+            value={userEmail}
+            setValue={setUserEmail}
+          />
+          <S.checkDuplicateEmailButton onClick={handleCheckDuplicateEmailClick}>
+            중복 검사
+          </S.checkDuplicateEmailButton>
+        </S.EmailWrapper>
         <SignInput
           type={'password'}
           name={'비밀번호'}
@@ -74,9 +85,6 @@ function SignupForm() {
           이미 계정이 있으신가요? <strong onClick={() => routeTo('/Login')}>로그인</strong>
         </S.AlreadySignUp>
       </S.SignUpForm>
-      <S.checkDuplicateEmailButton nameError={nameError} onClick={handleCheckDuplicateEmailClick}>
-        중복 검사
-      </S.checkDuplicateEmailButton>
     </S.Container>
   );
 }

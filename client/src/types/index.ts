@@ -58,6 +58,12 @@ export type GetUserComment = {
   portfolioId?: number;
 };
 
+export type GetUserCommentPage = {
+  currentPage: number;
+  data: GetUserComment[];
+  pageInfo: PageInfo;
+};
+
 export type PostUserComment = {
   userId: number;
   writerId: number;

@@ -109,3 +109,7 @@ export const CategoryBtns = styled.div`
     }
   }
 `;
+
+export const Target = styled.div`
+  height: 1px;
+`;

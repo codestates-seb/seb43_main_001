@@ -10,7 +10,7 @@ type ButtonProps = {
 };
 export const Container = styled.section`
   position: relative;
-  width: 550px;
+  width: 100%;
   margin: 0 auto;
 `;
 
@@ -18,7 +18,7 @@ export const SignUpForm = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 550px;
+  width: 100%;
   gap: 10px;
   margin: 0 auto;
 `;
@@ -28,10 +28,10 @@ export const Title = styled.div`
   font-weight: bold;
 `;
 
-export const checkDuplicateEmailButton = styled.button<ButtonProps>`
+export const checkDuplicateEmailButton = styled.button`
   position: absolute;
-  right: 5.9rem;
-  top: ${(props) => (props.nameError ? '13rem' : '11rem')};
+  right: 0.5rem;
+  top: 0.2rem;
   width: 50px;
   height: 30px;
   border-radius: 8px;
@@ -47,6 +47,10 @@ export const SignUpButton = styled.button`
   font-size: 1.2rem;
   font-weight: 500;
   border-radius: 8px;
+`;
+
+export const EmailWrapper = styled.div`
+  position: relative;
 `;
 
 export const AlreadySignUp = styled.p`

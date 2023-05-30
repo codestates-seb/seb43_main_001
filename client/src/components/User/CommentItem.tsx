@@ -6,9 +6,9 @@ import { GetUserComment } from '../../types';
 import { useRouter } from '../../hooks/useRouter';
 
 type CommentItemProps = {
-  data: GetUserComment;
-  path: string;
+  path: 'usercomments' | 'portfoliocomments';
   link: boolean;
+  data: GetUserComment;
 };
 
 const CommentItem: React.FC<CommentItemProps> = ({ data, path, link }) => {
@@ -67,12 +67,6 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, path, link }) => {
     CommentRef.current?.focus();
   }, [onEdit]);
 
-  // 비밀글 체크가 되어있는 경우, 작성자 & 수령자(?)를 제외하곤 *********** 표시 혹은 댓글을 아예 미표시
-  // editText 부분이랑 CommentUser 부분만 ******* 으로 표시하는게 더 조건 걸기가 쉬울 것 같음.
-
-  // auth : 수정 가능
-  // deletable : 삭제 / 수정 가능 (비밀글 열람 가능)
-
   if (delConfirm) {
     return (
       <S.CommentItem>
@@ -97,6 +91,9 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, path, link }) => {
   return (
     <S.CommentItem>
       {data.deletable && <S.DelBtn onClick={onEdit ? onCancelHandler : delConfimHandler} />}
+      {path === 'portfoliocomments' && data.auth && (
+        <S.DelBtn onClick={onEdit ? onCancelHandler : delConfimHandler} />
+      )}
       {data.auth && !onEdit && <S.EditBtn onClick={onEditHandler} />}
       {onEdit && <S.SubmitBtn onClick={onSubmitHandler} />}
       {onEdit && (

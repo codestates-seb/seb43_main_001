@@ -1,14 +1,13 @@
 import * as S from './CommentContainer.style';
-import CommentItem from './CommentItem';
 import { ChangeEvent, useState } from 'react';
-import { useGetUserComments } from '../../hooks/useGetUserComment';
-import { useGetCommentsToPortfolio } from '../../hooks/useGetCommentsToPortfolio';
-import { useGetCommentsToUser } from '../../hooks/useGetCommentsToUser';
 import { usePostUserComment } from '../../hooks/usePostUserComment';
 import { toast } from 'react-toastify';
 import { useAppSelector } from '../../hooks/reduxHook';
+import CommentsOfUser from './CommentsOfUser';
+import CommentsToUser from './CommentsToUser';
+import CommentsToPortfolio from './CommentsToPortfolio';
 
-type CommentProps = {
+export type CommentProps = {
   userId: number;
 };
 
@@ -36,10 +35,6 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
     setContent(e.target.value);
   };
 
-  const { UserComments } = useGetUserComments(userId);
-  const { CommentsToPortfolio } = useGetCommentsToPortfolio(userId);
-  const { CommentsToUser } = useGetCommentsToUser(userId);
-
   return (
     <S.CommentContainer>
       <S.SelectBtn>
@@ -52,26 +47,7 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
       </S.SelectBtn>
       {selectComment ? (
         <>
-          {UserComments && (
-            <>
-              {UserComments.length > 0 ? (
-                <S.Comments CommentLen={UserComments.length}>
-                  {UserComments.map((data) => (
-                    <CommentItem
-                      key={data.userCommentId}
-                      data={data}
-                      path='usercomments'
-                      link={false}
-                    />
-                  ))}
-                </S.Comments>
-              ) : (
-                <>
-                  <p>작성된 댓글이 없습니다.</p>
-                </>
-              )}
-            </>
-          )}
+          <CommentsOfUser userId={userId} />
           <S.CommentAdd onSubmit={addHandler}>
             <label htmlFor='Comment'></label>
             <textarea
@@ -102,53 +78,7 @@ const CommentContainer: React.FC<CommentProps> = ({ userId }) => {
               포트폴리오
             </button>
           </S.CategoryBtns>
-          {category ? (
-            <>
-              {CommentsToUser && (
-                <>
-                  {CommentsToUser.length > 0 ? (
-                    <S.Comments CommentLen={CommentsToUser.length}>
-                      {CommentsToUser.map((data) => (
-                        <CommentItem
-                          key={data.userCommentId}
-                          data={data}
-                          path='usercomments'
-                          link={true}
-                        />
-                      ))}
-                    </S.Comments>
-                  ) : (
-                    <>
-                      <p>작성한 댓글이 없습니다.</p>
-                    </>
-                  )}
-                </>
-              )}
-            </>
-          ) : (
-            <>
-              {CommentsToPortfolio && (
-                <>
-                  {CommentsToPortfolio.length > 0 ? (
-                    <S.Comments CommentLen={CommentsToPortfolio.length}>
-                      {CommentsToPortfolio.map((data) => (
-                        <CommentItem
-                          key={data.userCommentId}
-                          data={data}
-                          path='portfoliocomments'
-                          link={true}
-                        />
-                      ))}
-                    </S.Comments>
-                  ) : (
-                    <>
-                      <p>작성한 댓글이 없습니다.</p>
-                    </>
-                  )}
-                </>
-              )}
-            </>
-          )}
+          {category ? <CommentsToUser userId={userId} /> : <CommentsToPortfolio userId={userId} />}
         </>
       )}
     </S.CommentContainer>

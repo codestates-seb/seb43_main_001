@@ -1,9 +1,14 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { StyledLoading } from '../components/common/Loading.style';
 // constants
-import { MAX_SIZE } from '../constants/index';
+import { MAX_SIZE, COLOR } from '../constants/index';
+
+// icons
+import { RxHeartFilled } from 'react-icons/rx';
+import { IoMdEye } from 'react-icons/io';
 
 const { content } = MAX_SIZE;
+const { subFontColor } = COLOR;
 
 export const Container = styled.main`
   width: 100%;
@@ -34,4 +39,53 @@ export const LoadingContainer = styled.main`
 export const LoadingComponent = styled(StyledLoading)`
   width: 130px;
   height: 130px;
+`;
+
+export const CreateAndViews = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const IconSection = styled.div`
+  display: flex;
+  gap: 5px;
+  right: 15px;
+  bottom: 15px;
+  /* margin-right: 0.8rem; */
+  & span {
+    font-size: 1rem;
+    margin-left: 3px;
+    margin-bottom: 3px;
+  }
+  .view-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .like-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+`;
+
+const CommonIconStyle = css`
+  color: ${subFontColor};
+  font-size: 2rem;
+`;
+
+export const ViewIcon = styled(IoMdEye)`
+  ${CommonIconStyle}
+  font-size: 19px;
+  @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
+    font-size: 30px;
+  }
+`;
+
+export const LikeIcon = styled(RxHeartFilled)`
+  ${CommonIconStyle}
+  font-size: 15px;
+  @media ${({ theme }) => theme.breakpoints.DESKTOPMIN} {
+    font-size: 24px;
+  }
 `;
