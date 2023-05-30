@@ -17,7 +17,6 @@ import {
   PostPortfolioComment,
   PatchPortfolioComment,
   GetUserProfile,
-  GetUserComment,
   PatchUserProfile,
   DeletePortfolioComment,
   PostPortfolio,
@@ -29,6 +28,7 @@ import {
   GetUserPortfolioPage,
   SignUp,
   Login,
+  GetUserCommentPage,
 } from '../types/index';
 
 const { refreshUrl } = URL;
@@ -254,7 +254,6 @@ export const UserProfileAPI = {
     return userProfileData.data.data;
   },
   postUserImg: async (userId: number, userImg: File) => {
-    // ! : 파일은 form 데이터로 전송
     const profileImg = new FormData();
     profileImg.append('profileImg', userImg);
     const axiosConfig = {
@@ -302,23 +301,37 @@ export const UserPortfolioAPI = {
 };
 
 export const UserCommentsAPI = {
-  getUserComments: async (userId: number): Promise<GetUserComment[]> => {
+  getUserComments: async (
+    userId: number,
+    page: number,
+    size: string,
+  ): Promise<GetUserCommentPage> => {
     const userCommentsData = await tokenClient.get(
-      `/api/usercomments/users/${userId}?page=1&size=10`,
+      `/api/usercomments/users/${userId}?page=${page}&size=${size}`,
     );
-    return userCommentsData.data.data;
+    return { ...userCommentsData.data, currentPage: page };
   },
   // * : 한 유저가 다른 사람의 포트폴리에 작성한 댓글
-  getCommentsToPortfolio: async (userId: number): Promise<GetUserComment[]> => {
-    const commentsToPortfolioData = await tokenClient.get(`/api/portfoliocomments/users/${userId}`);
-    return commentsToPortfolioData.data.data;
+  getCommentsToPortfolio: async (
+    userId: number,
+    page: number,
+    size: string,
+  ): Promise<GetUserCommentPage> => {
+    const commentsToPortfolioData = await tokenClient.get(
+      `/api/portfoliocomments/users/${userId}?page=${page}&size=${size}`,
+    );
+    return { ...commentsToPortfolioData.data, currentPage: page };
   },
   // * : 한 유저가 다른 사람에게 작성한 댓글
-  getCommentsToUser: async (userId: number): Promise<GetUserComment[]> => {
+  getCommentsToUser: async (
+    userId: number,
+    page: number,
+    size: string,
+  ): Promise<GetUserCommentPage> => {
     const commentsToUserData = await tokenClient.get(
-      `/api/usercomments/writers/${userId}?page=1&size=10`,
+      `/api/usercomments/writers/${userId}?page=${page}&size=${size}`,
     );
-    return commentsToUserData.data.data;
+    return { ...commentsToUserData.data, currentPage: page };
   },
   postUserComment: async ({ userId, writerId, content, userCommentStatus }: PostUserComment) => {
     return await tokenClient.post('/api/usercomments', {
@@ -341,7 +354,6 @@ export const UserCommentsAPI = {
         : { portfolioCommentId: commentId, userId, portfolioId: pathId, content },
     );
   },
-  // ! : 전달되는게 어떤 id값인지 확인 필요
   deleteUserComment: async ({ commentId, path }: DeleteUserComment) => {
     await tokenClient.delete(`/api/${path}/${commentId}`);
   },
