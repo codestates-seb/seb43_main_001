@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import main001.server.amazon.s3.service.S3Service;
 import main001.server.domain.attachment.image.entity.ImageAttachment;
-import main001.server.domain.attachment.image.entity.RepresentativeAttachment;
+import main001.server.domain.attachment.image.entity.Thumbnail;
 import main001.server.domain.attachment.image.repository.ImageAttachmentRepository;
-import main001.server.domain.attachment.image.repository.RepresentativeImageRepository;
+import main001.server.domain.attachment.image.repository.ThumbnailRepository;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.repository.PortfolioRepository;
 import main001.server.domain.skill.entity.PortfolioSkill;
@@ -35,15 +35,9 @@ import java.util.List;
 public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
     private final UserRepository userRepository;
-    private final S3Service s3Service;
-    private final RepresentativeImageRepository representativeImageRepository;
-    private final ImageAttachmentRepository imageAttachmentRepository;
     private final SkillService skillService;
 
-    private final String DEFAULT_IMAGE_URL = "https://main001-portfolio.s3.ap-northeast-2.amazonaws.com/default/default.png";
-    private final static String VIEWCOOKIENAME = "alreadyViewCookie";
-
-    public Portfolio createPortfolio(Portfolio portfolio, List<String> skills, MultipartFile representativeImg) throws IOException{
+    public Portfolio createPortfolio(Portfolio portfolio, List<String> skills){
         User user = portfolio.getUser();
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
@@ -59,8 +53,6 @@ public class PortfolioService {
         }
         portfolio.setUser(verifiedUser.get());
 
-        RepresentativeAttachment attachment = uploadThumbnail(portfolio, representativeImg);
-        representativeImageRepository.save(attachment);
 
         Portfolio saved = portfolioRepository.save(portfolio);
 
@@ -69,23 +61,7 @@ public class PortfolioService {
         return saved;
     }
 
-    private RepresentativeAttachment uploadThumbnail(Portfolio portfolio, MultipartFile representativeImg) throws IOException {
-        RepresentativeAttachment attachment;
-        if (representativeImg != null && !representativeImg.isEmpty()) {
-            // 이미지가 첨부된 경우에 대한 처리
-            String representativeImgUrl = s3Service.uploadFile(representativeImg, "images");
-            attachment = new RepresentativeAttachment(representativeImgUrl);
-        } else {
-            // 이미지가 첨부되지 않은 경우에 대한 처리
-            String defaultImageUrl = DEFAULT_IMAGE_URL;
-            attachment = new RepresentativeAttachment(defaultImageUrl);
-        }
-        attachment.setPortfolio(portfolio);
-        portfolio.setRepresentativeAttachment(attachment);
-        return attachment;
-    }
-
-    public Portfolio updatePortfolio(Portfolio portfolio, Long portfolioId,  List<String> skills, MultipartFile representativeImg) throws IOException{
+    public Portfolio updatePortfolio(Portfolio portfolio, List<String> skills) {
         Portfolio findPortfolio = findVerifiedPortfolio(portfolio.getPortfolioId());
         User user = portfolio.getUser();
         Optional<User> verifiedUser = userRepository.findById(user.getUserId());
@@ -100,13 +76,6 @@ public class PortfolioService {
                 .ifPresent(gitLink -> findPortfolio.setGitLink(gitLink));
         Optional.ofNullable(portfolio.getContent())
                 .ifPresent(content -> findPortfolio.setContent(content));
-
-
-        if (representativeImg != null && representativeImg.getSize() > 0) {
-            updateRepresentativeImage(portfolioId, representativeImg);
-        } else {
-            updateRepresentativeImage(portfolioId, null);
-        }
 
         Portfolio saved = portfolioRepository.save(findPortfolio);
         addSkills(saved, skills);
@@ -154,56 +123,6 @@ public class PortfolioService {
                 () -> new BusinessLogicException(ExceptionCode.PORTFOLIO_NOT_FOUND));
         return findPortfolio;
     }
-
-
-    public void updateRepresentativeImage(Long portfolioId, MultipartFile representativeImg) throws IOException {
-        Portfolio portfolio = findPortfolio(portfolioId);
-        RepresentativeAttachment currentImageAttachment = portfolio.getRepresentativeAttachment();
-
-        // 현재 첨부된 대표 이미지 파일을 삭제
-        if (currentImageAttachment != null) {
-            // s3에서 이미지 파일 삭제
-            s3Service.deleteFile(currentImageAttachment.getRepresentativeImgUrl());
-            // 포트폴리오에서 이미지 첨부 파일 삭제
-            portfolio.setRepresentativeAttachment(null);
-            representativeImageRepository.delete(currentImageAttachment);
-        }
-
-        representativeImageRepository.save(uploadThumbnail(portfolio, representativeImg));
-
-    }
-
-
-    public List<String> uploadImage(List<MultipartFile> images) throws IOException {
-        List<String> ImgUrls = new ArrayList<>();
-        for (MultipartFile image : images) {
-            String ImgUrl = s3Service.uploadFile(image, "images");
-            ImageAttachment imageAttachment = new ImageAttachment(ImgUrl);
-            imageAttachmentRepository.save(imageAttachment);
-            ImgUrls.add(ImgUrl);
-        }
-        return ImgUrls;
-    }
-
-    public void deleteImage(Long imgId) {
-        Optional<ImageAttachment> imageAttachmentOptional = imageAttachmentRepository.findById(imgId);
-        imageAttachmentOptional.ifPresent(imageAttachment -> {
-            imageAttachmentRepository.delete(imageAttachment);
-            s3Service.deleteFile(imageAttachment.getImgUrl());
-        });
-    }
-
-    public List<String> getImageUrlList() {
-        List<ImageAttachment> imageList = imageAttachmentRepository.findAll();
-        List<String> imageUrlList = new ArrayList<>();
-
-        for (ImageAttachment imageAttachment : imageList) {
-            imageUrlList.add(imageAttachment.getImgUrl());
-        }
-
-        return imageUrlList;
-    }
-
 
     @Transactional
     public void increaseViewCount(Long portfolioId) {
