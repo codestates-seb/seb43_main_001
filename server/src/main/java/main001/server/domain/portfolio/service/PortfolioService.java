@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
-
 @Slf4j
 @Service
 @Transactional
@@ -193,7 +192,6 @@ public class PortfolioService {
         return imageUrlList;
     }
 
-
     @Transactional
     public void increaseViewCount(Long portfolioId) {
         Portfolio portfolio = findVerifiedPortfolio(portfolioId);
@@ -223,6 +221,7 @@ public class PortfolioService {
         } else if (category.equals("title")) {
             response = portfolioRepository.findByTitle(value, pageable);
         } else if (category.equals("skill")) {
+            value = skillService.findSkill(value);
             response = portfolioRepository.findBySkillId(value,pageable);
         } else {
             throw new BusinessLogicException(ExceptionCode.SEARCH_CONDITION_MISMATCH);
