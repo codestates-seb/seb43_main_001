@@ -21,7 +21,7 @@ export const SelectBtn = styled.div`
     box-shadow: 0;
     transition: all 0.3s;
     &.select {
-      box-shadow: 0 -1px 0.5px ${(props) => props.theme.themeStyle.fontColor} inset;
+      box-shadow: 0 -1px 0px ${(props) => props.theme.themeStyle.fontColor} inset;
       transition: all 0.3s;
     }
   }
