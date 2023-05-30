@@ -35,7 +35,6 @@ function Comment() {
     .fill(0)
     .map((_, index) => index + 1);
 
-  console.log('array', pageArray);
   const lastPage = () => setPage(PortfolioCommentData?.pageInfo.totalPages || 1);
 
   const firstPage = () => setPage(1);
