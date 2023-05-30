@@ -206,7 +206,8 @@ export const PortfolioAPI = {
     return { ...searchPortfolio.data, currentPage: page };
   },
   portfolioViews: async (portfolioId: number) => {
-    return await tokenClient.patch(`/portfolios/${portfolioId}/views`);
+    console.log('getetegete');
+    return await tokenClient.get(`/portfolios/${portfolioId}/views`);
   },
   deletePortfolio: async (portfolioId: number) => {
     return await tokenClient.delete(`/portfolios/${portfolioId}`);
