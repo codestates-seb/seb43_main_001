@@ -1,0 +1,84 @@
+spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2
+  datasource:
+    url: jdbc:h2:mem:test
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  servlet: # Multipart 설정
+    multipart:
+      location: c:\\portfolio
+      enabled: true
+      max-file-size: 10MB # 파일 하나의 최대사이즈 설정
+      max-request-size: 100MB #여러 파일 업로드 시 전체 합의 크기 설정
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${GITHUB_ID}
+            client-secret: ${GITHUB_SECRET}
+            client-name: Github
+            redirect-uri: "http://localhost:8080/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+            scope:
+              - email
+              - user
+              - avatar_url
+          google:
+            client-id: ${GOOGLE_ID}
+            client-secret: ${GOOGLE_SECRET}
+            client-name: Google
+            redirect-uri: "http://localhost:8080/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+            scope:
+              - email
+              - profile
+
+# AWS 설정
+cloud:
+  aws:
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
+    s3:
+      bucket: ${S3_BUCKET_NAME}
+    region:
+      static: ap-northeast-2  # AWS 기본 리전을 설정
+    stack:
+      auto: false
+
+logging:
+  level:
+    org:
+      springframework:
+        orm:
+          jpa: DEBUG
+
+server:
+  servlet:
+    encoding:
+      force-response: true
+
+mail:
+  address:
+    admin: admin@gmail.com
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  access-token-expiration: 1440 # Access Token 유효기간(단위 : 분단위)
+  refresh-token-expiration: 2880 # Refresh Token 유효기간(단위 : 분단위)
+
+# redirect uri
+uri:
+  address:
+    scheme: "http"
+    url: "localhost"
+    port: "8080"
