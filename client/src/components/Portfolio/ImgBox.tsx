@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { PortfolioAPI } from '../../api/client';
 import * as S from './ImgBox.style';
 
 type ImgBoxProps = {
@@ -6,11 +7,19 @@ type ImgBoxProps = {
   img: File | null;
 
   setImg: (value: React.SetStateAction<File | null>) => void;
-  representativeImgUrl: string | null;
+  representativeImgUrl: string;
+  portfolioId?: string;
+  isEdit?: boolean;
 };
 
-const ImgBox: React.FC<ImgBoxProps> = ({ text, setImg, representativeImgUrl }) => {
-  const [imgSrc, setImgSrc] = useState<string>(representativeImgUrl ? representativeImgUrl : '');
+const ImgBox: React.FC<ImgBoxProps> = ({
+  text,
+  setImg,
+  representativeImgUrl,
+  portfolioId,
+  isEdit,
+}) => {
+  const [imgSrc, setImgSrc] = useState<string>(representativeImgUrl);
 
   //* Preview Img를 조작하는 함수
   const handlePreviewImg = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -19,18 +28,38 @@ const ImgBox: React.FC<ImgBoxProps> = ({ text, setImg, representativeImgUrl }) =
       const reader = new FileReader();
       reader.readAsDataURL(file);
 
-      reader.onloadend = function () {
-        setImgSrc(String(reader.result));
+      reader.onloadend = async () => {
+        // 수정 시
+        if (isEdit) {
+          try {
+            // 이미지 업로드
+            const url = await PortfolioAPI.uploadThumbnail(file, Number(portfolioId));
+            setImgSrc(url);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+        // 생성 시
+        else {
+          setImgSrc(String(reader.result));
+          setImg(file);
+        }
       };
-
-      if (file) setImg(file);
     }
   };
 
   // *Preview Img 삭제하는 함수
-  const handleRemoveImg = () => {
-    setImg(null);
-    setImgSrc('');
+  const handleRemoveImg = async () => {
+    // 수정 시
+    if (isEdit) {
+      const url = await PortfolioAPI.uploadThumbnail(null, Number(portfolioId));
+      setImgSrc(url);
+    }
+    // 생성 시
+    else {
+      setImg(null);
+      setImgSrc('');
+    }
   };
   return (
     <S.ImgContainer>
