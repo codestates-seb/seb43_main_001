@@ -22,6 +22,7 @@ function SignupForm() {
 
   const [nameError, setNameError] = useState<boolean>(false);
   const [passwordError, setPasswordError] = useState<boolean>(false);
+  const [nameLengthError, setNameLengthError] = useState<boolean>(false);
 
   const { routeTo } = useRouter();
   const { postUserInfoSignUp } = usePostUserSignUp();
@@ -42,8 +43,10 @@ function SignupForm() {
       return toast.info('이메일 중복 검사를 진행해주세요!');
     }
     if (!isEmailDupulicateChecked) return;
-    if (userName === '') setNameError(true);
+    if (userName === '') return setNameError(true);
     else setNameError(false);
+    if (userName.length > 9) return setNameLengthError(true);
+    else setNameLengthError(false);
     if (userPassword.length < 8) return setPasswordError(true);
     else setPasswordError(false);
     postUserInfoSignUp({ name: userName, password: userPassword, email: userEmail });
@@ -55,11 +58,15 @@ function SignupForm() {
         <SignInput
           type={'text'}
           name={'이름'}
-          placeholder={'이름을 입력하세요'}
+          placeholder={'이름을 입력하세요(9자 이하로 입력해주세요!)'}
           value={userName}
           setValue={setUserName}
         />
-        {nameError ? <S.ErrorMessage>빈 문자는 제출할 수 없습니다</S.ErrorMessage> : null}
+        {nameError ? (
+          <S.ErrorMessage>빈 문자는 제출할 수 없습니다</S.ErrorMessage>
+        ) : nameLengthError ? (
+          <S.ErrorMessage>9자 이하로 입력하셔야 합니다!</S.ErrorMessage>
+        ) : null}
         <S.EmailWrapper>
           <SignInput
             type={'email'}
