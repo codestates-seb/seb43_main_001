@@ -75,7 +75,7 @@ function SignupForm() {
             value={userEmail}
             setValue={setUserEmail}
           />
-          <S.checkDuplicateEmailButton onClick={handleCheckDuplicateEmailClick}>
+          <S.checkDuplicateEmailButton type='button' onClick={handleCheckDuplicateEmailClick}>
             중복 검사
           </S.checkDuplicateEmailButton>
         </S.EmailWrapper>
