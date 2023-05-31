@@ -119,6 +119,23 @@ export const userAPI = {
 
 // * : Portfolio
 export const PortfolioAPI = {
+  uploadThumbnail: async (img: File | null, portfolioId: number): Promise<string> => {
+    const formData = new FormData();
+
+    formData.append('representativeImg', img ? img : new Blob(undefined));
+
+    const { data } = await tokenClient.patch(
+      `/portfolios/${portfolioId}/thumbnail-upload`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      },
+    );
+    return data;
+  },
+
   uploadImg: async (img: File): Promise<string> => {
     const formData = new FormData();
     formData.append('images', img);
@@ -161,24 +178,19 @@ export const PortfolioAPI = {
     const { portfolioId, postDto, representativeImg, files } = Portfolio;
 
     // 폼 데이터 형식 사용
-    const formData = new FormData();
+    // const formData = new FormData();
 
-    const Dto = new Blob([JSON.stringify(postDto)], {
-      type: 'application/json',
-    });
+    // const Dto = new Blob([JSON.stringify(postDto)], {
+    //   type: 'application/json',
+    // });
 
-    formData.append('patchDto', Dto);
-    if (representativeImg) formData.append('representativeImg', representativeImg);
-    if (files) formData.append('files', files);
+    // formData.append('patchDto', Dto);
+    // if (representativeImg) formData.append('representativeImg', representativeImg);
+    // if (files) formData.append('files', files);
 
     return await tokenClient.patch(
       `${process.env.REACT_APP_API_URL}/portfolios/${portfolioId}`,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      },
+      postDto,
     );
   },
   getSortPortfolioList: async (
