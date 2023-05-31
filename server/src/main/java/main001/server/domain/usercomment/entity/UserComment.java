@@ -24,6 +24,10 @@ public class UserComment extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    @Enumerated(value = EnumType.STRING)
+    @Column(length= 10)
+    private UserCommentStatus userCommentStatus = UserCommentStatus.PUBLIC;
+
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;

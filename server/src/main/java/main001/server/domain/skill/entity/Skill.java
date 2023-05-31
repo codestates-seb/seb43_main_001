@@ -27,9 +27,6 @@ public class Skill extends BaseTimeEntity {
 //    @OneToMany(mappedBy = "skill", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<UserSkill> userSkills = new ArrayList<>();
 
-    @OneToMany(mappedBy = "skill", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PortfolioSkill> portfolioSkills = new ArrayList<>();
-
     public Skill(String name) {
         this.name = name;
     }

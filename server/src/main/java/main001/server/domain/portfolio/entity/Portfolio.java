@@ -86,7 +86,12 @@ public class Portfolio extends BaseTimeEntity {
 
     public void deleteSkill(PortfolioSkill portfolioSkill) {
         skills.remove(portfolioSkill);
-        portfolioSkill.deletePortfolioSkill();
+    }
+
+    public void clearSkills() {
+        for(int i = skills.size()-1; i>=0; i--) {
+            deleteSkill(skills.get(i));
+        }
     }
 
     public void updateViewCount() {

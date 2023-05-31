@@ -22,7 +22,7 @@ public class PortfolioCommentMapper {
         PortfolioComment portfolioComment = new PortfolioComment();
         portfolioComment.setContent(postDto.getContent());
 
-        portfolioComment.setDepth(postDto.getDepth());
+//        portfolioComment.setDepth(postDto.getDepth());
 
         User user = new User();
         user.setUserId(postDto.getUserId());
@@ -32,14 +32,14 @@ public class PortfolioCommentMapper {
         portfolio.setPortfolioId(postDto.getPortfolioId());
         portfolioComment.setPortfolio(portfolio);
 
-        if(postDto.getParentCommentId()==null) {
-            portfolioComment.setParentComment(null);
-        }
-        else {
-            PortfolioComment parentComment = new PortfolioComment();
-            parentComment.setPortfolioCommentId(postDto.getParentCommentId());
-            portfolioComment.setParentComment(parentComment);
-        }
+//        if(postDto.getParentCommentId()==null) {
+//            portfolioComment.setParentComment(null);
+//        }
+//        else {
+//            PortfolioComment parentComment = new PortfolioComment();
+//            parentComment.setPortfolioCommentId(postDto.getParentCommentId());
+//            portfolioComment.setParentComment(parentComment);
+//        }
 
         return portfolioComment;
     }
@@ -67,11 +67,11 @@ public class PortfolioCommentMapper {
                 .userName(portfolioComment.getUser().getName())
                 .userProfileImg(portfolioComment.getUser().getProfileImg())
                 .portfolioId(portfolioComment.getPortfolio().getPortfolioId())
-                .rootId(portfolioComment.getRootComment()==null ?
-                        null:portfolioComment.getRootComment().getPortfolioCommentId())
-                .parentId(portfolioComment.getParentComment()==null ?
-                        null:portfolioComment.getParentComment().getPortfolioCommentId())
-                .depth(portfolioComment.getDepth())
+//                .rootId(portfolioComment.getRootComment()==null ?
+//                        null:portfolioComment.getRootComment().getPortfolioCommentId())
+//                .parentId(portfolioComment.getParentComment()==null ?
+//                        null:portfolioComment.getParentComment().getPortfolioCommentId())
+//                .depth(portfolioComment.getDepth())
                 .createdAt(portfolioComment.getCreatedAt())
                 .updatedAt(portfolioComment.getUpdatedAt())
                 .auth(portfolioComment.getUser().isAuth())

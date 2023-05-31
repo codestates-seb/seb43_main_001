@@ -15,17 +15,13 @@ public class PortfolioSkill {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long portfolioSkillId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "portfolio_id")
     private Portfolio portfolio;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "skill_id")
     private Skill skill;
-
-    public void deletePortfolioSkill() {
-        this.getSkill().getPortfolioSkills().remove(this);
-    }
 
     public static PortfolioSkill createPortfolioSkill( Skill skill) {
         PortfolioSkill portfolioSkill = new PortfolioSkill();
@@ -44,9 +40,5 @@ public class PortfolioSkill {
 
     public void setSkill(Skill skill) {
         this.skill = skill;
-
-        if(!skill.getPortfolioSkills().contains(this)) {
-            skill.getPortfolioSkills().add(this);
-        }
     }
 }

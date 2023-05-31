@@ -14,6 +14,7 @@ public enum ExceptionCode {
     NO_PERMISSION_DELETING_POST(403,"작성자만 삭제할 수 있습니다."),
     NOT_ALLOW_NULL_VALUE(400, "적절한 입력값을 입력하세요."),
     EMAIL_NOT_EXIST(400, "등록된 회원 이메일이 없습니다."),
+    TOKEN_NOT_EXIST(400,"로그인이 필요합니다."),
 
     // portfolio 관련
     PORTFOLIO_NOT_FOUND(404, "포트폴리오가 존재하지 않습니다."),
@@ -26,7 +27,6 @@ public enum ExceptionCode {
 
     // skill 관련
     SKILL_NOT_FOUND(404,"조회된 기술이 없습니다."),
-    SKILL_NOT_EXIST(400, "등록할 기술이 없습니다."),
 
     // likes 관련
     LIKES_EXIST(400, "이미 좋아요를 누른 게시물입니다."),
