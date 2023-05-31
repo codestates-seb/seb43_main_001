@@ -36,8 +36,11 @@ public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
     private final UserRepository userRepository;
     private final SkillService skillService;
+    private final S3Service s3Service;
+    private final ThumbnailRepository thumbnailRepository;
+    private final String DEFAULT_IMAGE_URL = "https://main001-portfolio.s3.ap-northeast-2.amazonaws.com/default/default.png";
 
-    public Portfolio createPortfolio(Portfolio portfolio, List<String> skills){
+    public Portfolio createPortfolio(Portfolio portfolio, List<String> skills, MultipartFile image) throws IOException{
         User user = portfolio.getUser();
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
@@ -53,6 +56,8 @@ public class PortfolioService {
         }
         portfolio.setUser(verifiedUser.get());
 
+        Thumbnail thumbnail = uploadThumbnail(portfolio, image);
+        thumbnailRepository.save(thumbnail);
 
         Portfolio saved = portfolioRepository.save(portfolio);
 
@@ -60,6 +65,39 @@ public class PortfolioService {
 
         return saved;
     }
+
+    private Thumbnail uploadThumbnail(Portfolio portfolio, MultipartFile image) throws IOException {
+        Thumbnail thumbnail;
+        if (image != null && !image.isEmpty()) {
+            // 이미지가 첨부된 경우에 대한 처리
+            String imgUrl = s3Service.uploadFile(image, "images");
+            thumbnail = new Thumbnail(imgUrl);
+        } else {
+            // 이미지가 첨부되지 않은 경우에 대한 처리
+            String defaultImageUrl = DEFAULT_IMAGE_URL;
+            thumbnail = new Thumbnail(defaultImageUrl);
+        }
+
+        thumbnail.setPortfolio(portfolio);
+        portfolio.setThumbnail(thumbnail);
+        return thumbnail;
+    }
+
+    public String updateThumbnail(MultipartFile image, Long portfolioId) throws IOException {
+        Portfolio findPortfolio = findVerifiedPortfolio(portfolioId);
+        Thumbnail currentThumbnail = findPortfolio.getThumbnail();
+
+        if (!DEFAULT_IMAGE_URL.equals(currentThumbnail)) {
+            s3Service.deleteFile("images", currentThumbnail.getImgUrl());
+            thumbnailRepository.delete(currentThumbnail);
+        }
+
+        Thumbnail thumbnail = uploadThumbnail(findPortfolio,image);
+        thumbnailRepository.save(thumbnail);
+
+        return thumbnail.getImgUrl();
+    }
+
 
     public Portfolio updatePortfolio(Portfolio portfolio, List<String> skills) {
         Portfolio findPortfolio = findVerifiedPortfolio(portfolio.getPortfolioId());
@@ -82,6 +120,8 @@ public class PortfolioService {
 
         return saved;
     }
+
+
 
     public Portfolio findPortfolio(long portfolioId) {
         return findVerifiedPortfolio(portfolioId);

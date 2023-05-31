@@ -3,12 +3,13 @@ package main001.server.domain.portfolio.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import main001.server.domain.attachment.image.entity.Thumbnail;
-import main001.server.domain.attachment.image.repository.ImageAttachmentRepository;
 import main001.server.domain.likes.service.LikesService;
 import main001.server.domain.portfolio.dto.PortfolioDto;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.mapper.PortfolioMapper;
 import main001.server.domain.portfolio.service.PortfolioService;
+import main001.server.exception.BusinessLogicException;
+import main001.server.exception.ExceptionCode;
 import main001.server.response.MultiResponseDto;
 import main001.server.response.SingleResponseDto;
 import org.springframework.data.domain.Page;
@@ -41,10 +42,11 @@ public class PortfolioController {
     private final LikesService likesService;
 
     @PostMapping
-    public ResponseEntity postPortfolio(@Valid @RequestBody PortfolioDto.Post postDto) {
+    public ResponseEntity postPortfolio(@Valid @RequestPart PortfolioDto.Post postDto,
+                                        @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnail) throws IOException {
         Portfolio portfolio = mapper.portfolioPostDtoToPortfolio(postDto);
 
-        Portfolio response = portfolioService.createPortfolio(portfolio, postDto.getSkills());
+        Portfolio response = portfolioService.createPortfolio(portfolio, postDto.getSkills(), thumbnail);
 
         URI location =
                 UriComponentsBuilder
@@ -55,7 +57,13 @@ public class PortfolioController {
         return ResponseEntity.created(location).build();
     }
 
+    @PatchMapping("/{portfolio-id}/thumbnail-upload")
+    public ResponseEntity uploadThumbnail(@PathVariable("portfolio-id") @Positive long portfolioId,
+                                           @RequestPart(value = "thumbnail") MultipartFile thumbnail) throws IOException {
+        String thumbnailUrl = portfolioService.updateThumbnail(thumbnail, portfolioId);
 
+        return ResponseEntity.ok(thumbnailUrl);
+    }
 
     @PatchMapping("/{portfolio-id}")
     public ResponseEntity patchPortfolio(@PathVariable("portfolio-id") long portfolioId,

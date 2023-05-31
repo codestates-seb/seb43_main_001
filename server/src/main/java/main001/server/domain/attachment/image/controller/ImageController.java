@@ -20,26 +20,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageController {
     private final ImageService imageService;
-    @PostMapping("/thumbnail-upload")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity uploadThumbnail(@RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
-        String imgUrl = imageService.uploadThumbnail(image);
-        return ResponseEntity.ok(imgUrl);
-    }
-
-    @DeleteMapping("/thumbnail-delete")
-    public ResponseEntity deleteThumbnail(@RequestParam String imgUrl) {
-        imageService.deleteThumbnail(imgUrl);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/thumbnail/{thumbnail-id}")
-    public ResponseEntity getThumbnail(@PathVariable("thumbnail-id") Long thumbanilId) {
-        Thumbnail thumbnail = imageService.getThumbnail(thumbanilId);
-        String imgUrl = thumbnail.getImgUrl();
-        return ResponseEntity.ok(imgUrl);
-    }
-
     @PostMapping("/img-upload")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity uploadImg(@RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {

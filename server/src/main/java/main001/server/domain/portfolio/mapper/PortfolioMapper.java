@@ -37,6 +37,7 @@ public interface PortfolioMapper {
                 .distributionLink(portfolio.getDistributionLink())
                 .description(portfolio.getDescription())
                 .content(portfolio.getContent())
+                .thumbnailUrl(portfolio.getThumbnail() == null ? null : portfolio.getThumbnail().getImgUrl())
                 .skills(portfolio.getSkills().stream()
                         .map(portfolioSkill -> portfolioSkill.getSkill().getName())
                         .collect(Collectors.toList()))
