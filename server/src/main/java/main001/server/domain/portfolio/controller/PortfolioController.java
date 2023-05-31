@@ -43,10 +43,10 @@ public class PortfolioController {
 
     @PostMapping
     public ResponseEntity postPortfolio(@Valid @RequestPart PortfolioDto.Post postDto,
-                                        @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnail) throws IOException {
+                                        @RequestPart(value = "representativeImg", required = false) MultipartFile representativeImg) throws IOException {
         Portfolio portfolio = mapper.portfolioPostDtoToPortfolio(postDto);
 
-        Portfolio response = portfolioService.createPortfolio(portfolio, postDto.getSkills(), thumbnail);
+        Portfolio response = portfolioService.createPortfolio(portfolio, postDto.getSkills(), representativeImg);
 
         URI location =
                 UriComponentsBuilder
@@ -59,8 +59,8 @@ public class PortfolioController {
 
     @PatchMapping("/{portfolio-id}/thumbnail-upload")
     public ResponseEntity uploadThumbnail(@PathVariable("portfolio-id") @Positive long portfolioId,
-                                           @RequestPart(value = "thumbnail") MultipartFile thumbnail) throws IOException {
-        String thumbnailUrl = portfolioService.updateThumbnail(thumbnail, portfolioId);
+                                           @RequestPart(value = "representativeImg") MultipartFile representativeImg) throws IOException {
+        String thumbnailUrl = portfolioService.updateThumbnail(representativeImg, portfolioId);
 
         return ResponseEntity.ok(thumbnailUrl);
     }
