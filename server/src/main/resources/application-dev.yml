@@ -24,7 +24,7 @@ spring:
             client-id: ${GITHUB_ID}
             client-secret: ${GITHUB_SECRET}
             client-name: Github
-            redirect-uri: "https://api.mainproject.link/login/oauth2/code/{registrationId}"
+            redirect-uri: "http://dev.mainproject.link/login/oauth2/code/{registrationId}"
             authorization-grant-type: authorization_code
             scope:
               - email
@@ -34,7 +34,7 @@ spring:
             client-id: ${GOOGLE_ID}
             client-secret: ${GOOGLE_SECRET}
             client-name: Google
-            redirect-uri: "https://api.mainproject.link/login/oauth2/code/{registrationId}"
+            redirect-uri: "http://dev.mainproject.link/login/oauth2/code/{registrationId}"
             authorization-grant-type: authorization_code
             scope:
               - email
@@ -64,7 +64,7 @@ server:
   servlet:
     encoding:
       force-response: true
-  port: 8081
+  port: 9090
 
 mail:
   address:

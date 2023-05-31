@@ -55,11 +55,7 @@ cloud:
 
 logging:
   level:
-    org:
-      springframework:
-        orm:
-          jpa: DEBUG
-
+    root: info
 server:
   servlet:
     encoding:
