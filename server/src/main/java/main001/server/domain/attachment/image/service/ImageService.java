@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import main001.server.amazon.s3.service.S3Service;
 import main001.server.domain.attachment.image.entity.ImageAttachment;
-import main001.server.domain.attachment.image.entity.Thumbnail;
 import main001.server.domain.attachment.image.repository.ImageAttachmentRepository;
-import main001.server.domain.attachment.image.repository.ThumbnailRepository;
+import main001.server.domain.attachment.image.repository.RepresentativeAttachmentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +20,7 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class ImageService {
-    private final ThumbnailRepository thumbnailRepository;
+    private final RepresentativeAttachmentRepository thumbnailRepository;
     private final ImageAttachmentRepository imageAttachmentRepository;
     private final S3Service s3Service;
     private final String DEFAULT_IMAGE_URL = "https://main001-portfolio.s3.ap-northeast-2.amazonaws.com/default/default.png";
@@ -41,7 +40,7 @@ public class ImageService {
         Optional<ImageAttachment> imageAttachmentOptional = imageAttachmentRepository.findByImgUrl(imgUrl);
         imageAttachmentOptional.ifPresent(imageAttachment -> {
             imageAttachmentRepository.delete(imageAttachment);
-            s3Service.deleteFile("images",imageAttachment.getImgUrl());
+            s3Service.deleteFile("images", imageAttachment.getImgUrl());
         });
     }
 

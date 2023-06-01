@@ -2,14 +2,11 @@ package main001.server.domain.portfolio.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import main001.server.domain.attachment.image.entity.Thumbnail;
 import main001.server.domain.likes.service.LikesService;
 import main001.server.domain.portfolio.dto.PortfolioDto;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.mapper.PortfolioMapper;
 import main001.server.domain.portfolio.service.PortfolioService;
-import main001.server.exception.BusinessLogicException;
-import main001.server.exception.ExceptionCode;
 import main001.server.response.MultiResponseDto;
 import main001.server.response.SingleResponseDto;
 import org.springframework.data.domain.Page;
