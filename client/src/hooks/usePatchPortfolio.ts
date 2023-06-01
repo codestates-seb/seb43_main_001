@@ -19,6 +19,9 @@ export const usePatchPortfolio = (userId: number, portfolioId: number) => {
       // console.log('onMutate', variable);
     },
     onError: (error: AxiosError) => {
+      if (error.response?.status === 400) {
+        return toast.error('필수 입력 사항을 확인해주세요');
+      }
       return toast.error('작성에 실패했습니다');
     },
 

@@ -72,7 +72,7 @@ const PortfolioContainer: React.FC<PortfolioContainerProps> = ({
   const [img, setImg] = useState<File | null>(null);
 
   // 수신 시 대표 이미지 파일 url
-  const representativeImgUrl = PortfolioInfo ? PortfolioInfo.representativeImgUrl : null;
+  const representativeImgUrl = PortfolioInfo ? PortfolioInfo.representativeImgUrl : '';
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>,
@@ -117,6 +117,8 @@ const PortfolioContainer: React.FC<PortfolioContainerProps> = ({
         img={img}
         setImg={setImg}
         representativeImgUrl={representativeImgUrl}
+        portfolioId={portfolioId}
+        isEdit={isEdit}
       />
       <TextBox
         text={'깃허브 링크'}
@@ -156,7 +158,6 @@ const PortfolioContainer: React.FC<PortfolioContainerProps> = ({
                   postDto: {
                     ...portfolio,
                   },
-                  representativeImg: img,
                 })
               }
             >
