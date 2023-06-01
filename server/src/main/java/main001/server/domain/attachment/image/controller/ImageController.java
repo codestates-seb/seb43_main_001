@@ -2,7 +2,6 @@ package main001.server.domain.attachment.image.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import main001.server.domain.attachment.image.entity.Thumbnail;
 import main001.server.domain.attachment.image.service.ImageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

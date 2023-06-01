@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import main001.server.audit.BaseTimeEntity;
 import main001.server.domain.attachment.image.entity.ImageAttachment;
-import main001.server.domain.attachment.image.entity.Thumbnail;
+import main001.server.domain.attachment.image.entity.RepresentativeAttachment;
 import main001.server.domain.likes.entity.PortfolioLikes;
 import main001.server.domain.portfoliocomment.entity.PortfolioComment;
 import main001.server.domain.skill.entity.PortfolioSkill;
@@ -46,7 +46,7 @@ public class Portfolio extends BaseTimeEntity {
     private int viewCount;
 
     @OneToOne(mappedBy = "portfolio", cascade = CascadeType.ALL)
-    private Thumbnail thumbnail;
+    private RepresentativeAttachment thumbnail;
 
     @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
     private List<ImageAttachment> imageAttachments = new ArrayList<>();

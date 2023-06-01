@@ -3,10 +3,8 @@ package main001.server.domain.portfolio.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import main001.server.amazon.s3.service.S3Service;
-import main001.server.domain.attachment.image.entity.ImageAttachment;
-import main001.server.domain.attachment.image.entity.Thumbnail;
-import main001.server.domain.attachment.image.repository.ImageAttachmentRepository;
-import main001.server.domain.attachment.image.repository.ThumbnailRepository;
+import main001.server.domain.attachment.image.entity.RepresentativeAttachment;
+import main001.server.domain.attachment.image.repository.RepresentativeAttachmentRepository;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.repository.PortfolioRepository;
 import main001.server.domain.skill.entity.PortfolioSkill;
@@ -36,7 +34,7 @@ public class PortfolioService {
     private final UserRepository userRepository;
     private final SkillService skillService;
     private final S3Service s3Service;
-    private final ThumbnailRepository thumbnailRepository;
+    private final RepresentativeAttachmentRepository thumbnailRepository;
     private final String DEFAULT_IMAGE_URL = "https://main001-portfolio.s3.ap-northeast-2.amazonaws.com/default/default.png";
 
     public Portfolio createPortfolio(Portfolio portfolio, List<String> skills, MultipartFile image) throws IOException{
@@ -55,8 +53,9 @@ public class PortfolioService {
         }
         portfolio.setUser(verifiedUser.get());
 
-        Thumbnail thumbnail = uploadThumbnail(portfolio, image);
+        RepresentativeAttachment thumbnail = uploadThumbnail(portfolio, image);
         thumbnailRepository.save(thumbnail);
+
         List<PortfolioSkill> portfolioSkillList = skillService.createPortfolioSkillList(skills);
         for(PortfolioSkill ps : portfolioSkillList) {
             portfolio.addSkill(ps);
@@ -65,16 +64,16 @@ public class PortfolioService {
         return portfolioRepository.save(portfolio);
     }
 
-    private Thumbnail uploadThumbnail(Portfolio portfolio, MultipartFile image) throws IOException {
-        Thumbnail thumbnail;
+    private RepresentativeAttachment uploadThumbnail(Portfolio portfolio, MultipartFile image) throws IOException {
+        RepresentativeAttachment thumbnail;
         if (image != null && !image.isEmpty()) {
             // 이미지가 첨부된 경우에 대한 처리
             String imgUrl = s3Service.uploadFile(image, "images");
-            thumbnail = new Thumbnail(imgUrl);
+            thumbnail = new RepresentativeAttachment(imgUrl);
         } else {
             // 이미지가 첨부되지 않은 경우에 대한 처리
             String defaultImageUrl = DEFAULT_IMAGE_URL;
-            thumbnail = new Thumbnail(defaultImageUrl);
+            thumbnail = new RepresentativeAttachment(defaultImageUrl);
         }
 
         thumbnail.setPortfolio(portfolio);
@@ -84,17 +83,17 @@ public class PortfolioService {
 
     public String updateThumbnail(MultipartFile image, Long portfolioId) throws IOException {
         Portfolio findPortfolio = findVerifiedPortfolio(portfolioId);
-        Thumbnail currentThumbnail = findPortfolio.getThumbnail();
+        RepresentativeAttachment currentThumbnail = findPortfolio.getThumbnail();
 
         if (!DEFAULT_IMAGE_URL.equals(currentThumbnail)) {
-            s3Service.deleteFile("images", currentThumbnail.getImgUrl());
+            s3Service.deleteFile("images", currentThumbnail.getRepresentativeImgUrl());
             thumbnailRepository.delete(currentThumbnail);
         }
 
-        Thumbnail thumbnail = uploadThumbnail(findPortfolio,image);
+        RepresentativeAttachment thumbnail = uploadThumbnail(findPortfolio,image);
         thumbnailRepository.save(thumbnail);
 
-        return thumbnail.getImgUrl();
+        return thumbnail.getRepresentativeImgUrl();
     }
 
 
