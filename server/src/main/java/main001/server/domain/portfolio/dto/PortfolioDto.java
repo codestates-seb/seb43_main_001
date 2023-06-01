@@ -77,7 +77,6 @@ public class PortfolioDto {
         private String distributionLink;
         private String description;
         private String content;
-
         private String representativeImgUrl;
         private List<String> skills;
         private int likesCount;

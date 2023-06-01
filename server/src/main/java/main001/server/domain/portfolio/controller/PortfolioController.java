@@ -2,12 +2,14 @@ package main001.server.domain.portfolio.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import main001.server.domain.attachment.image.repository.ImageAttachmentRepository;
+import main001.server.domain.attachment.image.entity.Thumbnail;
 import main001.server.domain.likes.service.LikesService;
 import main001.server.domain.portfolio.dto.PortfolioDto;
 import main001.server.domain.portfolio.entity.Portfolio;
 import main001.server.domain.portfolio.mapper.PortfolioMapper;
 import main001.server.domain.portfolio.service.PortfolioService;
+import main001.server.exception.BusinessLogicException;
+import main001.server.exception.ExceptionCode;
 import main001.server.response.MultiResponseDto;
 import main001.server.response.SingleResponseDto;
 import org.springframework.data.domain.Page;
@@ -55,33 +57,22 @@ public class PortfolioController {
         return ResponseEntity.created(location).build();
     }
 
-    @PostMapping("/img-upload")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity uploadImg(@RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
-        List<String> imgUrl = portfolioService.uploadImage(images);
-        return ResponseEntity.ok(imgUrl);
-    }
+    @PatchMapping("/{portfolio-id}/thumbnail-upload")
+    public ResponseEntity uploadThumbnail(@PathVariable("portfolio-id") @Positive long portfolioId,
+                                           @RequestPart(value = "representativeImg") MultipartFile representativeImg) throws IOException {
+        String thumbnailUrl = portfolioService.updateThumbnail(representativeImg, portfolioId);
 
-    @DeleteMapping("/img-delete/{imgId}")
-    public ResponseEntity deleteImg(@PathVariable Long imgId) {
-        portfolioService.deleteImage(imgId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/img-list")
-    public ResponseEntity<List<String>> getImageList() {
-        List<String> imageUrlList = portfolioService.getImageUrlList();
-        return ResponseEntity.ok(imageUrlList);
+        return ResponseEntity.ok(thumbnailUrl);
     }
 
     @PatchMapping("/{portfolio-id}")
     public ResponseEntity patchPortfolio(@PathVariable("portfolio-id") long portfolioId,
-                                         @RequestPart PortfolioDto.Patch patchDto,
-                                         @RequestPart(value = "representativeImg", required = false) MultipartFile representativeImg) throws IOException {
+                                         @RequestBody PortfolioDto.Patch patchDto) {
         patchDto.setPortfolioId(portfolioId);
         Portfolio portfolio = mapper.portfolioPatchDtoToPortfolio(patchDto);
 
-        Portfolio response = portfolioService.updatePortfolio(portfolio, portfolioId, patchDto.getSkills(), representativeImg);
+
+        Portfolio response = portfolioService.updatePortfolio(portfolio, patchDto.getSkills());
 
         return new ResponseEntity<>(new SingleResponseDto<>(mapper.portfolioToPortfolioResponseDto(response)), HttpStatus.OK);
     }

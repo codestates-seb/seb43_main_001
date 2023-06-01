@@ -66,6 +66,7 @@ public class UserController {
                             responseCode = "409",
                             description = "이미 존재하는 이메일입니다")}
     )
+
     @PostMapping("/signup")
     public ResponseEntity signup(@Valid @RequestBody UserDto.Post requestBody) {
         User user = mapper.userPostToUser(requestBody);
