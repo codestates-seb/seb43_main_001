@@ -15,6 +15,9 @@ import { THEME } from './constants/index';
 // redux
 import { useAppSelector } from './hooks/reduxHook';
 
+import { Suspense } from 'react';
+import Loading from './components/common/Loading';
+
 function App() {
   const themeMode = useAppSelector((state) => state.theme.theme);
   const theme = themeMode === THEME.light ? lightTheme : darkTheme;
@@ -23,7 +26,9 @@ function App() {
     <>
       <ThemeProvider theme={theme}>
         <GlobalStyles />
-        <RouterProvider router={routers} />
+        <Suspense fallback={<Loading />}>
+          <RouterProvider router={routers} />
+        </Suspense>
       </ThemeProvider>
     </>
   );
