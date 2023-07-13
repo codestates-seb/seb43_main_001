@@ -1,17 +1,18 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { Router as RemixRouter } from '@remix-run/router/dist/router';
+import { lazy } from 'react';
 
 // pages
-import Home from './pages/Home';
-import Detail from './pages/Detail';
-import Login from './pages/Login';
-import User from './pages/User';
-import NewPortfolio from './pages/NewPortfolio';
-import EditPortfolio from './pages/EditPortfolio';
-import AddEmail from './pages/AddEmail';
-import NotFound from './pages/NotFound';
-import SignUp from './pages/SignUp';
-import About from './pages/About';
+const Home = lazy(() => import('./pages/Home'));
+const Detail = lazy(() => import('./pages/Detail'));
+const Login = lazy(() => import('./pages/Login'));
+const User = lazy(() => import('./pages/User'));
+const NewPortfolio = lazy(() => import('./pages/NewPortfolio'));
+const EditPortfolio = lazy(() => import('./pages/EditPortfolio'));
+const AddEmail = lazy(() => import('./pages/AddEmail'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+const SignUp = lazy(() => import('./pages/SignUp'));
+const About = lazy(() => import('./pages/About'));
 
 // layout
 import GeneralLayout from './layout/GeneraLayout';
