@@ -13,6 +13,7 @@ export const COLOR = {
   divider: '#F3F3F3', // light grey
   cardColor: '#303030', // charcoal
 } as const;
+
 export const THEME = {
   dark: 'dark',
   light: 'light',
