@@ -6,7 +6,7 @@ import { COLOR } from '../../constants';
 const { mainColor } = COLOR;
 
 export const StyledLoading = styled.div`
-  display: inline-block;
+  display: block;
   position: relative;
   margin: 8rem auto;
   &::after {
@@ -15,7 +15,7 @@ export const StyledLoading = styled.div`
     border-radius: 50%;
     width: 100px;
     height: 100px;
-    margin: 8px;
+    margin: 8px auto;
     box-sizing: border-box;
     border: 32px solid ${mainColor};
     border-color: ${mainColor} transparent ${mainColor} transparent;
